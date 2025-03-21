@@ -197,8 +197,8 @@ async function displayLayers() {
       ]
     };
 
-    // Create SubtypeGroupLayers
-    const layers = [
+    // Create SubtypeGroupLayers for CustomerLocations
+    const layersCustomerLocations = [
       { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Kota_Marudu/FeatureServer/0", title: "Kota Marudu" },
       { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tambunan/FeatureServer/48", title: "Tambunan" },
       { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Ranau/FeatureServer/49", title: "Ranau" },
@@ -210,7 +210,7 @@ async function displayLayers() {
       { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Sandakan/FeatureServer/296", title: "Sandakan" }
     ];
 
-    const subtypeGroupLayers = layers.map(layerInfo => {
+    const subtypeGroupLayersCustomerLocations = layersCustomerLocations.map(layerInfo => {
       const layer = new SubtypeGroupLayer({
         url: layerInfo.url,
         visible: false, // Hide all sublayers initially
@@ -233,12 +233,127 @@ async function displayLayers() {
 
     const Customer_Locations = new GroupLayer({
       title: "Customer Locations",
-      layers: subtypeGroupLayers,
+      layers: subtypeGroupLayersCustomerLocations,
       visible: false // Hide all sublayers initially
     });
 
     console.log(Customer_Locations, "Customer_Locations");
     displayMap.add(Customer_Locations);  // adds the layer to the map
+
+
+
+
+    // DMZ Critical Points Layers
+    
+    // // Define a simple renderer for DMZ Critical Points Layers
+    // const simpleRendererCustomerLocations = {
+    //   type: "simple",
+    //   symbol: {
+    //     type: "simple-marker",
+    //     style: "circle",
+    //     color: "#0290e3",
+    //     size: 9,
+    //     outline: {
+    //       color: "#000000",
+    //       width: 1
+    //     }
+    //   }
+    // };
+
+    // // Define a popup template for DMZ Critical Points Layers
+    // const popupTemplateCustomerLocations = {
+    //   title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "premisenum",
+    //           label: "Phone Number"
+    //         },
+    //         {
+    //           fieldName: "addr1",
+    //           label: "Address 1"
+    //         },
+    //         {
+    //           fieldName: "addr2",
+    //           label: "Address 2"
+    //         },
+    //         {
+    //           fieldName: "addr3",
+    //           label: "Address 3"
+    //         },
+    //         {
+    //           fieldName: "poscod",
+    //           label: "Post Code"
+    //         },
+    //         {
+    //           fieldName: "proptytyp",
+    //           label: "Property Type"
+    //         },
+    //         // {
+    //         //   fieldName: "",
+    //         //   label: "Billing District"
+    //         // },
+    //         // {
+    //         //   fieldName: "",
+    //         //   label: "Operational District"
+    //         // },
+    //         // {
+    //         //   fieldName: "",
+    //         //   label: "WBA (Water Balance Area)"
+    //         // },
+    //         // {
+    //         //   fieldName: "",
+    //         //   label: "DMA"
+    //         // }
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ]
+    // };
+
+    // Create SubtypeGroupLayers for DMZ Critical Points
+    const layersDMZCriticalPoints = [
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaKinabalu/FeatureServer/132", title: "Kota Kinabalu" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Semporna/FeatureServer/72", title: "Semporna" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Tambunan/FeatureServer/12", title: "Tambunan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Sandakan/FeatureServer/47", title: "Sandakan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Kudat/FeatureServer/15", title: "Kudat" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaBelud/FeatureServer/45", title: "Kota Belud" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Papar/FeatureServer/12", title: "Papar" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Ranau/FeatureServer/20", title: "Ranau" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaMarudu/FeatureServer/19", title: "Kota Marudu" },
+      // { url: "", title: "" },
+    ];
+
+
+    const subtypeGroupLayersDMZCriticalPoints = layersDMZCriticalPoints.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          // sublayer.renderer = simpleRendererCustomerLocations;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+
+    const DMZCriticalPoints = new GroupLayer({
+      title: "DMZ Critical Points",
+      layers: subtypeGroupLayersDMZCriticalPoints,
+      visible: false // Hide all sublayers initially
+    });
+    displayMap.add(DMZCriticalPoints);  // adds the layer to the map
 
 
 
