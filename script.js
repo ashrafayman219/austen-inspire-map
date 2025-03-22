@@ -120,15 +120,10 @@ async function displayLayers() {
       loadModule("esri/layers/support/SubtypeSublayer"),
     ]);
 
-
     // Here I will start coding to display some layers and style them
 
 
-
-
-    
     // Consumer Meters || Customer Locations Layers
-    
     // Define a simple renderer for Customer Locations Layers
     const simpleRendererCustomerLocations = {
       type: "simple",
@@ -237,82 +232,10 @@ async function displayLayers() {
       visible: false // Hide all sublayers initially
     });
 
-    console.log(Customer_Locations, "Customer_Locations");
-    displayMap.add(Customer_Locations);  // adds the layer to the map
-
-
-
+    // console.log(Customer_Locations, "Customer_Locations");
+    // displayMap.add(Customer_Locations);  // adds the layer to the map
 
     // DMZ Critical Points Layers
-    
-    // // Define a simple renderer for DMZ Critical Points Layers
-    // const simpleRendererCustomerLocations = {
-    //   type: "simple",
-    //   symbol: {
-    //     type: "simple-marker",
-    //     style: "circle",
-    //     color: "#0290e3",
-    //     size: 9,
-    //     outline: {
-    //       color: "#000000",
-    //       width: 1
-    //     }
-    //   }
-    // };
-
-    // // Define a popup template for DMZ Critical Points Layers
-    // const popupTemplateCustomerLocations = {
-    //   title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
-    //   content: [
-    //     {
-    //       type: "fields",
-    //       fieldInfos: [
-    //         {
-    //           fieldName: "premisenum",
-    //           label: "Phone Number"
-    //         },
-    //         {
-    //           fieldName: "addr1",
-    //           label: "Address 1"
-    //         },
-    //         {
-    //           fieldName: "addr2",
-    //           label: "Address 2"
-    //         },
-    //         {
-    //           fieldName: "addr3",
-    //           label: "Address 3"
-    //         },
-    //         {
-    //           fieldName: "poscod",
-    //           label: "Post Code"
-    //         },
-    //         {
-    //           fieldName: "proptytyp",
-    //           label: "Property Type"
-    //         },
-    //         // {
-    //         //   fieldName: "",
-    //         //   label: "Billing District"
-    //         // },
-    //         // {
-    //         //   fieldName: "",
-    //         //   label: "Operational District"
-    //         // },
-    //         // {
-    //         //   fieldName: "",
-    //         //   label: "WBA (Water Balance Area)"
-    //         // },
-    //         // {
-    //         //   fieldName: "",
-    //         //   label: "DMA"
-    //         // }
-    //         // Add more fields as needed
-    //       ]
-    //     }
-    //   ]
-    // };
-
     // Create SubtypeGroupLayers for DMZ Critical Points
     const layersDMZCriticalPoints = [
       { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaKinabalu/FeatureServer/132", title: "Kota Kinabalu" },
@@ -326,7 +249,6 @@ async function displayLayers() {
       { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaMarudu/FeatureServer/19", title: "Kota Marudu" },
       // { url: "", title: "" },
     ];
-
 
     const subtypeGroupLayersDMZCriticalPoints = layersDMZCriticalPoints.map(layerInfo => {
       const layer = new SubtypeGroupLayer({
@@ -353,7 +275,100 @@ async function displayLayers() {
       layers: subtypeGroupLayersDMZCriticalPoints,
       visible: false // Hide all sublayers initially
     });
-    displayMap.add(DMZCriticalPoints);  // adds the layer to the map
+    // displayMap.add(DMZCriticalPoints);  // adds the layer to the map
+
+
+    // KTM Layers
+    // Create SubtypeGroupLayers for KTM
+    const layersKTM = [
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_KotaKinabalu/FeatureServer/54", title: "Kota Kinabalu" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Tambunan/FeatureServer/8", title: "Tambunan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Kudat/FeatureServer/8", title: "Kudat" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Papar/FeatureServer/0", title: "Papar" },
+      // { url: "", title: "" },
+    ];
+
+    const subtypeGroupLayersKTM = layersKTM.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          // sublayer.renderer = simpleRendererCustomerLocations;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+
+    const KTM = new GroupLayer({
+      title: "Trunk Main Meter Points",
+      layers: subtypeGroupLayersKTM,
+      visible: false // Hide all sublayers initially
+    });
+    // displayMap.add(KTM);  // adds the layer to the map
+
+
+    // Reservoirs Layers
+    // Create SubtypeGroupLayers for Reservoirs
+    const layersReservoirs = [
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaKinabalu/FeatureServer/32", title: "Kota Kinabalu" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Semporna/FeatureServer/15", title: "Semporna" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tambunan/FeatureServer/12", title: "Tambunan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Sandakan/FeatureServer/15", title: "Sandakan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Kudat/FeatureServer/21", title: "Kudat" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaBelud/FeatureServer/15", title: "Kota Belud" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tuaran/FeatureServer/12", title: "Tuaran" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Papar/FeatureServer/16", title: "Papar" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tamparuli/FeatureServer/12", title: "Tamparuli" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Ranau/FeatureServer/24", title: "Ranau" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaMarudu/FeatureServer/0", title: "Kota Marudu" },
+      // { url: "", title: "" },
+    ];
+
+    const subtypeGroupLayersReservoirs = layersReservoirs.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          // sublayer.renderer = simpleRendererCustomerLocations;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+
+    const Reservoirs = new GroupLayer({
+      title: "Reservoirs",
+      layers: subtypeGroupLayersReservoirs,
+      visible: false // Hide all sublayers initially
+    });
+    displayMap.add(Reservoirs);  // adds the layer to the map
+    displayMap.add(KTM);
+    displayMap.add(DMZCriticalPoints);
+    displayMap.add(Customer_Locations);
+
+
+
+
+
+
+
 
 
 
@@ -361,8 +376,6 @@ async function displayLayers() {
     //   url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Kota_Marudu/FeatureServer/0",
     //   visible: false // Hide all sublayers initially
     // });
-
-
 
     // const Tambunan = new SubtypeGroupLayer({
     //   url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tambunan/FeatureServer/48",
@@ -469,9 +482,15 @@ async function addWidgets() {
       });
       view.ui.add(homeWidget, "top-left");
 
+
+
+
       var layerList = new LayerList({
         view: view,
-        container: document.getElementById("layerListContainer") // Place LayerList in the new container
+        container: document.getElementById("layerListContainer"), // Place LayerList in the new container,
+        listItemCreatedFunction: defineActions
+
+
         // listItemCreatedFunction: function (event) {
         //   var item = event.item;
         //   // displays the legend for each layer list item
@@ -483,9 +502,45 @@ async function addWidgets() {
       });
 
       layerList.visibilityAppearance = "checkbox";
-      // layerList.dragEnabled = true;
-      // layerList.selectionMode = "multiple";
 
+      function defineActions(event) {
+        const { item } = event;
+        if (item.layer.type === "subtype-group") {
+          item.actionsSections = [
+            [
+              {
+                title: "Go to full extent",
+                icon: "zoom-out-fixed",
+                id: "full-extent"
+              }
+            ]
+          ];
+        }
+      }
+      
+      layerList.on("trigger-action", (event) => {
+        const id = event.action.id;
+        const layer = event.item.layer;
+      
+        if (id === "full-extent") {
+          // view.goTo(layer.fullExtent)
+          view.goTo(
+            {
+              target: layer.fullExtent,
+            },
+            {
+              duration: 3000,
+            }
+          ).catch((error) => {
+            if (error.name !== "AbortError") {
+              console.error(error);
+            }
+          });
+        }
+      });
+
+
+      
       var Expand5 = new Expand({
         view: view,
         content: layerList,
