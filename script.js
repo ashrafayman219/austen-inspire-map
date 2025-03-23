@@ -37,10 +37,10 @@ async function initializeMap() {
       });
 
       view = new MapView({
-        center: [117.1, 5.2], // longitude, latitude, centered on Sabah
+        center: [117.04781494140617, 5.224617021704047], // longitude, latitude, centered on Sabah
         container: "displayMap",
         map: displayMap,
-        zoom: 6,
+        zoom: 8,
       });
 
       await view.when();
@@ -122,6 +122,12 @@ async function displayLayers() {
 
     // Here I will start coding to display some layers and style them
 
+    const DMZMeterPoints11 = new GroupLayer({
+      title: "DMZMeterPoints11DMZMeterPoints11DMZMeterPoints11DMZMeterPoints11",
+      // layers: subtypeGroupLayersDMZMeterPoints,
+      visible: false // Hide all sublayers initially
+    });
+    displayMap.add(DMZMeterPoints11)
 
     // Consumer Meters || Customer Locations Layers
     // Define a simple renderer for Customer Locations Layers
@@ -358,10 +364,199 @@ async function displayLayers() {
       layers: subtypeGroupLayersReservoirs,
       visible: false // Hide all sublayers initially
     });
+
+
+    // WTP Layers
+    // Create SubtypeGroupLayers for WTP
+    const layersWTP = [
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaKinabalu/FeatureServer/15", title: "Kota Kinabalu" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Semporna/FeatureServer/12", title: "Semporna" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tambunan/FeatureServer/12", title: "Tambunan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Sandakan/FeatureServer/15", title: "Sandakan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Kudat/FeatureServer/12", title: "Kudat" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaBelud/FeatureServer/12", title: "Kota Belud" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tuaran/FeatureServer/12", title: "Tuaran" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Papar/FeatureServer/12", title: "Papar" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tamparuli/FeatureServer/12", title: "Tamparuli" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Ranau/FeatureServer/12", title: "Ranau" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaMarudu/FeatureServer/12", title: "Kota Marudu" },
+      // { url: "", title: "" },
+    ];
+
+    const subtypeGroupLayersWTP = layersWTP.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          // sublayer.renderer = simpleRendererCustomerLocations;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+
+    const WTP = new GroupLayer({
+      title: "Water Treatment Plant",
+      layers: subtypeGroupLayersWTP,
+      visible: false // Hide all sublayers initially
+    });
+
+
+
+
+
+
+    // DMZBoundaries Layers
+    // Define a simple renderer for Customer Locations Layers
+    const simpleRendererDMZBoundaries = {
+      type: "simple", // autocasts as new SimpleRenderer()
+      symbol: {
+        type: "simple-fill", // autocasts as new SimpleFillSymbol()
+        color: [166, 25, 77, 0.5],
+        outline: {
+          // makes the outlines of all features consistently light gray
+          color: "lightgray",
+          width: 1
+        }
+      }
+    };
+
+    // Create SubtypeGroupLayers for DMZBoundaries
+    const layersDMZBoundaries = [
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Ranau/FeatureServer/458", title: "Ranau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tambunan/FeatureServer/579", title: "Tambunan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Papar/FeatureServer/434", title: "Papar" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tamparuli/FeatureServer/605", title: "Tamparuli" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaBelud/FeatureServer/46", title: "Kota Belud" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaMarudu/FeatureServer/365", title: "Kota Marudu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Kudat/FeatureServer/385", title: "Kudat" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Sandakan/FeatureServer/540", title: "Sandakan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Semporna/FeatureServer/567", title: "Semporna" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tawau/FeatureServer/677", title: "Tawau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu/FeatureServer/339", title: "Kota Kinabalu" },
+      // { url: "", title: "" },
+    ];
+
+    const subtypeGroupLayersDMZBoundaries = layersDMZBoundaries.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          sublayer.renderer = simpleRendererDMZBoundaries;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+
+    const DMZBoundaries = new GroupLayer({
+      title: "DMZ Boundaries",
+      layers: subtypeGroupLayersDMZBoundaries,
+      visible: false // Hide all sublayers initially
+    });
+
+
+
+    // DMZMeterPoints Layers
+    // Create SubtypeGroupLayers for DMZMeterPoints
+    const layersDMZMeterPoints = [
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_KotaKinabalu/FeatureServer/280", title: "Kota Kinabalu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_KotaMarudu/FeatureServer/317", title: "Kota Marudu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Kudat/FeatureServer/340", title: "Kudat" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Papar/FeatureServer/388", title: "Papar" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Ranau/FeatureServer/425", title: "Ranau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Sandakan/FeatureServer/489", title: "Sandakan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Semporna/FeatureServer/526", title: "Semporna" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Tambunan/FeatureServer/550", title: "Tambunan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Tamparuli/FeatureServer/561", title: "Tamparuli" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Tawau/FeatureServer/628", title: "Tawau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Tuaran/FeatureServer/665", title: "Tuaran" },
+      // { url: "", title: "" },
+    ];
+
+    const subtypeGroupLayersDMZMeterPoints = layersDMZMeterPoints.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          // sublayer.renderer = simpleRendererDMZMeterPoints;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+
+    const DMZMeterPoints = new GroupLayer({
+      title: "DMZ Meter Points",
+      layers: subtypeGroupLayersDMZMeterPoints,
+      visible: false // Hide all sublayers initially
+    });
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZBoundaries);  // adds the layer to the map
+    displayMap.add(WTP);  // adds the layer to the map
     displayMap.add(Reservoirs);  // adds the layer to the map
     displayMap.add(KTM);
     displayMap.add(DMZCriticalPoints);
     displayMap.add(Customer_Locations);
+
+
+
+
 
 
 
@@ -488,7 +683,7 @@ async function addWidgets() {
       var layerList = new LayerList({
         view: view,
         container: document.getElementById("layerListContainer"), // Place LayerList in the new container,
-        listItemCreatedFunction: defineActions
+        // listItemCreatedFunction: defineActions
 
 
         // listItemCreatedFunction: function (event) {
@@ -503,51 +698,75 @@ async function addWidgets() {
 
       layerList.visibilityAppearance = "checkbox";
 
-      function defineActions(event) {
-        const { item } = event;
-        if (item.layer.type === "subtype-group") {
-          item.actionsSections = [
-            [
-              {
-                title: "Go to full extent",
-                icon: "zoom-out-fixed",
-                id: "full-extent"
+      layerList.listItemCreatedFunction = function (event) {
+          const item = event.item;
+      
+          // Keep existing defineActions logic
+          if (item.layer.type === "subtype-group") {
+              item.actionsSections = [
+                  [
+                      {
+                          title: "Go to full extent",
+                          icon: "zoom-out-fixed",
+                          id: "full-extent"
+                      }
+                  ]
+              ];
+          }
+      
+          // Watch for visibility changes
+          item.watch("visible", (visible) => {
+              if (visible) {
+                  activateParentLayers(item.layer);  // Ensure parent layers turn on
               }
-            ]
-          ];
-        }
+              activateChildLayers(item.layer, visible); // Ensure all sublayers turn on
+          });
+      };
+      
+      // Function to activate all parent layers when a sublayer is turned on
+      function activateParentLayers(layer) {
+          let parentLayer = layer.parent;
+          while (parentLayer) {
+              parentLayer.visible = true;
+              parentLayer = parentLayer.parent; // Move up the hierarchy
+          }
       }
       
+      // Recursive function to turn on/off all sublayers correctly
+      function activateChildLayers(layer, visible) {
+          if (layer.sublayers) {
+              layer.sublayers.forEach((sublayer) => {
+                  sublayer.visible = visible; // Set visibility for child
+                  activateChildLayers(sublayer, visible); // Recursively handle deeper layers
+              });
+          }
+      }
+      
+      // Keep the event listener for action triggers
       layerList.on("trigger-action", (event) => {
-        const id = event.action.id;
-        const layer = event.item.layer;
+          const id = event.action.id;
+          const layer = event.item.layer;
       
-        if (id === "full-extent") {
-          // view.goTo(layer.fullExtent)
-          view.goTo(
-            {
-              target: layer.fullExtent,
-            },
-            {
-              duration: 3000,
-            }
-          ).catch((error) => {
-            if (error.name !== "AbortError") {
-              console.error(error);
-            }
-          });
-        }
+          if (id === "full-extent") {
+              view.goTo(
+                  {
+                      target: layer.fullExtent,
+                  },
+                  {
+                      duration: 3000,
+                  }
+              ).catch((error) => {
+                  if (error.name !== "AbortError") {
+                      console.error(error);
+                  }
+              });
+          }
       });
-
-
       
-      var Expand5 = new Expand({
-        view: view,
-        content: layerList,
-        expandIcon: "layers",
-        group: "top-right",
-        // expanded: false,
-      });
+      
+    
+      
+
 
       // view.ui.add([Expand5], { position: "top-left", index: 6 });
 
@@ -560,6 +779,75 @@ async function addWidgets() {
         view: view,
         container: document.getElementById("legendContainer") // Place Legend in the new container
       });
+
+
+
+      legend.when(() => {
+        legend.activeLayerInfos.forEach((layerInfo) => {
+          if (layerInfo.layer.type === "feature") {
+            updateFeatureCount(layerInfo);
+          }
+        });
+      });
+      
+      // Function to update the feature count beside each legend item
+      function updateFeatureCount(layerInfo) {
+        view.whenLayerView(layerInfo.layer).then((layerView) => {
+          function refreshCount() {
+            if (!view.updating) {
+              layerView.queryFeatureCount().then((count) => {
+                layerInfo.title = `${layerInfo.layer.title} (${count})`;
+                legend.renderNow(); // Force update
+              });
+            }
+          }
+      
+          // Run once and also update on extent changes
+          refreshCount();
+          view.watch("stationary", refreshCount);
+        });
+      }
+
+      
+
+      // function updateLegendCounts() {
+      //   legend.activeLayerInfos.forEach(activeLayerInfo => {
+      //     console.log(activeLayerInfo, "activeLayerInfo");
+      //     const layerView = activeLayerInfo.layerView;
+      //     if (layerView && layerView.queryFeatures) {
+      //       const query = layerView.createQuery();
+      //       query.geometry = view.extent; 
+      //       query.returnGeometry = false;
+      //       query.outFields = ["*"];
+    
+      //       layerView.queryFeatures(query).then(results => {
+      //         activeLayerInfo.title = `${activeLayerInfo.layer.title} (${results.features.length})`;
+      //         legend.refresh();
+      //       });
+      //     }
+      //   });
+      // }
+    
+      // function watchLayerVisibility(layer) {
+      //   console.log(layer, "layer");
+      //   layer.watch("visible", (newValue) => {
+      //     if (newValue) {
+      //       updateLegendCounts();  // Only update when a layer is turned ON
+      //     }
+      //   });
+    
+      //   if (layer.sublayers) {
+      //     layer.sublayers.forEach(sublayer => watchLayerVisibility(sublayer)); 
+      //   }
+      // }
+    
+      // view.when().then(() => {
+      //   displayMap.layers.forEach(layer => {
+      //     watchLayerVisibility(layer);
+      //   });
+      // });
+
+
 
       await view.when();
       return [view, displayMap]; // You can return the view object
