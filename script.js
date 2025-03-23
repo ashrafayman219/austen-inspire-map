@@ -19,13 +19,16 @@ function loadModule(moduleName) {
 async function initializeMap() {
   try {
     if (!view) {
-      const [esriConfig, Map, MapView, intl, GeoJSONLayer, GroupLayer] = await Promise.all([
+      const [esriConfig, Map, MapView, intl, GeoJSONLayer, GroupLayer, Graphic, reactiveUtils, promiseUtils] = await Promise.all([
         loadModule("esri/config"),
         loadModule("esri/Map"),
         loadModule("esri/views/MapView"),
         loadModule("esri/intl"),
         loadModule("esri/layers/GeoJSONLayer"),
         loadModule("esri/layers/GroupLayer"),
+        loadModule("esri/Graphic"),
+        loadModule("esri/core/reactiveUtils"),
+        loadModule("esri/core/promiseUtils"),
       ]);
 
       // intl.setLocale("ar");
@@ -42,6 +45,66 @@ async function initializeMap() {
         map: displayMap,
         zoom: 8,
       });
+
+
+      var overviewMap = new Map({
+        basemap: "topo-vector",
+      });
+
+      var overviewView = new MapView({
+        container: "overviewDiv",
+        map: overviewMap,
+      });
+      // Remove the default widgets
+      overviewView.ui.components = [];
+      overviewView.when(() => {
+        view.when(() => {
+          setup();
+        });
+      });
+
+      const extentDebouncer = promiseUtils.debounce(async () => {
+        if (view.stationary) {
+          await overviewView.goTo({
+            center: view.center,
+            scale:
+            view.scale *
+              1.3 *
+              Math.max(
+                view.width / overviewView.width,
+                view.height / overviewView.height
+              )
+          });
+        }
+      });
+
+      function setup() {
+        const extent3Dgraphic = new Graphic({
+          geometry: null,
+          symbol: {
+            type: "simple-fill",
+            color: [0, 0, 0, 0.5],
+            outline: null
+          }
+        });
+        overviewView.graphics.add(extent3Dgraphic);
+
+        reactiveUtils.watch(
+          () => view.extent,
+          (extent) => {
+            // Sync the overview map location
+            // whenever the 3d view is stationary
+            extentDebouncer().then(() => {
+              extent3Dgraphic.geometry = extent;
+            });
+          },
+          {
+            initial: true
+          }
+        );
+      }
+
+
 
       await view.when();
 
@@ -73,9 +136,9 @@ async function initializeMap() {
           if (response.results.length) {
             // Assuming you want to go to the first graphic found
             let graphic = response.results[0].graphic;
-            console.log(graphic, "graphic")
+            // console.log(graphic, "graphic")
             if (graphic.geometry) {
-              console.log("this is not graphic")
+              // console.log("this is not graphic")
               if (graphic.geometry.type === "point") {
                 view.goTo(
                   {
@@ -902,23 +965,21 @@ async function addWidgets() {
       var layerList = new LayerList({
         view: view,
         container: document.getElementById("layerListContainer"), // Place LayerList in the new container,
-        // listItemCreatedFunction: defineActions
-
-
-        // listItemCreatedFunction: function (event) {
-        //   var item = event.item;
-        //   // displays the legend for each layer list item
-        //   item.panel = {
-        //     content: "legend",
-        //   };
-        // },
         // showLegend: true
       });
 
       layerList.visibilityAppearance = "checkbox";
       layerList.listItemCreatedFunction = function(event) {
         const item = event.item;
-    
+        
+        // if (item.layer.type != "group") {
+        //   // don't show legend twice
+        //   item.panel = {
+        //     content: "legend",
+        //     open: true
+        //   };
+        // }
+
         // Keep existing defineActions logic
         if (item.layer.type === "subtype-group") {
             item.actionsSections = [
@@ -948,7 +1009,6 @@ async function addWidgets() {
     layerList.on("trigger-action", (event) => {
         const id = event.action.id;
         const layer = event.item.layer;
-    
         if (id === "full-extent") {
             view.goTo(
                 {
@@ -965,10 +1025,6 @@ async function addWidgets() {
         }
     });
     
-      
-    
-      
-
 
       // view.ui.add([Expand5], { position: "top-left", index: 6 });
 
@@ -981,11 +1037,12 @@ async function addWidgets() {
         view: view,
         container: document.getElementById("legendContainer") // Place Legend in the new container
       });
+      legend.hideLayersNotInCurrentView = true;
 
-
-
+      
       legend.when(() => {
         legend.activeLayerInfos.forEach((layerInfo) => {
+          console.log(layerInfo, "layerInfo");
           if (layerInfo.layer.type === "feature") {
             updateFeatureCount(layerInfo);
           }
@@ -1011,43 +1068,6 @@ async function addWidgets() {
       }
 
       
-
-      // function updateLegendCounts() {
-      //   legend.activeLayerInfos.forEach(activeLayerInfo => {
-      //     console.log(activeLayerInfo, "activeLayerInfo");
-      //     const layerView = activeLayerInfo.layerView;
-      //     if (layerView && layerView.queryFeatures) {
-      //       const query = layerView.createQuery();
-      //       query.geometry = view.extent; 
-      //       query.returnGeometry = false;
-      //       query.outFields = ["*"];
-    
-      //       layerView.queryFeatures(query).then(results => {
-      //         activeLayerInfo.title = `${activeLayerInfo.layer.title} (${results.features.length})`;
-      //         legend.refresh();
-      //       });
-      //     }
-      //   });
-      // }
-    
-      // function watchLayerVisibility(layer) {
-      //   console.log(layer, "layer");
-      //   layer.watch("visible", (newValue) => {
-      //     if (newValue) {
-      //       updateLegendCounts();  // Only update when a layer is turned ON
-      //     }
-      //   });
-    
-      //   if (layer.sublayers) {
-      //     layer.sublayers.forEach(sublayer => watchLayerVisibility(sublayer)); 
-      //   }
-      // }
-    
-      // view.when().then(() => {
-      //   displayMap.layers.forEach(layer => {
-      //     watchLayerVisibility(layer);
-      //   });
-      // });
 
 
 
