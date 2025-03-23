@@ -211,6 +211,97 @@ async function displayLayers() {
       { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu/FeatureServer/339", title: "Kota Kinabalu" },
       // { url: "", title: "" },
     ];
+    const layersTransmissionMainMeterPoints = [
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Transmission_Main_Meter_Points_Kudat/FeatureServer/270", title: "Kudat" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Transmission_Main_Meter_Points_Papar/FeatureServer/265", title: "Papar" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Transmission_Main_Meter_Points_KotaKinabalu/FeatureServer/281", title: "Kota Kinabalu" },
+      // { url: "", title: "" },
+    ];
+    const waterMainLayers = [
+      {
+        title: "Kota Kinabalu",
+        subGroups: [
+          { title: "PrimaryTransmissionMain", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kota_Kinabalu_PrimaryTransmissionMain/FeatureServer/15" },
+          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kota_Kinabalu_SecondaryTrunkMain/FeatureServer/38" },
+          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kota_Kinabalu_TertiaryDistributionMain/FeatureServer/49" },
+          { title: "Raw Water Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kota_Kinabalu_RawWaterMain/FeatureServer/23" },
+        ]
+      },
+      {
+        title: "Kota Belud",
+        subGroups: [
+          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaBelud_PrimaryTransmissionMain/FeatureServer/61" },
+          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaBelud_SecondaryTrunkMain/FeatureServer/69" },
+          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaBelud_TertiaryDistributionMain/FeatureServer/77" }
+        ]
+      },
+      {
+        title: "Kota Marudu",
+        subGroups: [
+          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaMarudu_PrimaryTransmissionMain/FeatureServer/93" },
+          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaMarudu_SecondaryTrunkMain/FeatureServer/98" },
+          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaMarudu_TertiaryDistributionMain/FeatureServer/100" },
+
+        ]
+      },
+      {
+        title: "Kudat",
+        subGroups: [
+          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kudat_PrimaryTransmissionMain/FeatureServer/111" },
+          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kudat_SecondaryTrunkMain/FeatureServer/125" },
+          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kudat_TertiaryDistributionMain/FeatureServer/134" },
+
+        ]
+      },
+      {
+        title: "Papar",
+        subGroups: [
+          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Papar_PrimaryTransmissionMain/FeatureServer/146" },
+          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Papar_SecondaryTrunkMain/FeatureServer/151" },
+          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Papar_TertiaryDistributionMain/FeatureServer/158" },
+
+        ]
+      },
+      {
+        title: "Ranau",
+        subGroups: [
+          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Ranau_PrimaryTransmissionMain/FeatureServer/168" },
+          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Ranau_SecondaryTrunkMain/FeatureServer/174" },
+          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Ranau_TertiaryDistributionMain/FeatureServer/180" },
+
+        ]
+      },
+      {
+        title: "Sandakan",
+        subGroups: [
+          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Sandakan_PrimaryTransmissionMain/FeatureServer/196" },
+          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Sandakan_SecondaryTrunkMain/FeatureServer/219" },
+          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Sandakan_TertiaryDistributionMain/FeatureServer/231" },
+          { title: "PrivateMain", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Sandakan_PrivateMain/FeatureServer/206" },
+
+        ]
+      },
+      {
+        title: "Tambunan",
+        subGroups: [
+          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Tambunan_TertiaryDistributionMain/FeatureServer/242" },
+
+        ]
+      },
+      {
+        title: "Tuaran",
+        subGroups: [
+          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Tuaran_PrimaryTransmissionMain/FeatureServer/254" },
+          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Tuaran_SecondaryTrunkMain/FeatureServer/258" },
+          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Tuaran_TertiaryDistributionMain/FeatureServer/0" },
+
+        ]
+      },
+    ];
+        
+
+
+
 
     // // Consumer Meters || Customer Locations Layers
     // // Define a simple renderer for Customer Locations Layers
@@ -530,64 +621,153 @@ async function displayLayers() {
     // displayMap.add(DMZCriticalPoints);
     // displayMap.add(Customer_Locations);
 
-    const groupLayers = {
-      "Customer Locations": layersCustomerLocations,
-      "DMZ Critical Points": layersDMZCriticalPoints,
-      "KTM": layersKTM,
-      "Reservoirs": layersReservoirs,
-      "WTP": layersWTP,
-      "DMZ Boundaries": layersDMZBoundaries,
-      "DMZ Meter Points": layersDMZMeterPoints,
-    };
-    // Store active layers on the map
-const activeLayers = new Map();
 
-// Wait for DOM content to load
-// document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM Loaded, Initializing Tabs...");
+
+    
+
+
+
+// Define Group Layers with new structure for WaterMain
+const groupLayers = {
+  "Customer Locations": layersCustomerLocations,
+  "DMZ Critical Points": layersDMZCriticalPoints,
+  "KTM": layersKTM,
+  "Reservoirs": layersReservoirs,
+  "WTP": layersWTP,
+  "DMZ Boundaries": layersDMZBoundaries,
+  "DMZ Meter Points": layersDMZMeterPoints,
+  "WaterMain": waterMainLayers // Special structure for nested layers
+};
+
+
+
+
+
+
+
+    // Store active layers on the map
+    const activeLayers = new Map();
 
   const clearButton = document.getElementById("clearButton");
 
-  // Attach event listeners to all layer group tabs
-  document.querySelectorAll(".layer-tab").forEach((tab) => {
-    tab.addEventListener("click", async () => {
-      const groupName = tab.getAttribute("data-group");
-      console.log(`Loading Group: ${groupName}`);
 
-      if (!activeLayers.has(groupName)) {
-        // const [GroupLayer, SubtypeGroupLayer] = await Promise.all([
-        //   loadModule("esri/layers/GroupLayer"),
-        //   loadModule("esri/layers/SubtypeGroupLayer"),
-        // ]);
+  // Function to Load Group Layers into the Map
+async function loadGroupLayer(groupName) {
+  console.log(`Loading Group: ${groupName}`);
+  if (!activeLayers.has(groupName)) {
+    // const [GroupLayer, SubtypeGroupLayer] = await Promise.all([
+    //   loadModule("esri/layers/GroupLayer"),
+    //   loadModule("esri/layers/SubtypeGroupLayer"),
+    // ]);
 
-        // Create a new GroupLayer for this group
-        const layers = groupLayers[groupName].map((layerInfo) => new SubtypeGroupLayer({
-          url: layerInfo.url,
-          visible: true,
-          title: layerInfo.title,
-        }));
+    let layers = [];
 
-        const newGroupLayer = new GroupLayer({
-          title: groupName,
-          layers,
-          visible: true,
+    if (groupName === "Water Mains") {
+      // Handle Nested Structure (WaterMain → Regions → SubtypeGroupLayers)
+      layers = waterMainLayers.map((region) => {
+        const subLayers = region.subGroups.map((subGroup) => {
+          return new SubtypeGroupLayer({
+            url: subGroup.url,
+            visible: true,
+            title: subGroup.title,
+          });
         });
 
-        displayMap.add(newGroupLayer);
-        activeLayers.set(groupName, newGroupLayer);
-      }
-    });
-  });
+        return new GroupLayer({
+          title: region.title,
+          layers: subLayers,
+          visible: true
+        });
+      });
 
-  // ✅ "Clear All Layers" Button - Remove all layers from the map
+      // Create the Main WaterMain Group Layer
+      const waterMainGroupLayer = new GroupLayer({
+        title: "WaterMain",
+        layers,
+        visible: true,
+      });
+
+      displayMap.add(waterMainGroupLayer);
+      activeLayers.set(groupName, waterMainGroupLayer);
+
+    } else {
+      // Default Handling for Other Layers
+      layers = groupLayers[groupName].map((layerInfo) => new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: true,
+        title: layerInfo.title,
+      }));
+
+      const newGroupLayer = new GroupLayer({
+        title: groupName,
+        layers,
+        visible: true,
+      });
+
+      displayMap.add(newGroupLayer);
+      // console.log(newGroupLayer, "newGroupLayer");
+      // newGroupLayer.loadAll().catch(function(error) {
+      //   // Ignore any failed sublayers
+      // })
+      // .then(function() {
+      //   console.log("All loaded");
+      //   view.goTo(
+      //     {
+      //       target: newGroupLayer.allLayers,
+      //       // zoom: 15
+      //     },
+      //     {
+      //       duration: 3000,
+      //     }
+      //   );
+      // });
+      activeLayers.set(groupName, newGroupLayer);
+    }
+  }
+}
+
+
+
+
+// Attach Event Listeners to Tabs
+document.querySelectorAll(".layer-tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    const groupName = tab.getAttribute("data-group");
+    loadGroupLayer(groupName);
+  });
+});
+
+  // "Clear All Layers" Button - Remove all layers from the map
   clearButton.addEventListener("click", () => {
     activeLayers.forEach((layer) => displayMap.remove(layer));
     activeLayers.clear();
     console.log("All layers cleared.");
   });
-// });
 
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // const Kota_Marudu = new SubtypeGroupLayer({
