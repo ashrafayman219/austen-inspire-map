@@ -122,12 +122,6 @@ async function displayLayers() {
 
     // Here I will start coding to display some layers and style them
 
-    const DMZMeterPoints11 = new GroupLayer({
-      title: "DMZMeterPoints11DMZMeterPoints11DMZMeterPoints11DMZMeterPoints11",
-      // layers: subtypeGroupLayersDMZMeterPoints,
-      visible: false // Hide all sublayers initially
-    });
-    displayMap.add(DMZMeterPoints11)
 
     // Consumer Meters || Customer Locations Layers
     // Define a simple renderer for Customer Locations Layers
@@ -697,72 +691,55 @@ async function addWidgets() {
       });
 
       layerList.visibilityAppearance = "checkbox";
-
-      layerList.listItemCreatedFunction = function (event) {
-          const item = event.item;
-      
-          // Keep existing defineActions logic
-          if (item.layer.type === "subtype-group") {
-              item.actionsSections = [
-                  [
-                      {
-                          title: "Go to full extent",
-                          icon: "zoom-out-fixed",
-                          id: "full-extent"
-                      }
-                  ]
-              ];
-          }
-      
-          // Watch for visibility changes
-          item.watch("visible", (visible) => {
-              if (visible) {
-                  activateParentLayers(item.layer);  // Ensure parent layers turn on
-              }
-              activateChildLayers(item.layer, visible); // Ensure all sublayers turn on
-          });
-      };
-      
-      // Function to activate all parent layers when a sublayer is turned on
-      function activateParentLayers(layer) {
-          let parentLayer = layer.parent;
-          while (parentLayer) {
-              parentLayer.visible = true;
-              parentLayer = parentLayer.parent; // Move up the hierarchy
-          }
-      }
-      
-      // Recursive function to turn on/off all sublayers correctly
-      function activateChildLayers(layer, visible) {
-          if (layer.sublayers) {
-              layer.sublayers.forEach((sublayer) => {
-                  sublayer.visible = visible; // Set visibility for child
-                  activateChildLayers(sublayer, visible); // Recursively handle deeper layers
-              });
-          }
-      }
-      
-      // Keep the event listener for action triggers
-      layerList.on("trigger-action", (event) => {
-          const id = event.action.id;
-          const layer = event.item.layer;
-      
-          if (id === "full-extent") {
-              view.goTo(
-                  {
-                      target: layer.fullExtent,
-                  },
-                  {
-                      duration: 3000,
-                  }
-              ).catch((error) => {
-                  if (error.name !== "AbortError") {
-                      console.error(error);
-                  }
-              });
-          }
-      });
-      
+      layerList.listItemCreatedFunction = function(event) {
+        const item = event.item;
+    
+        // Keep existing defineActions logic
+        if (item.layer.type === "subtype-group") {
+            item.actionsSections = [
+                [
+                    {
+                        title: "Go to full extent",
+                        icon: "zoom-out-fixed",
+                        id: "full-extent"
+                    }
+                ]
+            ];
+        }
+    
+        // Add logic to ensure parent layers are turned on when a sublayer is toggled
+        item.watch("visible", (visible) => {
+            if (visible) {
+                let parentLayer = item.layer.parent;
+                while (parentLayer) {
+                    parentLayer.visible = true;
+                    parentLayer = parentLayer.parent; // Move up the hierarchy
+                }
+            }
+        });
+    };
+    
+    // Keep the event listener for action triggers
+    layerList.on("trigger-action", (event) => {
+        const id = event.action.id;
+        const layer = event.item.layer;
+    
+        if (id === "full-extent") {
+            view.goTo(
+                {
+                    target: layer.fullExtent,
+                },
+                {
+                    duration: 3000,
+                }
+            ).catch((error) => {
+                if (error.name !== "AbortError") {
+                    console.error(error);
+                }
+            });
+        }
+    });
+    
       
     
       
