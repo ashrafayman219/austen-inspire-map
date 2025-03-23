@@ -73,15 +73,30 @@ async function initializeMap() {
           if (response.results.length) {
             // Assuming you want to go to the first graphic found
             let graphic = response.results[0].graphic;
-            view.goTo(
-              {
-                target: graphic,
-                zoom: 15
-              },
-              {
-                duration: 3000,
+            console.log(graphic, "graphic")
+            if (graphic.geometry) {
+              console.log("this is not graphic")
+              if (graphic.geometry.type === "point") {
+                view.goTo(
+                  {
+                    target: graphic,
+                    zoom: 15
+                  },
+                  {
+                    duration: 3000,
+                  }
+                );
+              } else{
+                view.goTo(
+                  {
+                    target: graphic,
+                  },
+                  {
+                    duration: 3000,
+                  }
+                );
               }
-            );
+            }
           }
         });
       });
@@ -636,6 +651,7 @@ const groupLayers = {
   "WTP": layersWTP,
   "DMZ Boundaries": layersDMZBoundaries,
   "DMZ Meter Points": layersDMZMeterPoints,
+  "Transmission Main Meter Points": layersTransmissionMainMeterPoints,
   "WaterMain": waterMainLayers // Special structure for nested layers
 };
 
