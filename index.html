@@ -1,44 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Document</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css"/>
-    <link rel="stylesheet" href="style.css" />
-    <script src="https://js.arcgis.com/4.31/"></script>
-  </head>
-  <body>
-    <!-- <div id="displayMap">
-      
-    </div> -->
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://js.arcgis.com/4.31/"></script>
+</head>
 
-    <div id="container">
+<body>
+  <div id="container">
 
-      <div id="sidebar">
-        <div id="title">
-          <p>Map Control</p>
-          <hr />
-        </div>
-        <div id="layerListSection">
-          <h3>Map Layers</h3>
-          <div id="layerListContainer"></div>
-        </div>
-        <div id="legendSection">
-          <h3>Legend</h3>
-          <div id="legendContainer"></div>
-        </div>
-        <!-- Add more sections as needed -->
+    <div id="sidebar">
+      <div id="title">
+        <p>Map Control</p>
+        <hr />
       </div>
 
+      <!-- Static Tabs for Layer Groups -->
+      <div id="tabContainer">
+        <button class="layer-tab" data-group="Customer Locations">Customer Locations</button>
+        <button class="layer-tab" data-group="DMZ Critical Points">DMZ Critical Points</button>
+        <button class="layer-tab" data-group="KTM">KTM</button>
+        <button class="layer-tab" data-group="Reservoirs">Reservoirs</button>
+        <button class="layer-tab" data-group="WTP">WTP</button>
+        <button class="layer-tab" data-group="DMZ Boundaries">DMZ Boundaries</button>
+        <button class="layer-tab" data-group="DMZ Meter Points">DMZ Meter Points</button>
+      </div>
 
-      <div id="displayMap"></div>
+      <div id="layerListSection">
+        <h3>Map Layers</h3>
+        <div id="layerListContainer"></div>
+      </div>
+      <div id="legendSection">
+        <h3>Legend</h3>
+        <div id="legendContainer"></div>
+      </div>
+      <!-- Add more sections as needed -->
+      <!-- Clear Layers Button -->
+      <button id="clearButton">Clear All Layers</button>
     </div>
 
+    <div id="displayMap"></div>
+  </div>
 
-
-
-    <script src="script.js"></script>
-  </body>
+  <script src="script.js"></script>
+</body>
 </html>

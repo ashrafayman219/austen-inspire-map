@@ -110,7 +110,7 @@ initializeMap()
 
 async function displayLayers() {
   try {
-    const [reactiveUtils, GeoJSONLayer, GroupLayer, FeatureLayer, FeatureTable, SubtypeGroupLayer, SubtypeSublayer] = await Promise.all([
+    const [reactiveUtils, GeoJSONLayer, GroupLayer, FeatureLayer, FeatureTable, SubtypeGroupLayer, SubtypeSublayer, LayerList] = await Promise.all([
       loadModule("esri/core/reactiveUtils"),
       loadModule("esri/layers/GeoJSONLayer"),
       loadModule("esri/layers/GroupLayer"),
@@ -118,357 +118,12 @@ async function displayLayers() {
       loadModule("esri/widgets/FeatureTable"),
       loadModule("esri/layers/SubtypeGroupLayer"),
       loadModule("esri/layers/support/SubtypeSublayer"),
+      loadModule("esri/widgets/LayerList"),
     ]);
 
     // Here I will start coding to display some layers and style them
 
 
-    // Consumer Meters || Customer Locations Layers
-    // Define a simple renderer for Customer Locations Layers
-    const simpleRendererCustomerLocations = {
-      type: "simple",
-      symbol: {
-        type: "simple-marker",
-        style: "circle",
-        color: "#0290e3",
-        size: 9,
-        outline: {
-          color: "#000000",
-          width: 1
-        }
-      }
-    };
-
-    // Define a popup template for Customer Locations Layers
-    const popupTemplateCustomerLocations = {
-      title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "premisenum",
-              label: "Phone Number"
-            },
-            {
-              fieldName: "addr1",
-              label: "Address 1"
-            },
-            {
-              fieldName: "addr2",
-              label: "Address 2"
-            },
-            {
-              fieldName: "addr3",
-              label: "Address 3"
-            },
-            {
-              fieldName: "poscod",
-              label: "Post Code"
-            },
-            {
-              fieldName: "proptytyp",
-              label: "Property Type"
-            },
-            // {
-            //   fieldName: "",
-            //   label: "Billing District"
-            // },
-            // {
-            //   fieldName: "",
-            //   label: "Operational District"
-            // },
-            // {
-            //   fieldName: "",
-            //   label: "WBA (Water Balance Area)"
-            // },
-            // {
-            //   fieldName: "",
-            //   label: "DMA"
-            // }
-            // Add more fields as needed
-          ]
-        }
-      ]
-    };
-
-    // Create SubtypeGroupLayers for CustomerLocations
-    const layersCustomerLocations = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Kota_Marudu/FeatureServer/0", title: "Kota Marudu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tambunan/FeatureServer/48", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Ranau/FeatureServer/49", title: "Ranau" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tamparuli/FeatureServer/72", title: "Tamparuli" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Papar/FeatureServer/129", title: "Papar" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tuaran/FeatureServer/166", title: "Tuaran" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KotaBelud/FeatureServer/196", title: "Kota Belud" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Kudat/FeatureServer/233", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Sandakan/FeatureServer/296", title: "Sandakan" }
-    ];
-
-    const subtypeGroupLayersCustomerLocations = layersCustomerLocations.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        popupTemplate: popupTemplateCustomerLocations
-      });
-
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          sublayer.renderer = simpleRendererCustomerLocations;
-          sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-
-      return layer;
-    });
-
-    const Customer_Locations = new GroupLayer({
-      title: "Customer Locations",
-      layers: subtypeGroupLayersCustomerLocations,
-      visible: false // Hide all sublayers initially
-    });
-
-    // console.log(Customer_Locations, "Customer_Locations");
-    // displayMap.add(Customer_Locations);  // adds the layer to the map
-
-    // DMZ Critical Points Layers
-    // Create SubtypeGroupLayers for DMZ Critical Points
-    const layersDMZCriticalPoints = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaKinabalu/FeatureServer/132", title: "Kota Kinabalu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Semporna/FeatureServer/72", title: "Semporna" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Tambunan/FeatureServer/12", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Sandakan/FeatureServer/47", title: "Sandakan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Kudat/FeatureServer/15", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaBelud/FeatureServer/45", title: "Kota Belud" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Papar/FeatureServer/12", title: "Papar" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Ranau/FeatureServer/20", title: "Ranau" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaMarudu/FeatureServer/19", title: "Kota Marudu" },
-      // { url: "", title: "" },
-    ];
-
-    const subtypeGroupLayersDMZCriticalPoints = layersDMZCriticalPoints.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
-
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          // sublayer.renderer = simpleRendererCustomerLocations;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-
-    const DMZCriticalPoints = new GroupLayer({
-      title: "DMZ Critical Points",
-      layers: subtypeGroupLayersDMZCriticalPoints,
-      visible: false // Hide all sublayers initially
-    });
-    // displayMap.add(DMZCriticalPoints);  // adds the layer to the map
-
-
-    // KTM Layers
-    // Create SubtypeGroupLayers for KTM
-    const layersKTM = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_KotaKinabalu/FeatureServer/54", title: "Kota Kinabalu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Tambunan/FeatureServer/8", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Kudat/FeatureServer/8", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Papar/FeatureServer/0", title: "Papar" },
-      // { url: "", title: "" },
-    ];
-
-    const subtypeGroupLayersKTM = layersKTM.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
-
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          // sublayer.renderer = simpleRendererCustomerLocations;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-
-    const KTM = new GroupLayer({
-      title: "Trunk Main Meter Points",
-      layers: subtypeGroupLayersKTM,
-      visible: false // Hide all sublayers initially
-    });
-    // displayMap.add(KTM);  // adds the layer to the map
-
-
-    // Reservoirs Layers
-    // Create SubtypeGroupLayers for Reservoirs
-    const layersReservoirs = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaKinabalu/FeatureServer/32", title: "Kota Kinabalu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Semporna/FeatureServer/15", title: "Semporna" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tambunan/FeatureServer/12", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Sandakan/FeatureServer/15", title: "Sandakan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Kudat/FeatureServer/21", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaBelud/FeatureServer/15", title: "Kota Belud" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tuaran/FeatureServer/12", title: "Tuaran" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Papar/FeatureServer/16", title: "Papar" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tamparuli/FeatureServer/12", title: "Tamparuli" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Ranau/FeatureServer/24", title: "Ranau" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaMarudu/FeatureServer/0", title: "Kota Marudu" },
-      // { url: "", title: "" },
-    ];
-
-    const subtypeGroupLayersReservoirs = layersReservoirs.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
-
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          // sublayer.renderer = simpleRendererCustomerLocations;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-
-    const Reservoirs = new GroupLayer({
-      title: "Reservoirs",
-      layers: subtypeGroupLayersReservoirs,
-      visible: false // Hide all sublayers initially
-    });
-
-
-    // WTP Layers
-    // Create SubtypeGroupLayers for WTP
-    const layersWTP = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaKinabalu/FeatureServer/15", title: "Kota Kinabalu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Semporna/FeatureServer/12", title: "Semporna" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tambunan/FeatureServer/12", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Sandakan/FeatureServer/15", title: "Sandakan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Kudat/FeatureServer/12", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaBelud/FeatureServer/12", title: "Kota Belud" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tuaran/FeatureServer/12", title: "Tuaran" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Papar/FeatureServer/12", title: "Papar" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tamparuli/FeatureServer/12", title: "Tamparuli" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Ranau/FeatureServer/12", title: "Ranau" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaMarudu/FeatureServer/12", title: "Kota Marudu" },
-      // { url: "", title: "" },
-    ];
-
-    const subtypeGroupLayersWTP = layersWTP.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
-
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          // sublayer.renderer = simpleRendererCustomerLocations;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-
-    const WTP = new GroupLayer({
-      title: "Water Treatment Plant",
-      layers: subtypeGroupLayersWTP,
-      visible: false // Hide all sublayers initially
-    });
-
-
-
-
-
-
-    // DMZBoundaries Layers
-    // Define a simple renderer for Customer Locations Layers
-    const simpleRendererDMZBoundaries = {
-      type: "simple", // autocasts as new SimpleRenderer()
-      symbol: {
-        type: "simple-fill", // autocasts as new SimpleFillSymbol()
-        color: [166, 25, 77, 0.5],
-        outline: {
-          // makes the outlines of all features consistently light gray
-          color: "lightgray",
-          width: 1
-        }
-      }
-    };
-
-    // Create SubtypeGroupLayers for DMZBoundaries
-    const layersDMZBoundaries = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Ranau/FeatureServer/458", title: "Ranau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tambunan/FeatureServer/579", title: "Tambunan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Papar/FeatureServer/434", title: "Papar" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tamparuli/FeatureServer/605", title: "Tamparuli" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaBelud/FeatureServer/46", title: "Kota Belud" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaMarudu/FeatureServer/365", title: "Kota Marudu" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Kudat/FeatureServer/385", title: "Kudat" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Sandakan/FeatureServer/540", title: "Sandakan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Semporna/FeatureServer/567", title: "Semporna" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tawau/FeatureServer/677", title: "Tawau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu/FeatureServer/339", title: "Kota Kinabalu" },
-      // { url: "", title: "" },
-    ];
-
-    const subtypeGroupLayersDMZBoundaries = layersDMZBoundaries.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
-
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          sublayer.renderer = simpleRendererDMZBoundaries;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-
-    const DMZBoundaries = new GroupLayer({
-      title: "DMZ Boundaries",
-      layers: subtypeGroupLayersDMZBoundaries,
-      visible: false // Hide all sublayers initially
-    });
-
-
-
-    // DMZMeterPoints Layers
-    // Create SubtypeGroupLayers for DMZMeterPoints
     const layersDMZMeterPoints = [
       { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_KotaBelud/FeatureServer/0", title: "Kota Belud" },
       { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_KotaKinabalu/FeatureServer/280", title: "Kota Kinabalu" },
@@ -484,81 +139,455 @@ async function displayLayers() {
       { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Tuaran/FeatureServer/665", title: "Tuaran" },
       // { url: "", title: "" },
     ];
+    const layersCustomerLocations = [
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Kota_Marudu/FeatureServer/0", title: "Kota Marudu" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tambunan/FeatureServer/48", title: "Tambunan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Ranau/FeatureServer/49", title: "Ranau" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tamparuli/FeatureServer/72", title: "Tamparuli" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Papar/FeatureServer/129", title: "Papar" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tuaran/FeatureServer/166", title: "Tuaran" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KotaBelud/FeatureServer/196", title: "Kota Belud" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Kudat/FeatureServer/233", title: "Kudat" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Sandakan/FeatureServer/296", title: "Sandakan" }
+    ];
+    const layersDMZCriticalPoints = [
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaKinabalu/FeatureServer/132", title: "Kota Kinabalu" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Semporna/FeatureServer/72", title: "Semporna" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Tambunan/FeatureServer/12", title: "Tambunan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Sandakan/FeatureServer/47", title: "Sandakan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Kudat/FeatureServer/15", title: "Kudat" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaBelud/FeatureServer/45", title: "Kota Belud" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Papar/FeatureServer/12", title: "Papar" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Ranau/FeatureServer/20", title: "Ranau" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaMarudu/FeatureServer/19", title: "Kota Marudu" },
+      // { url: "", title: "" },
+    ];
+    const layersKTM = [
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_KotaKinabalu/FeatureServer/54", title: "Kota Kinabalu" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Tambunan/FeatureServer/8", title: "Tambunan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Kudat/FeatureServer/8", title: "Kudat" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Papar/FeatureServer/0", title: "Papar" },
+      // { url: "", title: "" },
+    ];
+    const layersWTP = [
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaKinabalu/FeatureServer/15", title: "Kota Kinabalu" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Semporna/FeatureServer/12", title: "Semporna" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tambunan/FeatureServer/12", title: "Tambunan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Sandakan/FeatureServer/15", title: "Sandakan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Kudat/FeatureServer/12", title: "Kudat" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaBelud/FeatureServer/12", title: "Kota Belud" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tuaran/FeatureServer/12", title: "Tuaran" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Papar/FeatureServer/12", title: "Papar" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tamparuli/FeatureServer/12", title: "Tamparuli" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Ranau/FeatureServer/12", title: "Ranau" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaMarudu/FeatureServer/12", title: "Kota Marudu" },
+      // { url: "", title: "" },
+    ];
+    const layersReservoirs = [
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaKinabalu/FeatureServer/32", title: "Kota Kinabalu" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Semporna/FeatureServer/15", title: "Semporna" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tambunan/FeatureServer/12", title: "Tambunan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Sandakan/FeatureServer/15", title: "Sandakan" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Kudat/FeatureServer/21", title: "Kudat" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaBelud/FeatureServer/15", title: "Kota Belud" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tuaran/FeatureServer/12", title: "Tuaran" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Papar/FeatureServer/16", title: "Papar" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tamparuli/FeatureServer/12", title: "Tamparuli" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Ranau/FeatureServer/24", title: "Ranau" },
+      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaMarudu/FeatureServer/0", title: "Kota Marudu" },
+      // { url: "", title: "" },
+    ];
+    const layersDMZBoundaries = [
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Ranau/FeatureServer/458", title: "Ranau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tambunan/FeatureServer/579", title: "Tambunan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Papar/FeatureServer/434", title: "Papar" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tamparuli/FeatureServer/605", title: "Tamparuli" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaBelud/FeatureServer/46", title: "Kota Belud" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaMarudu/FeatureServer/365", title: "Kota Marudu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Kudat/FeatureServer/385", title: "Kudat" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Sandakan/FeatureServer/540", title: "Sandakan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Semporna/FeatureServer/567", title: "Semporna" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tawau/FeatureServer/677", title: "Tawau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu/FeatureServer/339", title: "Kota Kinabalu" },
+      // { url: "", title: "" },
+    ];
 
-    const subtypeGroupLayersDMZMeterPoints = layersDMZMeterPoints.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
+    // // Consumer Meters || Customer Locations Layers
+    // // Define a simple renderer for Customer Locations Layers
+    // const simpleRendererCustomerLocations = {
+    //   type: "simple",
+    //   symbol: {
+    //     type: "simple-marker",
+    //     style: "circle",
+    //     color: "#0290e3",
+    //     size: 9,
+    //     outline: {
+    //       color: "#000000",
+    //       width: 1
+    //     }
+    //   }
+    // };
 
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          // sublayer.renderer = simpleRendererDMZMeterPoints;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
+    // // Define a popup template for Customer Locations Layers
+    // const popupTemplateCustomerLocations = {
+    //   title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "premisenum",
+    //           label: "Phone Number"
+    //         },
+    //         {
+    //           fieldName: "addr1",
+    //           label: "Address 1"
+    //         },
+    //         {
+    //           fieldName: "addr2",
+    //           label: "Address 2"
+    //         },
+    //         {
+    //           fieldName: "addr3",
+    //           label: "Address 3"
+    //         },
+    //         {
+    //           fieldName: "poscod",
+    //           label: "Post Code"
+    //         },
+    //         {
+    //           fieldName: "proptytyp",
+    //           label: "Property Type"
+    //         },
+    //         // {
+    //         //   fieldName: "",
+    //         //   label: "Billing District"
+    //         // },
+    //         // {
+    //         //   fieldName: "",
+    //         //   label: "Operational District"
+    //         // },
+    //         // {
+    //         //   fieldName: "",
+    //         //   label: "WBA (Water Balance Area)"
+    //         // },
+    //         // {
+    //         //   fieldName: "",
+    //         //   label: "DMA"
+    //         // }
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ]
+    // };
 
-    const DMZMeterPoints = new GroupLayer({
-      title: "DMZ Meter Points",
-      layers: subtypeGroupLayersDMZMeterPoints,
-      visible: false // Hide all sublayers initially
-    });
+    // // Create SubtypeGroupLayers for CustomerLocations
+
+
+    // const subtypeGroupLayersCustomerLocations = layersCustomerLocations.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     popupTemplate: popupTemplateCustomerLocations
+    //   });
+
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       sublayer.renderer = simpleRendererCustomerLocations;
+    //       sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+
+    //   return layer;
+    // });
+
+    // const Customer_Locations = new GroupLayer({
+    //   title: "Customer Locations",
+    //   layers: subtypeGroupLayersCustomerLocations,
+    //   visible: false // Hide all sublayers initially
+    // });
+
+    // // console.log(Customer_Locations, "Customer_Locations");
+    // // displayMap.add(Customer_Locations);  // adds the layer to the map
+
+    // // DMZ Critical Points Layers
+    // // Create SubtypeGroupLayers for DMZ Critical Points
+
+
+    // const subtypeGroupLayersDMZCriticalPoints = layersDMZCriticalPoints.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
+
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       // sublayer.renderer = simpleRendererCustomerLocations;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+
+    // const DMZCriticalPoints = new GroupLayer({
+    //   title: "DMZ Critical Points",
+    //   layers: subtypeGroupLayersDMZCriticalPoints,
+    //   visible: false // Hide all sublayers initially
+    // });
+    // // displayMap.add(DMZCriticalPoints);  // adds the layer to the map
+
+
+    // // KTM Layers
+    // // Create SubtypeGroupLayers for KTM
+
+
+    // const subtypeGroupLayersKTM = layersKTM.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
+
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       // sublayer.renderer = simpleRendererCustomerLocations;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+
+    // const KTM = new GroupLayer({
+    //   title: "Trunk Main Meter Points",
+    //   layers: subtypeGroupLayersKTM,
+    //   visible: false // Hide all sublayers initially
+    // });
+    // // displayMap.add(KTM);  // adds the layer to the map
+
+
+    // // Reservoirs Layers
+    // // Create SubtypeGroupLayers for Reservoirs
+
+    // const subtypeGroupLayersReservoirs = layersReservoirs.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
+
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       // sublayer.renderer = simpleRendererCustomerLocations;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+
+    // const Reservoirs = new GroupLayer({
+    //   title: "Reservoirs",
+    //   layers: subtypeGroupLayersReservoirs,
+    //   visible: false // Hide all sublayers initially
+    // });
+
+
+    // // WTP Layers
+    // // Create SubtypeGroupLayers for WTP
+
+    // const subtypeGroupLayersWTP = layersWTP.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
+
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       // sublayer.renderer = simpleRendererCustomerLocations;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+
+    // const WTP = new GroupLayer({
+    //   title: "Water Treatment Plant",
+    //   layers: subtypeGroupLayersWTP,
+    //   visible: false // Hide all sublayers initially
+    // });
+
+
+
+
+
+
+    // // DMZBoundaries Layers
+    // // Define a simple renderer for Customer Locations Layers
+    // const simpleRendererDMZBoundaries = {
+    //   type: "simple", // autocasts as new SimpleRenderer()
+    //   symbol: {
+    //     type: "simple-fill", // autocasts as new SimpleFillSymbol()
+    //     color: [166, 25, 77, 0.5],
+    //     outline: {
+    //       // makes the outlines of all features consistently light gray
+    //       color: "lightgray",
+    //       width: 1
+    //     }
+    //   }
+    // };
+
+    // // Create SubtypeGroupLayers for DMZBoundaries
+
+    // const subtypeGroupLayersDMZBoundaries = layersDMZBoundaries.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
+
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       sublayer.renderer = simpleRendererDMZBoundaries;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+
+    // const DMZBoundaries = new GroupLayer({
+    //   title: "DMZ Boundaries",
+    //   layers: subtypeGroupLayersDMZBoundaries,
+    //   visible: false // Hide all sublayers initially
+    // });
+
+
+
+    // // DMZMeterPoints Layers
+    // // Create SubtypeGroupLayers for DMZMeterPoints
+
+
+    // const subtypeGroupLayersDMZMeterPoints = layersDMZMeterPoints.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
+
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       // sublayer.renderer = simpleRendererDMZMeterPoints;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+
+    // const DMZMeterPoints = new GroupLayer({
+    //   title: "DMZ Meter Points",
+    //   layers: subtypeGroupLayersDMZMeterPoints,
+    //   visible: false // Hide all sublayers initially
+    // });
+
 
 
 
     
 
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZBoundaries);  // adds the layer to the map
+    // displayMap.add(WTP);  // adds the layer to the map
+    // displayMap.add(Reservoirs);  // adds the layer to the map
+    // displayMap.add(KTM);
+    // displayMap.add(DMZCriticalPoints);
+    // displayMap.add(Customer_Locations);
 
+    const groupLayers = {
+      "Customer Locations": layersCustomerLocations,
+      "DMZ Critical Points": layersDMZCriticalPoints,
+      "KTM": layersKTM,
+      "Reservoirs": layersReservoirs,
+      "WTP": layersWTP,
+      "DMZ Boundaries": layersDMZBoundaries,
+      "DMZ Meter Points": layersDMZMeterPoints,
+    };
+    // Store active layers on the map
+const activeLayers = new Map();
 
+// Wait for DOM content to load
+// document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM Loaded, Initializing Tabs...");
 
+  const clearButton = document.getElementById("clearButton");
 
+  // Attach event listeners to all layer group tabs
+  document.querySelectorAll(".layer-tab").forEach((tab) => {
+    tab.addEventListener("click", async () => {
+      const groupName = tab.getAttribute("data-group");
+      console.log(`Loading Group: ${groupName}`);
 
+      if (!activeLayers.has(groupName)) {
+        // const [GroupLayer, SubtypeGroupLayer] = await Promise.all([
+        //   loadModule("esri/layers/GroupLayer"),
+        //   loadModule("esri/layers/SubtypeGroupLayer"),
+        // ]);
 
+        // Create a new GroupLayer for this group
+        const layers = groupLayers[groupName].map((layerInfo) => new SubtypeGroupLayer({
+          url: layerInfo.url,
+          visible: true,
+          title: layerInfo.title,
+        }));
 
+        const newGroupLayer = new GroupLayer({
+          title: groupName,
+          layers,
+          visible: true,
+        });
 
+        displayMap.add(newGroupLayer);
+        activeLayers.set(groupName, newGroupLayer);
+      }
+    });
+  });
 
+  // ✅ "Clear All Layers" Button - Remove all layers from the map
+  clearButton.addEventListener("click", () => {
+    activeLayers.forEach((layer) => displayMap.remove(layer));
+    activeLayers.clear();
+    console.log("All layers cleared.");
+  });
+// });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
-    displayMap.add(WTP);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(Customer_Locations);
-
-
-
-
-
-
-
-
-
-
-
-
+    
 
 
     // const Kota_Marudu = new SubtypeGroupLayer({
