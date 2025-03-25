@@ -466,187 +466,187 @@ async function displayLayers() {
     };
 
 
-    // // Consumer Meters || Customer Locations Layers
-    // // Define a simple renderer for Customer Locations Layers
-    // const simpleRendererCustomerLocations = {
-    //   type: "simple",
-    //   symbol: {
-    //     type: "simple-marker",
-    //     style: "circle",
-    //     color: "#0290e3",
-    //     size: 9,
-    //     outline: {
-    //       color: "#000000",
-    //       width: 1
-    //     }
-    //   }
-    // };
+    // Consumer Meters || Customer Locations Layers
+    // Define a simple renderer for Customer Locations Layers
+    const simpleRendererCustomerLocations = {
+      type: "simple",
+      symbol: {
+        type: "simple-marker",
+        style: "circle",
+        color: "#0290e3",
+        size: 9,
+        outline: {
+          color: "#000000",
+          width: 1
+        }
+      }
+    };
 
-    // // Define a popup template for Customer Locations Layers
-    // const popupTemplateCustomerLocations = {
-    //   title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
-    //   content: [
-    //     {
-    //       type: "fields",
-    //       fieldInfos: [
-    //         {
-    //           fieldName: "premisenum",
-    //           label: "Phone Number"
-    //         },
-    //         {
-    //           fieldName: "addr1",
-    //           label: "Address 1"
-    //         },
-    //         {
-    //           fieldName: "addr2",
-    //           label: "Address 2"
-    //         },
-    //         {
-    //           fieldName: "addr3",
-    //           label: "Address 3"
-    //         },
-    //         {
-    //           fieldName: "poscod",
-    //           label: "Post Code"
-    //         },
-    //         {
-    //           fieldName: "proptytyp",
-    //           label: "Property Type"
-    //         },
-    //         // {
-    //         //   fieldName: "",
-    //         //   label: "Billing District"
-    //         // },
-    //         // {
-    //         //   fieldName: "",
-    //         //   label: "Operational District"
-    //         // },
-    //         // {
-    //         //   fieldName: "",
-    //         //   label: "WBA (Water Balance Area)"
-    //         // },
-    //         // {
-    //         //   fieldName: "",
-    //         //   label: "DMA"
-    //         // }
-    //         // Add more fields as needed
-    //       ]
-    //     }
-    //   ]
-    // };
+    // Define a popup template for Customer Locations Layers
+    const popupTemplateCustomerLocations = {
+      title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
+      content: [
+        {
+          type: "fields",
+          fieldInfos: [
+            {
+              fieldName: "premisenum",
+              label: "Phone Number"
+            },
+            {
+              fieldName: "addr1",
+              label: "Address 1"
+            },
+            {
+              fieldName: "addr2",
+              label: "Address 2"
+            },
+            {
+              fieldName: "addr3",
+              label: "Address 3"
+            },
+            {
+              fieldName: "poscod",
+              label: "Post Code"
+            },
+            {
+              fieldName: "proptytyp",
+              label: "Property Type"
+            },
+            // {
+            //   fieldName: "",
+            //   label: "Billing District"
+            // },
+            // {
+            //   fieldName: "",
+            //   label: "Operational District"
+            // },
+            // {
+            //   fieldName: "",
+            //   label: "WBA (Water Balance Area)"
+            // },
+            // {
+            //   fieldName: "",
+            //   label: "DMA"
+            // }
+            // Add more fields as needed
+          ]
+        }
+      ]
+    };
 
-    // // Create SubtypeGroupLayers for CustomerLocations
-    // const subtypeGroupLayersCustomerLocations = layersCustomerLocations.map(layerInfo => {
-    //   const layer = new SubtypeGroupLayer({
-    //     url: layerInfo.url,
-    //     visible: false, // Hide all sublayers initially
-    //     title: layerInfo.title,
-    //     outFields: ["*"], // Ensure all fields are available for the popup
-    //     // popupTemplate: popupTemplateCustomerLocations
-    //   });
+    // Create SubtypeGroupLayers for CustomerLocations
+    const subtypeGroupLayersCustomerLocations = layersCustomerLocations.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
 
-    //   // Apply the renderer to each sublayer
-    //   layer.when(() => {
-    //     layer.sublayers.forEach(sublayer => {
-    //       sublayer.visible = false;
-    //       sublayer.renderer = staticrenderer;
-    //       // sublayer.renderer = simpleRendererCustomerLocations;
-    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
-    //     });
-    //   });
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          sublayer.renderer = staticrenderer;
+          // sublayer.renderer = simpleRendererCustomerLocations;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
 
-    //   return layer;
-    // });
-    // const Customer_Locations = new GroupLayer({
-    //   title: "Customer Locations",
-    //   layers: subtypeGroupLayersCustomerLocations,
-    //   visible: false // Hide all sublayers initially
-    // });
+      return layer;
+    });
+    const Customer_Locations = new GroupLayer({
+      title: "Customer Locations",
+      layers: subtypeGroupLayersCustomerLocations,
+      visible: false // Hide all sublayers initially
+    });
 
-    // // DMZ Critical Points Layers
-    // // Create SubtypeGroupLayers for DMZ Critical Points
-    // const subtypeGroupLayersDMZCriticalPoints = layersDMZCriticalPoints.map(layerInfo => {
-    //   const layer = new SubtypeGroupLayer({
-    //     url: layerInfo.url,
-    //     visible: false, // Hide all sublayers initially
-    //     title: layerInfo.title,
-    //     outFields: ["*"], // Ensure all fields are available for the popup
-    //     // popupTemplate: popupTemplateCustomerLocations
-    //   });
+    // DMZ Critical Points Layers
+    // Create SubtypeGroupLayers for DMZ Critical Points
+    const subtypeGroupLayersDMZCriticalPoints = layersDMZCriticalPoints.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
 
-    //   // Apply the renderer to each sublayer
-    //   layer.when(() => {
-    //     layer.sublayers.forEach(sublayer => {
-    //       sublayer.visible = false;
-    //       sublayer.renderer = staticrenderer;
-    //       // sublayer.renderer = simpleRendererCustomerLocations;
-    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
-    //     });
-    //   });
-    //   return layer;
-    // });
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          sublayer.renderer = staticrenderer;
+          // sublayer.renderer = simpleRendererCustomerLocations;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
 
-    // const DMZCriticalPoints = new GroupLayer({
-    //   title: "DMZ Critical Points",
-    //   layers: subtypeGroupLayersDMZCriticalPoints,
-    //   visible: false // Hide all sublayers initially
-    // });
+    const DMZCriticalPoints = new GroupLayer({
+      title: "DMZ Critical Points",
+      layers: subtypeGroupLayersDMZCriticalPoints,
+      visible: false // Hide all sublayers initially
+    });
 
-    // // KTM Layers
-    // // Create SubtypeGroupLayers for KTM
-    // const subtypeGroupLayersKTM = layersKTM.map(layerInfo => {
-    //   const layer = new SubtypeGroupLayer({
-    //     url: layerInfo.url,
-    //     visible: false, // Hide all sublayers initially
-    //     title: layerInfo.title,
-    //     outFields: ["*"], // Ensure all fields are available for the popup
-    //     // popupTemplate: popupTemplateCustomerLocations
-    //   });
+    // KTM Layers
+    // Create SubtypeGroupLayers for KTM
+    const subtypeGroupLayersKTM = layersKTM.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
 
-    //   // Apply the renderer to each sublayer
-    //   layer.when(() => {
-    //     layer.sublayers.forEach(sublayer => {
-    //       sublayer.visible = false;
-    //       sublayer.renderer = staticrenderer;
-    //       // sublayer.renderer = simpleRendererCustomerLocations;
-    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
-    //     });
-    //   });
-    //   return layer;
-    // });
-    // const KTM = new GroupLayer({
-    //   title: "Trunk Main Meter Points",
-    //   layers: subtypeGroupLayersKTM,
-    //   visible: false // Hide all sublayers initially
-    // });
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          sublayer.renderer = staticrenderer;
+          // sublayer.renderer = simpleRendererCustomerLocations;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+    const KTM = new GroupLayer({
+      title: "Trunk Main Meter Points",
+      layers: subtypeGroupLayersKTM,
+      visible: false // Hide all sublayers initially
+    });
 
-    // // Reservoirs Layers
-    // // Create SubtypeGroupLayers for Reservoirs
-    // const subtypeGroupLayersReservoirs = layersReservoirs.map(layerInfo => {
-    //   const layer = new SubtypeGroupLayer({
-    //     url: layerInfo.url,
-    //     visible: false, // Hide all sublayers initially
-    //     title: layerInfo.title,
-    //     outFields: ["*"], // Ensure all fields are available for the popup
-    //     // popupTemplate: popupTemplateCustomerLocations
-    //   });
+    // Reservoirs Layers
+    // Create SubtypeGroupLayers for Reservoirs
+    const subtypeGroupLayersReservoirs = layersReservoirs.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
 
-    //   // Apply the renderer to each sublayer
-    //   layer.when(() => {
-    //     layer.sublayers.forEach(sublayer => {
-    //       sublayer.visible = false;
-    //       sublayer.renderer = staticrenderer;
-    //       // sublayer.renderer = simpleRendererCustomerLocations;
-    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
-    //     });
-    //   });
-    //   return layer;
-    // });
-    // const Reservoirs = new GroupLayer({
-    //   title: "Reservoirs",
-    //   layers: subtypeGroupLayersReservoirs,
-    //   visible: false // Hide all sublayers initially
-    // });
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          sublayer.renderer = staticrenderer;
+          // sublayer.renderer = simpleRendererCustomerLocations;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+    const Reservoirs = new GroupLayer({
+      title: "Reservoirs",
+      layers: subtypeGroupLayersReservoirs,
+      visible: false // Hide all sublayers initially
+    });
 
 
 
@@ -683,278 +683,278 @@ async function displayLayers() {
       visible: false // Hide all sublayers initially
     });
 
-    // // DMZBoundaries Layers
-    // // Define a simple renderer for Customer Locations Layers
-    // const simpleRendererDMZBoundaries = {
+    // DMZBoundaries Layers
+    // Define a simple renderer for Customer Locations Layers
+    const simpleRendererDMZBoundaries = {
+      type: "simple", // autocasts as new SimpleRenderer()
+      symbol: {
+        type: "simple-fill", // autocasts as new SimpleFillSymbol()
+        color: [255, 0, 0, 0.5],
+        outline: {
+          // makes the outlines of all features consistently light gray
+          color: "gray",
+          width: 1
+        }
+      }
+    };
+
+    const labelClassDMZBoundaries = {  // autocasts as new LabelClass()
+      symbol: {
+        type: "text",  // autocasts as new TextSymbol()
+        color: "black",
+        haloColor: "white",
+        haloSize: 2,
+        font: {  // autocast as new Font()
+          family: "Noto Sans",
+          weight: "bold",
+          size: 10
+         }
+      },
+      labelPlacement: "always-horizontal",
+      labelExpressionInfo: {
+        expression: "$feature.sitename"
+        // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
+      },
+      // maxScale: 0,
+      // minScale: 25000000,
+      // where: "Conference = 'AFC'"
+    };
+
+    // Create SubtypeGroupLayers for DMZBoundaries
+    const subtypeGroupLayersDMZBoundaries = layersDMZBoundaries.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          sublayer.renderer.symbol.color.a = 0.3;
+          sublayer.labelingInfo = [ labelClassDMZBoundaries ];
+          // sublayer.renderer = simpleRendererDMZBoundaries;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+    const DMZBoundaries = new GroupLayer({
+      title: "DMZ Boundaries",
+      layers: subtypeGroupLayersDMZBoundaries,
+      visible: false // Hide all sublayers initially
+    });
+
+    // DMZMeterPoints Layers
+    // Create SubtypeGroupLayers for DMZMeterPoints
+    const subtypeGroupLayersDMZMeterPoints = layersDMZMeterPoints.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          sublayer.renderer = staticrenderer;
+          // sublayer.renderer = simpleRendererDMZMeterPoints;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+    const DMZMeterPoints = new GroupLayer({
+      title: "DMZ Meter Points",
+      layers: subtypeGroupLayersDMZMeterPoints,
+      visible: false // Hide all sublayers initially
+    });
+
+    // Transmission Main Meter Points Layers
+    // Create SubtypeGroupLayers for Transmission Main Meter Points
+    const subtypeGroupLayersTransmissionMainMeterPoints = layersTransmissionMainMeterPoints.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          sublayer.renderer = staticrenderer;
+          // sublayer.renderer = simpleRendererDMZMeterPoints;
+          // sublayer.popupTemplate = popupTemplateCustomerLocations;
+        });
+      });
+      return layer;
+    });
+    const TransmissionMainMeterPoints = new GroupLayer({
+      title: "Transmission Main Meter Points",
+      layers: subtypeGroupLayersTransmissionMainMeterPoints,
+      visible: false // Hide all sublayers initially
+    });
+
+
+
+
+    // // Define a simple renderer for Water Mains
+    // const simpleRendererWaterMains = {
     //   type: "simple", // autocasts as new SimpleRenderer()
     //   symbol: {
-    //     type: "simple-fill", // autocasts as new SimpleFillSymbol()
-    //     color: [255, 0, 0, 0.5],
+    //     type: "simple-line", // autocasts as new SimpleFillSymbol()
+    //     color: [166, 25, 77, 0.5],
     //     outline: {
     //       // makes the outlines of all features consistently light gray
-    //       color: "gray",
+    //       color: "lightgray",
     //       width: 1
     //     }
     //   }
     // };
 
-    // const labelClassDMZBoundaries = {  // autocasts as new LabelClass()
-    //   symbol: {
-    //     type: "text",  // autocasts as new TextSymbol()
-    //     color: "black",
-    //     haloColor: "white",
-    //     haloSize: 2,
-    //     font: {  // autocast as new Font()
-    //       family: "Noto Sans",
-    //       weight: "bold",
-    //       size: 10
-    //      }
-    //   },
-    //   labelPlacement: "always-horizontal",
-    //   labelExpressionInfo: {
-    //     expression: "$feature.sitename"
-    //     // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
-    //   },
-    //   // maxScale: 0,
-    //   // minScale: 25000000,
-    //   // where: "Conference = 'AFC'"
-    // };
+    let primaryTransmissionRenderer = {
+      type: "simple",
+      symbol: {
+        type: "simple-line",  // autocasts as new SimpleLineSymbol()
+        color: [0, 0, 255],
+        width: "2px",
+      }
+    };
+    let secondaryTrunkRenderer = {
+      type: "simple",
+      symbol: {
+        type: "simple-line",  // autocasts as new SimpleLineSymbol()
+        color: [255, 140, 0],
+        width: "2px",
+      }
+    };
+    let tertiaryDistributionRenderer = {
+      type: "simple",
+      symbol: {
+        type: "simple-line",  // autocasts as new SimpleLineSymbol()
+        color: [105, 105, 105],
+        width: "2px",
+      }
+    };
+    let rawWaterRenderer = {
+      type: "simple",
+      symbol: {
+        type: "simple-line",  // autocasts as new SimpleLineSymbol()
+        color: [255, 215, 0],
+        width: "2px",
+      }
+    };
+    let privateMainRenderer = {
+      type: "simple",
+      symbol: {
+        type: "simple-line",  // autocasts as new SimpleLineSymbol()
+        color: "black",
+        width: "2px",
+      }
+    };
 
-    // // Create SubtypeGroupLayers for DMZBoundaries
-    // const subtypeGroupLayersDMZBoundaries = layersDMZBoundaries.map(layerInfo => {
-    //   const layer = new SubtypeGroupLayer({
-    //     url: layerInfo.url,
-    //     visible: false, // Hide all sublayers initially
-    //     title: layerInfo.title,
-    //     outFields: ["*"], // Ensure all fields are available for the popup
-    //     // popupTemplate: popupTemplateCustomerLocations
-    //   });
+    // Define Renderers for Each Category
+    const renderers = {
+      "Primary Transmission Main": primaryTransmissionRenderer,
+      "Secondary Trunk Main": secondaryTrunkRenderer,
+      "Tertiary Distribution Main": tertiaryDistributionRenderer,
+      "Raw Water Main": rawWaterRenderer,
+      "Private Main": privateMainRenderer
+    };
 
-    //   // Apply the renderer to each sublayer
-    //   layer.when(() => {
-    //     layer.sublayers.forEach(sublayer => {
-    //       sublayer.visible = false;
-    //       sublayer.renderer.symbol.color.a = 0.3;
-    //       sublayer.labelingInfo = [ labelClassDMZBoundaries ];
-    //       // sublayer.renderer = simpleRendererDMZBoundaries;
-    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
-    //     });
-    //   });
-    //   return layer;
-    // });
-    // const DMZBoundaries = new GroupLayer({
-    //   title: "DMZ Boundaries",
-    //   layers: subtypeGroupLayersDMZBoundaries,
-    //   visible: false // Hide all sublayers initially
-    // });
+    // Water Mains Layers
+    // Create SubtypeGroupLayers for Water Mains
+    // Handle Nested Structure (WaterMain → Regions → SubtypeGroupLayers)
+    // Define Water Mains Layers with structured hierarchy
+    const subtypeGroupLayersWaterMains = layersWaterMains.map(region => {
+      const subLayers = region.subGroups.map(subGroup => {
+        const layer = new SubtypeGroupLayer({
+          url: subGroup.url,
+          visible: false, // Hide all sublayers initially
+          title: subGroup.title,
+          outFields: ["*"], // Ensure all fields are available for future use
+        });
+        // Placeholder for renderer setup in the future
+        layer.when(() => {
+          // console.log(layer, "layer");
+          layer.sublayers.forEach(sublayer => {
+            sublayer.visible = false;
+            if (renderers[subGroup.title]) {
+              sublayer.renderer = renderers[subGroup.title];
+            }
+          });
+        });
+        return layer;
+      });
+      return new GroupLayer({
+        title: region.title,
+        layers: subLayers,
+        visible: false // Hide all sublayers initially
+      });
+    });
 
-    // // DMZMeterPoints Layers
-    // // Create SubtypeGroupLayers for DMZMeterPoints
-    // const subtypeGroupLayersDMZMeterPoints = layersDMZMeterPoints.map(layerInfo => {
-    //   const layer = new SubtypeGroupLayer({
-    //     url: layerInfo.url,
-    //     visible: false, // Hide all sublayers initially
-    //     title: layerInfo.title,
-    //     outFields: ["*"], // Ensure all fields are available for the popup
-    //     // popupTemplate: popupTemplateCustomerLocations
-    //   });
+    // Create the Main Water Main Group Layer
+    const WaterMains = new GroupLayer({
+      title: "Water Main",
+      layers: subtypeGroupLayersWaterMains,
+      visible: false // Hide initially
+    });
 
-    //   // Apply the renderer to each sublayer
-    //   layer.when(() => {
-    //     layer.sublayers.forEach(sublayer => {
-    //       sublayer.visible = false;
-    //       sublayer.renderer = staticrenderer;
-    //       // sublayer.renderer = simpleRendererDMZMeterPoints;
-    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
-    //     });
-    //   });
-    //   return layer;
-    // });
-    // const DMZMeterPoints = new GroupLayer({
-    //   title: "DMZ Meter Points",
-    //   layers: subtypeGroupLayersDMZMeterPoints,
-    //   visible: false // Hide all sublayers initially
-    // });
+    // // Work Orders Layers
+    // // Create SubtypeGroupLayers for Work Orders
+    const subtypeGroupLayersWorkOrders = layersWaorkOrders.map(region => {
+      const subLayers = region.subGroups.map(subGroup => {
+        const layer = new SubtypeGroupLayer({
+          url: subGroup.url,
+          visible: false, // Hide all sublayers initially
+          title: subGroup.title,
+          outFields: ["*"], // Ensure all fields are available for future use
+        });
+        // Placeholder for renderer setup in the future
+        layer.when(() => {
+          layer.sublayers.forEach(sublayer => {
+            sublayer.visible = false;
+            sublayer.renderer = staticrenderer;
+            // if (renderers[subGroup.title]) {
+            //   sublayer.renderer = renderers[subGroup.title];
+            // }
+          });
+        });
+        return layer;
+      });
+      return new GroupLayer({
+        title: region.title,
+        layers: subLayers,
+        visible: false // Hide all sublayers initially
+      });
+    });
 
-    // // Transmission Main Meter Points Layers
-    // // Create SubtypeGroupLayers for Transmission Main Meter Points
-    // const subtypeGroupLayersTransmissionMainMeterPoints = layersTransmissionMainMeterPoints.map(layerInfo => {
-    //   const layer = new SubtypeGroupLayer({
-    //     url: layerInfo.url,
-    //     visible: false, // Hide all sublayers initially
-    //     title: layerInfo.title,
-    //     outFields: ["*"], // Ensure all fields are available for the popup
-    //     // popupTemplate: popupTemplateCustomerLocations
-    //   });
+    // Create the Main Water Main Group Layer
+    const WorkOrders = new GroupLayer({
+      title: "Work Orders (New System)",
+      layers: subtypeGroupLayersWorkOrders,
+      visible: false // Hide initially
+    });
 
-    //   // Apply the renderer to each sublayer
-    //   layer.when(() => {
-    //     layer.sublayers.forEach(sublayer => {
-    //       sublayer.visible = false;
-    //       sublayer.renderer = staticrenderer;
-    //       // sublayer.renderer = simpleRendererDMZMeterPoints;
-    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
-    //     });
-    //   });
-    //   return layer;
-    // });
-    // const TransmissionMainMeterPoints = new GroupLayer({
-    //   title: "Transmission Main Meter Points",
-    //   layers: subtypeGroupLayersTransmissionMainMeterPoints,
-    //   visible: false // Hide all sublayers initially
-    // });
-
-
-
-
-    // // // Define a simple renderer for Water Mains
-    // // const simpleRendererWaterMains = {
-    // //   type: "simple", // autocasts as new SimpleRenderer()
-    // //   symbol: {
-    // //     type: "simple-line", // autocasts as new SimpleFillSymbol()
-    // //     color: [166, 25, 77, 0.5],
-    // //     outline: {
-    // //       // makes the outlines of all features consistently light gray
-    // //       color: "lightgray",
-    // //       width: 1
-    // //     }
-    // //   }
-    // // };
-
-    // let primaryTransmissionRenderer = {
-    //   type: "simple",
-    //   symbol: {
-    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
-    //     color: [0, 0, 255],
-    //     width: "2px",
-    //   }
-    // };
-    // let secondaryTrunkRenderer = {
-    //   type: "simple",
-    //   symbol: {
-    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
-    //     color: [255, 140, 0],
-    //     width: "2px",
-    //   }
-    // };
-    // let tertiaryDistributionRenderer = {
-    //   type: "simple",
-    //   symbol: {
-    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
-    //     color: [105, 105, 105],
-    //     width: "2px",
-    //   }
-    // };
-    // let rawWaterRenderer = {
-    //   type: "simple",
-    //   symbol: {
-    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
-    //     color: [255, 215, 0],
-    //     width: "2px",
-    //   }
-    // };
-    // let privateMainRenderer = {
-    //   type: "simple",
-    //   symbol: {
-    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
-    //     color: "black",
-    //     width: "2px",
-    //   }
-    // };
-
-    // // Define Renderers for Each Category
-    // const renderers = {
-    //   "Primary Transmission Main": primaryTransmissionRenderer,
-    //   "Secondary Trunk Main": secondaryTrunkRenderer,
-    //   "Tertiary Distribution Main": tertiaryDistributionRenderer,
-    //   "Raw Water Main": rawWaterRenderer,
-    //   "Private Main": privateMainRenderer
-    // };
-
-    // // Water Mains Layers
-    // // Create SubtypeGroupLayers for Water Mains
-    // // Handle Nested Structure (WaterMain → Regions → SubtypeGroupLayers)
-    // // Define Water Mains Layers with structured hierarchy
-    // const subtypeGroupLayersWaterMains = layersWaterMains.map(region => {
-    //   const subLayers = region.subGroups.map(subGroup => {
-    //     const layer = new SubtypeGroupLayer({
-    //       url: subGroup.url,
-    //       visible: false, // Hide all sublayers initially
-    //       title: subGroup.title,
-    //       outFields: ["*"], // Ensure all fields are available for future use
-    //     });
-    //     // Placeholder for renderer setup in the future
-    //     layer.when(() => {
-    //       // console.log(layer, "layer");
-    //       layer.sublayers.forEach(sublayer => {
-    //         sublayer.visible = false;
-    //         if (renderers[subGroup.title]) {
-    //           sublayer.renderer = renderers[subGroup.title];
-    //         }
-    //       });
-    //     });
-    //     return layer;
-    //   });
-    //   return new GroupLayer({
-    //     title: region.title,
-    //     layers: subLayers,
-    //     visible: false // Hide all sublayers initially
-    //   });
-    // });
-
-    // // Create the Main Water Main Group Layer
-    // const WaterMains = new GroupLayer({
-    //   title: "Water Main",
-    //   layers: subtypeGroupLayersWaterMains,
-    //   visible: false // Hide initially
-    // });
-
-    // // // Work Orders Layers
-    // // // Create SubtypeGroupLayers for Work Orders
-    // const subtypeGroupLayersWorkOrders = layersWaorkOrders.map(region => {
-    //   const subLayers = region.subGroups.map(subGroup => {
-    //     const layer = new SubtypeGroupLayer({
-    //       url: subGroup.url,
-    //       visible: false, // Hide all sublayers initially
-    //       title: subGroup.title,
-    //       outFields: ["*"], // Ensure all fields are available for future use
-    //     });
-    //     // Placeholder for renderer setup in the future
-    //     layer.when(() => {
-    //       layer.sublayers.forEach(sublayer => {
-    //         sublayer.visible = false;
-    //         sublayer.renderer = staticrenderer;
-    //         // if (renderers[subGroup.title]) {
-    //         //   sublayer.renderer = renderers[subGroup.title];
-    //         // }
-    //       });
-    //     });
-    //     return layer;
-    //   });
-    //   return new GroupLayer({
-    //     title: region.title,
-    //     layers: subLayers,
-    //     visible: false // Hide all sublayers initially
-    //   });
-    // });
-
-    // // Create the Main Water Main Group Layer
-    // const WorkOrders = new GroupLayer({
-    //   title: "Work Orders (New System)",
-    //   layers: subtypeGroupLayersWorkOrders,
-    //   visible: false // Hide initially
-    // });
-
-    // displayMap.add(WorkOrders);  // adds the layer to the map
-    // displayMap.add(WaterMains);  // adds the layer to the map
-    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    // displayMap.add(DMZBoundaries);  // adds the layer to the map
+    displayMap.add(WorkOrders);  // adds the layer to the map
+    displayMap.add(WaterMains);  // adds the layer to the map
+    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
-    // displayMap.add(Reservoirs);  // adds the layer to the map
-    // displayMap.add(KTM);
-    // displayMap.add(DMZCriticalPoints);
-    // displayMap.add(Customer_Locations);
+    displayMap.add(Reservoirs);  // adds the layer to the map
+    displayMap.add(KTM);
+    displayMap.add(DMZCriticalPoints);
+    displayMap.add(Customer_Locations);
 
 
 
