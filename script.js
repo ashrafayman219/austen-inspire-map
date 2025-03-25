@@ -317,6 +317,138 @@ async function displayLayers() {
         ]
       },
     ];
+    const layersWaorkOrders = [
+      {
+        title: "Beaufort",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Beaufort_Unallocated/FeatureServer/42" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Beaufort_LeakRepairContractor/FeatureServer/47" },
+        ]
+      },
+      {
+        title: "Beluran",
+        subGroups: [
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Beluran_LeakRepairContractor/FeatureServer/54" },
+        ]
+      },
+      {
+        title: "Kinabatangan",
+        subGroups: [
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Kinabatangan/FeatureServer/68" },
+        ]
+      },
+      {
+        title: "Tenom",
+        subGroups: [
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Tenom/FeatureServer/161" },
+        ]
+      },
+      {
+        title: "Keningau",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Keningau/FeatureServer/168" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Keningau/FeatureServer/61" },
+        ]
+      },
+      {
+        title: "Kota Belud",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_KotaBelud/FeatureServer/172" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_KotaBelud/FeatureServer/73" },
+        ]
+      },
+      {
+        title: "Kuala Penyu",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_KualaPenyu/FeatureServer/176" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_KualaPenyu/FeatureServer/80" },
+        ]
+      },
+      {
+        title: "Kunak",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Kunak/FeatureServer/178" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Kunak/FeatureServer/87" },
+        ]
+      },
+      {
+        title: "Lahad Datu",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_LahadDatu/FeatureServer/182" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_LahadDatu/FeatureServer/94" },
+        ]
+      },
+      {
+        title: "Membakut",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Membakut/FeatureServer/185" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Membakut/FeatureServer/103" },
+        ]
+      },
+      {
+        title: "Merotai",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Merotai/FeatureServer/188" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Merotai/FeatureServer/107" },
+        ]
+      },
+      {
+        title: "Nabawan",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Nabawan/FeatureServer/191" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Nabawan/FeatureServer/114" },
+        ]
+      },
+      {
+        title: "PulauSebatik",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_PulauSebatik/FeatureServer/193" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_PulauSebatik/FeatureServer/118" },
+        ]
+      },
+      {
+        title: "Sook",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Sook/FeatureServer/201" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Sook/FeatureServer/141" },
+        ]
+      },
+      {
+        title: "Tambunan",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Tambunan/FeatureServer/204" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Tambunan/FeatureServer/145" },
+        ]
+      },
+      {
+        title: "Tawau",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Tawau/FeatureServer/208" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Tawau/FeatureServer/151" },
+        ]
+      },
+      {
+        title: "Semporna",
+        subGroups: [
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Semporna/FeatureServer/133" },
+        ]
+      },
+      {
+        title: "Sandakan",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Sandakan/FeatureServer/195" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Sandakan/FeatureServer/122" },
+        ]
+      },
+      {
+        title: "Kota Kinabalu",
+        subGroups: [
+          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KotaKinabalu_Unallocated/FeatureServer/33" },
+          { title: "JANS Internal", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KotaKinabalu_JANSInternalWork/FeatureServer/24" },
+          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KotaKinabalu_LeakRepairContractor/FeatureServer/26" },
+        ]
+      },
+    ];
 
 
     const staticrenderer = {
@@ -403,118 +535,124 @@ async function displayLayers() {
     //   ]
     // };
 
-    // Create SubtypeGroupLayers for CustomerLocations
-    const subtypeGroupLayersCustomerLocations = layersCustomerLocations.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
+    // // Create SubtypeGroupLayers for CustomerLocations
+    // const subtypeGroupLayersCustomerLocations = layersCustomerLocations.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
 
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
-          // sublayer.renderer = simpleRendererCustomerLocations;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       sublayer.renderer = staticrenderer;
+    //       // sublayer.renderer = simpleRendererCustomerLocations;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
 
-      return layer;
-    });
-    const Customer_Locations = new GroupLayer({
-      title: "Customer Locations",
-      layers: subtypeGroupLayersCustomerLocations,
-      visible: false // Hide all sublayers initially
-    });
+    //   return layer;
+    // });
+    // const Customer_Locations = new GroupLayer({
+    //   title: "Customer Locations",
+    //   layers: subtypeGroupLayersCustomerLocations,
+    //   visible: false // Hide all sublayers initially
+    // });
 
-    // DMZ Critical Points Layers
-    // Create SubtypeGroupLayers for DMZ Critical Points
-    const subtypeGroupLayersDMZCriticalPoints = layersDMZCriticalPoints.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
+    // // DMZ Critical Points Layers
+    // // Create SubtypeGroupLayers for DMZ Critical Points
+    // const subtypeGroupLayersDMZCriticalPoints = layersDMZCriticalPoints.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
 
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
-          // sublayer.renderer = simpleRendererCustomerLocations;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       sublayer.renderer = staticrenderer;
+    //       // sublayer.renderer = simpleRendererCustomerLocations;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
 
-    const DMZCriticalPoints = new GroupLayer({
-      title: "DMZ Critical Points",
-      layers: subtypeGroupLayersDMZCriticalPoints,
-      visible: false // Hide all sublayers initially
-    });
+    // const DMZCriticalPoints = new GroupLayer({
+    //   title: "DMZ Critical Points",
+    //   layers: subtypeGroupLayersDMZCriticalPoints,
+    //   visible: false // Hide all sublayers initially
+    // });
 
-    // KTM Layers
-    // Create SubtypeGroupLayers for KTM
-    const subtypeGroupLayersKTM = layersKTM.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
+    // // KTM Layers
+    // // Create SubtypeGroupLayers for KTM
+    // const subtypeGroupLayersKTM = layersKTM.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
 
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
-          // sublayer.renderer = simpleRendererCustomerLocations;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-    const KTM = new GroupLayer({
-      title: "Trunk Main Meter Points",
-      layers: subtypeGroupLayersKTM,
-      visible: false // Hide all sublayers initially
-    });
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       sublayer.renderer = staticrenderer;
+    //       // sublayer.renderer = simpleRendererCustomerLocations;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+    // const KTM = new GroupLayer({
+    //   title: "Trunk Main Meter Points",
+    //   layers: subtypeGroupLayersKTM,
+    //   visible: false // Hide all sublayers initially
+    // });
 
-    // Reservoirs Layers
-    // Create SubtypeGroupLayers for Reservoirs
-    const subtypeGroupLayersReservoirs = layersReservoirs.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
+    // // Reservoirs Layers
+    // // Create SubtypeGroupLayers for Reservoirs
+    // const subtypeGroupLayersReservoirs = layersReservoirs.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
 
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
-          // sublayer.renderer = simpleRendererCustomerLocations;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-    const Reservoirs = new GroupLayer({
-      title: "Reservoirs",
-      layers: subtypeGroupLayersReservoirs,
-      visible: false // Hide all sublayers initially
-    });
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       sublayer.renderer = staticrenderer;
+    //       // sublayer.renderer = simpleRendererCustomerLocations;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+    // const Reservoirs = new GroupLayer({
+    //   title: "Reservoirs",
+    //   layers: subtypeGroupLayersReservoirs,
+    //   visible: false // Hide all sublayers initially
+    // });
+
+
+
+
+
+
 
     // WTP Layers
     // Create SubtypeGroupLayers for WTP
@@ -545,220 +683,278 @@ async function displayLayers() {
       visible: false // Hide all sublayers initially
     });
 
-    // DMZBoundaries Layers
-    // Define a simple renderer for Customer Locations Layers
-    const simpleRendererDMZBoundaries = {
-      type: "simple", // autocasts as new SimpleRenderer()
-      symbol: {
-        type: "simple-fill", // autocasts as new SimpleFillSymbol()
-        color: [255, 0, 0, 0.5],
-        outline: {
-          // makes the outlines of all features consistently light gray
-          color: "gray",
-          width: 1
-        }
-      }
-    };
-
-    // Create SubtypeGroupLayers for DMZBoundaries
-    const subtypeGroupLayersDMZBoundaries = layersDMZBoundaries.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
-
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          sublayer.renderer = simpleRendererDMZBoundaries;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-    const DMZBoundaries = new GroupLayer({
-      title: "DMZ Boundaries",
-      layers: subtypeGroupLayersDMZBoundaries,
-      visible: false // Hide all sublayers initially
-    });
-
-    // DMZMeterPoints Layers
-    // Create SubtypeGroupLayers for DMZMeterPoints
-    const subtypeGroupLayersDMZMeterPoints = layersDMZMeterPoints.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
-
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
-          // sublayer.renderer = simpleRendererDMZMeterPoints;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-    const DMZMeterPoints = new GroupLayer({
-      title: "DMZ Meter Points",
-      layers: subtypeGroupLayersDMZMeterPoints,
-      visible: false // Hide all sublayers initially
-    });
-
-    // Transmission Main Meter Points Layers
-    // Create SubtypeGroupLayers for Transmission Main Meter Points
-    const subtypeGroupLayersTransmissionMainMeterPoints = layersTransmissionMainMeterPoints.map(layerInfo => {
-      const layer = new SubtypeGroupLayer({
-        url: layerInfo.url,
-        visible: false, // Hide all sublayers initially
-        title: layerInfo.title,
-        outFields: ["*"], // Ensure all fields are available for the popup
-        // popupTemplate: popupTemplateCustomerLocations
-      });
-
-      // Apply the renderer to each sublayer
-      layer.when(() => {
-        layer.sublayers.forEach(sublayer => {
-          sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
-          // sublayer.renderer = simpleRendererDMZMeterPoints;
-          // sublayer.popupTemplate = popupTemplateCustomerLocations;
-        });
-      });
-      return layer;
-    });
-    const TransmissionMainMeterPoints = new GroupLayer({
-      title: "Transmission Main Meter Points",
-      layers: subtypeGroupLayersTransmissionMainMeterPoints,
-      visible: false // Hide all sublayers initially
-    });
-
-
-
-
-    // // Define a simple renderer for Water Mains
-    // const simpleRendererWaterMains = {
+    // // DMZBoundaries Layers
+    // // Define a simple renderer for Customer Locations Layers
+    // const simpleRendererDMZBoundaries = {
     //   type: "simple", // autocasts as new SimpleRenderer()
     //   symbol: {
-    //     type: "simple-line", // autocasts as new SimpleFillSymbol()
-    //     color: [166, 25, 77, 0.5],
+    //     type: "simple-fill", // autocasts as new SimpleFillSymbol()
+    //     color: [255, 0, 0, 0.5],
     //     outline: {
     //       // makes the outlines of all features consistently light gray
-    //       color: "lightgray",
+    //       color: "gray",
     //       width: 1
     //     }
     //   }
     // };
 
-    let primaryTransmissionRenderer = {
-      type: "simple",
-      symbol: {
-        type: "simple-line",  // autocasts as new SimpleLineSymbol()
-        color: [0, 0, 255],
-        width: "2px",
-      }
-    };
-    let secondaryTrunkRenderer = {
-      type: "simple",
-      symbol: {
-        type: "simple-line",  // autocasts as new SimpleLineSymbol()
-        color: [255, 140, 0],
-        width: "2px",
-      }
-    };
-    let tertiaryDistributionRenderer = {
-      type: "simple",
-      symbol: {
-        type: "simple-line",  // autocasts as new SimpleLineSymbol()
-        color: [105, 105, 105],
-        width: "2px",
-      }
-    };
-    let rawWaterRenderer = {
-      type: "simple",
-      symbol: {
-        type: "simple-line",  // autocasts as new SimpleLineSymbol()
-        color: [255, 215, 0],
-        width: "2px",
-      }
-    };
-    let privateMainRenderer = {
-      type: "simple",
-      symbol: {
-        type: "simple-line",  // autocasts as new SimpleLineSymbol()
-        color: "black",
-        width: "2px",
-      }
-    };
+    // const labelClassDMZBoundaries = {  // autocasts as new LabelClass()
+    //   symbol: {
+    //     type: "text",  // autocasts as new TextSymbol()
+    //     color: "black",
+    //     haloColor: "white",
+    //     haloSize: 2,
+    //     font: {  // autocast as new Font()
+    //       family: "Noto Sans",
+    //       weight: "bold",
+    //       size: 10
+    //      }
+    //   },
+    //   labelPlacement: "always-horizontal",
+    //   labelExpressionInfo: {
+    //     expression: "$feature.sitename"
+    //     // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
+    //   },
+    //   // maxScale: 0,
+    //   // minScale: 25000000,
+    //   // where: "Conference = 'AFC'"
+    // };
 
-    // Define Renderers for Each Category
-    const renderers = {
-      "Primary Transmission Main": primaryTransmissionRenderer,
-      "Secondary Trunk Main": secondaryTrunkRenderer,
-      "Tertiary Distribution Main": tertiaryDistributionRenderer,
-      "Raw Water Main": rawWaterRenderer,
-      "Private Main": privateMainRenderer
-    };
+    // // Create SubtypeGroupLayers for DMZBoundaries
+    // const subtypeGroupLayersDMZBoundaries = layersDMZBoundaries.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
 
-    // Water Mains Layers
-    // Create SubtypeGroupLayers for Water Mains
-    // Handle Nested Structure (WaterMain → Regions → SubtypeGroupLayers)
-    // Define Water Mains Layers with structured hierarchy
-    const subtypeGroupLayersWaterMains = layersWaterMains.map(region => {
-      const subLayers = region.subGroups.map(subGroup => {
-        const layer = new SubtypeGroupLayer({
-          url: subGroup.url,
-          visible: false, // Hide all sublayers initially
-          title: subGroup.title,
-          outFields: ["*"], // Ensure all fields are available for future use
-        });
-        // Placeholder for renderer setup in the future
-        layer.when(() => {
-          // console.log(layer, "layer");
-          layer.sublayers.forEach(sublayer => {
-            sublayer.visible = false;
-            if (renderers[subGroup.title]) {
-              sublayer.renderer = renderers[subGroup.title];
-            }
-          });
-        });
-        return layer;
-      });
-      return new GroupLayer({
-        title: region.title,
-        layers: subLayers,
-        visible: false // Hide all sublayers initially
-      });
-    });
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       sublayer.renderer.symbol.color.a = 0.3;
+    //       sublayer.labelingInfo = [ labelClassDMZBoundaries ];
+    //       // sublayer.renderer = simpleRendererDMZBoundaries;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+    // const DMZBoundaries = new GroupLayer({
+    //   title: "DMZ Boundaries",
+    //   layers: subtypeGroupLayersDMZBoundaries,
+    //   visible: false // Hide all sublayers initially
+    // });
 
-    // Create the Main Water Main Group Layer
-    const WaterMains = new GroupLayer({
-      title: "Water Main",
-      layers: subtypeGroupLayersWaterMains,
-      visible: false // Hide initially
-    });
+    // // DMZMeterPoints Layers
+    // // Create SubtypeGroupLayers for DMZMeterPoints
+    // const subtypeGroupLayersDMZMeterPoints = layersDMZMeterPoints.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
+
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       sublayer.renderer = staticrenderer;
+    //       // sublayer.renderer = simpleRendererDMZMeterPoints;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+    // const DMZMeterPoints = new GroupLayer({
+    //   title: "DMZ Meter Points",
+    //   layers: subtypeGroupLayersDMZMeterPoints,
+    //   visible: false // Hide all sublayers initially
+    // });
+
+    // // Transmission Main Meter Points Layers
+    // // Create SubtypeGroupLayers for Transmission Main Meter Points
+    // const subtypeGroupLayersTransmissionMainMeterPoints = layersTransmissionMainMeterPoints.map(layerInfo => {
+    //   const layer = new SubtypeGroupLayer({
+    //     url: layerInfo.url,
+    //     visible: false, // Hide all sublayers initially
+    //     title: layerInfo.title,
+    //     outFields: ["*"], // Ensure all fields are available for the popup
+    //     // popupTemplate: popupTemplateCustomerLocations
+    //   });
+
+    //   // Apply the renderer to each sublayer
+    //   layer.when(() => {
+    //     layer.sublayers.forEach(sublayer => {
+    //       sublayer.visible = false;
+    //       sublayer.renderer = staticrenderer;
+    //       // sublayer.renderer = simpleRendererDMZMeterPoints;
+    //       // sublayer.popupTemplate = popupTemplateCustomerLocations;
+    //     });
+    //   });
+    //   return layer;
+    // });
+    // const TransmissionMainMeterPoints = new GroupLayer({
+    //   title: "Transmission Main Meter Points",
+    //   layers: subtypeGroupLayersTransmissionMainMeterPoints,
+    //   visible: false // Hide all sublayers initially
+    // });
 
 
 
 
-    displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
+    // // // Define a simple renderer for Water Mains
+    // // const simpleRendererWaterMains = {
+    // //   type: "simple", // autocasts as new SimpleRenderer()
+    // //   symbol: {
+    // //     type: "simple-line", // autocasts as new SimpleFillSymbol()
+    // //     color: [166, 25, 77, 0.5],
+    // //     outline: {
+    // //       // makes the outlines of all features consistently light gray
+    // //       color: "lightgray",
+    // //       width: 1
+    // //     }
+    // //   }
+    // // };
+
+    // let primaryTransmissionRenderer = {
+    //   type: "simple",
+    //   symbol: {
+    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
+    //     color: [0, 0, 255],
+    //     width: "2px",
+    //   }
+    // };
+    // let secondaryTrunkRenderer = {
+    //   type: "simple",
+    //   symbol: {
+    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
+    //     color: [255, 140, 0],
+    //     width: "2px",
+    //   }
+    // };
+    // let tertiaryDistributionRenderer = {
+    //   type: "simple",
+    //   symbol: {
+    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
+    //     color: [105, 105, 105],
+    //     width: "2px",
+    //   }
+    // };
+    // let rawWaterRenderer = {
+    //   type: "simple",
+    //   symbol: {
+    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
+    //     color: [255, 215, 0],
+    //     width: "2px",
+    //   }
+    // };
+    // let privateMainRenderer = {
+    //   type: "simple",
+    //   symbol: {
+    //     type: "simple-line",  // autocasts as new SimpleLineSymbol()
+    //     color: "black",
+    //     width: "2px",
+    //   }
+    // };
+
+    // // Define Renderers for Each Category
+    // const renderers = {
+    //   "Primary Transmission Main": primaryTransmissionRenderer,
+    //   "Secondary Trunk Main": secondaryTrunkRenderer,
+    //   "Tertiary Distribution Main": tertiaryDistributionRenderer,
+    //   "Raw Water Main": rawWaterRenderer,
+    //   "Private Main": privateMainRenderer
+    // };
+
+    // // Water Mains Layers
+    // // Create SubtypeGroupLayers for Water Mains
+    // // Handle Nested Structure (WaterMain → Regions → SubtypeGroupLayers)
+    // // Define Water Mains Layers with structured hierarchy
+    // const subtypeGroupLayersWaterMains = layersWaterMains.map(region => {
+    //   const subLayers = region.subGroups.map(subGroup => {
+    //     const layer = new SubtypeGroupLayer({
+    //       url: subGroup.url,
+    //       visible: false, // Hide all sublayers initially
+    //       title: subGroup.title,
+    //       outFields: ["*"], // Ensure all fields are available for future use
+    //     });
+    //     // Placeholder for renderer setup in the future
+    //     layer.when(() => {
+    //       // console.log(layer, "layer");
+    //       layer.sublayers.forEach(sublayer => {
+    //         sublayer.visible = false;
+    //         if (renderers[subGroup.title]) {
+    //           sublayer.renderer = renderers[subGroup.title];
+    //         }
+    //       });
+    //     });
+    //     return layer;
+    //   });
+    //   return new GroupLayer({
+    //     title: region.title,
+    //     layers: subLayers,
+    //     visible: false // Hide all sublayers initially
+    //   });
+    // });
+
+    // // Create the Main Water Main Group Layer
+    // const WaterMains = new GroupLayer({
+    //   title: "Water Main",
+    //   layers: subtypeGroupLayersWaterMains,
+    //   visible: false // Hide initially
+    // });
+
+    // // // Work Orders Layers
+    // // // Create SubtypeGroupLayers for Work Orders
+    // const subtypeGroupLayersWorkOrders = layersWaorkOrders.map(region => {
+    //   const subLayers = region.subGroups.map(subGroup => {
+    //     const layer = new SubtypeGroupLayer({
+    //       url: subGroup.url,
+    //       visible: false, // Hide all sublayers initially
+    //       title: subGroup.title,
+    //       outFields: ["*"], // Ensure all fields are available for future use
+    //     });
+    //     // Placeholder for renderer setup in the future
+    //     layer.when(() => {
+    //       layer.sublayers.forEach(sublayer => {
+    //         sublayer.visible = false;
+    //         sublayer.renderer = staticrenderer;
+    //         // if (renderers[subGroup.title]) {
+    //         //   sublayer.renderer = renderers[subGroup.title];
+    //         // }
+    //       });
+    //     });
+    //     return layer;
+    //   });
+    //   return new GroupLayer({
+    //     title: region.title,
+    //     layers: subLayers,
+    //     visible: false // Hide all sublayers initially
+    //   });
+    // });
+
+    // // Create the Main Water Main Group Layer
+    // const WorkOrders = new GroupLayer({
+    //   title: "Work Orders (New System)",
+    //   layers: subtypeGroupLayersWorkOrders,
+    //   visible: false // Hide initially
+    // });
+
+    // displayMap.add(WorkOrders);  // adds the layer to the map
+    // displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(Customer_Locations);
+    // displayMap.add(Reservoirs);  // adds the layer to the map
+    // displayMap.add(KTM);
+    // displayMap.add(DMZCriticalPoints);
+    // displayMap.add(Customer_Locations);
 
 
 
@@ -819,7 +1015,6 @@ async function addWidgets() {
       layerList.visibilityAppearance = "checkbox";
       layerList.listItemCreatedFunction = function(event) {
         const item = event.item;
-        
         // if (item.layer.type != "group") {
         //   // don't show legend twice
         //   item.panel = {
@@ -840,38 +1035,81 @@ async function addWidgets() {
                 ]
             ];
         }
-    
-        // Add logic to ensure parent layers are turned on when a sublayer is toggled
+        // // Add logic to ensure parent layers are turned on when a sublayer is toggled
+        // item.watch("visible", (visible) => {
+        //   if (visible) {
+        //       // console.log(item, "item");
+        //         let parentLayer = item.layer.parent;
+        //         while (parentLayer) {
+        //             parentLayer.visible = true;
+        //             parentLayer = parentLayer.parent; // Move up the hierarchy
+        //         }
+        //     }
+        // });
+
+        // Watch for visibility changes
         item.watch("visible", (visible) => {
-            if (visible) {
-                let parentLayer = item.layer.parent;
-                while (parentLayer) {
-                    parentLayer.visible = true;
-                    parentLayer = parentLayer.parent; // Move up the hierarchy
-                }
-            }
+          if (visible) {
+            activateParentLayers(item.layer);  // Ensure parent layers turn on
+            activateChildLayers(item.layer, visible); // Ensure all sublayers turn on
+          } else {
+            // if the parent is turned off, ensure all sublayers are also unchecked
+            deactivateChildLayers(item.layer);
+          }
         });
-    };
-    
-    // Keep the event listener for action triggers
-    layerList.on("trigger-action", (event) => {
-        const id = event.action.id;
-        const layer = event.item.layer;
-        if (id === "full-extent") {
-            view.goTo(
-                {
-                    target: layer.fullExtent,
-                },
-                {
-                    duration: 3000,
-                }
-            ).catch((error) => {
-                if (error.name !== "AbortError") {
-                    console.error(error);
-                }
+      };
+
+      // Function to turn on parent layers when a sublayer is activated
+      function activateParentLayers(layer) {
+        let parentLayer = layer.parent;
+        while (parentLayer) {
+            parentLayer.visible = true;
+            parentLayer = parentLayer.parent; // Move up the hierarchy
+        }
+      }
+
+      // Recursive function to turn on all sublayers when a parent is activated
+      function activateChildLayers(layer, visible) {
+        if (layer.sublayers) {
+            layer.sublayers.forEach((sublayer) => {
+                sublayer.visible = visible; // Turn on/off each child layer
+                activateChildLayers(sublayer, visible); // Recursively activate deeper sublayers
             });
         }
-    });
+      }
+
+      // NEW: Function to ensure sublayer checkboxes are unchecked when a parent is turned off
+      function deactivateChildLayers(layer) {
+        if (layer.sublayers) {
+            layer.sublayers.forEach((sublayer) => {
+                sublayer.visible = false;  // Turn off visibility
+                sublayer.listItem && (sublayer.listItem.visible = false); // Uncheck the checkbox in UI
+                deactivateChildLayers(sublayer); // Recursively deactivate deeper sublayers
+            });
+        }
+      }
+
+
+      
+      // Keep the event listener for action triggers
+      layerList.on("trigger-action", (event) => {
+          const id = event.action.id;
+          const layer = event.item.layer;
+          if (id === "full-extent") {
+              view.goTo(
+                  {
+                      target: layer.fullExtent,
+                  },
+                  {
+                      duration: 3000,
+                  }
+              ).catch((error) => {
+                  if (error.name !== "AbortError") {
+                      console.error(error);
+                  }
+              });
+          }
+      });
     
 
       // view.ui.add([Expand5], { position: "top-left", index: 6 });
