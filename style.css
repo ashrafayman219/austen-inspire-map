@@ -18,19 +18,28 @@ html, body, #container {
 .logo-container {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  align-items: center; /* Centers logos vertically */
+  gap: 15px;
   padding-top: 10px;
 }
 
 .logo {
-  width: 37px; 
-  height: 37px;
+  height: 40px; /* Adjust as needed */
+  width: auto; /* Ensures aspect ratio is maintained */
+}
+
+#title {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers everything inside */
+  text-align: center; /* Centers text */
 }
 
 
+
+
 #title p {
-  margin-left: 10px; /* Margin to make it look like a title */
-  margin-inline-start: 0px;
+  margin: 10px 0 5px 0; /* Adds spacing above and below */
   font-weight: bold;
   font-size: 1.2rem;
 }
@@ -45,12 +54,12 @@ h3 {
   color: #0290e3;
 }
 
-/* #layerListSection, #legendSection {
-  margin-top: 17px;
-} */
+#layerListSection {
+  margin-top: -12px;
+}
 
 #layerListContainer {
-  height: 430px; /* Set a fixed height or adjust as needed */
+  height: 530px; /* Set a fixed height or adjust as needed */
 }
 
 #legendContainer {
