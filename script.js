@@ -19,7 +19,7 @@ function loadModule(moduleName) {
 async function initializeMap() {
   try {
     if (!view) {
-      const [esriConfig, Map, MapView, intl, GeoJSONLayer, GroupLayer, Graphic, reactiveUtils, promiseUtils] = await Promise.all([
+      const [esriConfig, Map, MapView, intl, GeoJSONLayer, GroupLayer, Graphic, reactiveUtils, promiseUtils, VectorTileLayer, Basemap] = await Promise.all([
         loadModule("esri/config"),
         loadModule("esri/Map"),
         loadModule("esri/views/MapView"),
@@ -29,6 +29,8 @@ async function initializeMap() {
         loadModule("esri/Graphic"),
         loadModule("esri/core/reactiveUtils"),
         loadModule("esri/core/promiseUtils"),
+        loadModule("esri/layers/VectorTileLayer"),
+        loadModule("esri/Basemap"),
       ]);
 
       // intl.setLocale("ar");
@@ -36,15 +38,25 @@ async function initializeMap() {
         "AAPK756f006de03e44d28710cb446c8dedb4rkQyhmzX6upFiYPzQT0HNQNMJ5qPyO1TnPDSPXT4EAM_DlQSj20ShRD7vyKa7a1H";
 
       displayMap = new Map({
-        basemap: "topo-vector",
+        // basemap: "topo-vector",
       });
 
+      // create a new instance of VectorTileLayer from the vector tiles style endpoint
+      const basemapWithoutLabels = new VectorTileLayer({
+        // esri colored pencil style
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/WorldTopographicBasemMapLayerWithoutLabels.json",
+        listMode: "hide",
+      });
+      displayMap.add(basemapWithoutLabels);  // adds the layer to the map
+
       view = new MapView({
-        center: [116.97091064453123, 4.699251422769522], // longitude, latitude, centered on Sabah
+        center: [116.98395690917948, 5.198632359416908], // longitude, latitude, centered on Sabah
         container: "displayMap",
         map: displayMap,
-        zoom: 8,
+        zoom: 7,
       });
+
+
 
       view.constraints = {
         // geometry: { // Constrain lateral movement to Lower Manhattan
@@ -154,7 +166,7 @@ async function displayLayers() {
 
     // Here I will start coding to display some layers and style them
 
-
+    
     // Define a popup template for Customer Locations Layers
     const popupTemplateCustomerLocations = {
       title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
@@ -165,7 +177,7 @@ async function displayLayers() {
           fieldInfos: [
             {
               fieldName: "premisenum",
-              label: "Phone Number"
+              label: "Premise Number"
             },
             {
               fieldName: "addr1",
@@ -342,11 +354,11 @@ async function displayLayers() {
       },
       labelPlacement: "center-center",
       labelExpressionInfo: {
-        expression: "Text($feature.sitecode, '00') + ' ' + $feature.sitename"
+        expression: "$feature.mtrnum"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
     // sublayer.labelingInfo = [ labelClassCustomerLocations ];
@@ -405,11 +417,11 @@ async function displayLayers() {
       },
       labelPlacement: "center-center",
       labelExpressionInfo: {
-        expression: "Text($feature.site, '00')"
+        expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
     // sublayer.labelingInfo = [ labelClassDMZCriticalPoints ];
@@ -521,11 +533,11 @@ async function displayLayers() {
       },
       labelPlacement: "center-center",
       labelExpressionInfo: {
-        expression: "Text($feature.site, '00')"
+        expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
     // sublayer.labelingInfo = [ labelClassKTM ];
@@ -613,11 +625,11 @@ async function displayLayers() {
       },
       labelPlacement: "center-center",
       labelExpressionInfo: {
-        expression: "Text($feature.site, '00')"
+        expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
     // sublayer.labelingInfo = [ labelClassReservoirs ];
@@ -677,11 +689,11 @@ async function displayLayers() {
       },
       labelPlacement: "center-center",
       labelExpressionInfo: {
-        expression: "Text($feature.site, '00')"
+        expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
     // sublayer.labelingInfo = [ labelClassWTP ];
@@ -773,7 +785,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
     // sublayer.labelingInfo = [ labelClassDMZBoundaries ];
@@ -894,11 +906,11 @@ async function displayLayers() {
       },
       labelPlacement: "center-center",
       labelExpressionInfo: {
-        expression: "Text($feature.site, '00')"
+        expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
     // sublayer.labelingInfo = [ labelClassDMZMeterPoints ];
@@ -1011,11 +1023,11 @@ async function displayLayers() {
       },
       labelPlacement: "center-center",
       labelExpressionInfo: {
-        expression: "Text($feature.site, '00')"
+        expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
     // sublayer.labelingInfo = [ labelClassTransmissionMainMeterPoints ];
@@ -1084,11 +1096,11 @@ async function displayLayers() {
       },
       labelPlacement: "center-along",
       labelExpressionInfo: {
-        expression: "Text($feature.site, '00')"
+        expression: "$feature.pipe_dn + ' ' + $feature.pipe_mat"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
     // sublayer.labelingInfo = [ labelClassWaterMains ];
@@ -1247,10 +1259,13 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 17055.954822,
+      minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassWorkOrders ];
+
+
+
+
 
     const layersDMZMeterPoints = [
       { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_KotaBelud/FeatureServer/0", title: "Kota Belud" },
@@ -1923,10 +1938,6 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-
-
-
-
     // // Work Orders Layers
     // // Create SubtypeGroupLayers for Work Orders
     const subtypeGroupLayersWorkOrders = layersWaorkOrders.map(region => {
@@ -1942,7 +1953,7 @@ async function displayLayers() {
           layer.sublayers.forEach(sublayer => {
             sublayer.visible = false;
             sublayer.renderer = staticrenderer;
-            sublayer.labelingInfo = [ labelClassWorkOrders ];
+            // sublayer.labelingInfo = [ labelClassWorkOrders ];
             sublayer.popupTemplate = popupTemplateWorkOrders ;
             // if (renderers[subGroup.title]) {
             //   sublayer.renderer = renderers[subGroup.title];
@@ -1965,16 +1976,16 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    displayMap.add(WorkOrders);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
+    // displayMap.add(WorkOrders);  // adds the layer to the map
+    // displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(Customer_Locations);
+    // displayMap.add(Reservoirs);  // adds the layer to the map
+    // displayMap.add(KTM);
+    // displayMap.add(DMZCriticalPoints);
+    // displayMap.add(Customer_Locations);
 
 
 
@@ -2014,10 +2025,13 @@ async function addWidgets() {
       let basemapGallery = new BasemapGallery({
         view: view
       });
-      // Add widget to the top right corner of the view
-      view.ui.add(basemapGallery, {
-        position: "bottom-right"
+
+      const basemapGalleryExpand = new Expand({
+        expandIcon: "basemap",
+        view: view,
+        content: basemapGallery
       });
+      view.ui.add(basemapGalleryExpand, "top-right");
 
       var search = new Search({
         //Add Search widget
@@ -2042,6 +2056,49 @@ async function addWidgets() {
       layerList.visibilityAppearance = "checkbox";
       layerList.listItemCreatedFunction = function(event) {
         const item = event.item;
+
+        // if (item.children.length > 0) {  // Only apply logic to group layers
+        //   item.watch("open", function (expanded) {
+        //     if (expanded) {
+        //       layerList.operationalItems.forEach((otherItem) => {
+        //         if (otherItem !== item && otherItem.open) {
+        //           otherItem.open = false;  // Collapse all other groups
+        //         }
+        //       });
+        //     }
+        //   });
+        // }
+        
+        if (item.children.length > 0) {  // Only apply logic to group layers
+          item.watch("open", function (expanded) {
+            if (expanded) {
+              collapseSiblingGroups(item);
+            }
+          });
+        }
+        function collapseSiblingGroups(targetItem) {
+          layerList.operationalItems.forEach((mainGroup) => {
+            if (mainGroup !== targetItem) {
+              if (targetItem.parent === mainGroup.parent) {  
+                // Collapse only items within the same parent (same hierarchy level)
+                mainGroup.open = false;
+              }
+      
+              mainGroup.children.forEach((subGroup) => {
+                if (subGroup !== targetItem && subGroup.parent === targetItem.parent) {
+                  subGroup.open = false; // Collapse only sibling inside-group layers
+                }
+      
+                subGroup.children.forEach((subtypeGroup) => {
+                  if (subtypeGroup !== targetItem && subtypeGroup.parent === targetItem.parent) {
+                    subtypeGroup.open = false; // Collapse only sibling subtype layers
+                  }
+                });
+              });
+            }
+          });
+        }
+
 
         // Ensure actionsSections exists
         if (!item.actionsSections) {
@@ -2091,13 +2148,19 @@ async function addWidgets() {
         //         }
         //     }
         // });
-
+        
+        
         // Watch for visibility changes
         item.watch("visible", (visible) => {
+          var itemID = item.layer;
           if (visible) {
+            // console.log(item, "itemitemitem");
             activateParentLayers(item.layer);  // Ensure parent layers turn on
-            activateChildLayers(item.layer, visible); // Ensure all sublayers turn on
-          } else {
+          }
+            else if (item.layer.type === "subtype-sublayer") {
+              activateChildLayers(item.layer, visible, itemID); // Ensure all sublayers turn on
+            }
+           else {
             // if the parent is turned off, ensure all sublayers are also unchecked
             deactivateChildLayers(item.layer);
           }
@@ -2114,14 +2177,46 @@ async function addWidgets() {
       }
 
       // Recursive function to turn on all sublayers when a parent is activated
-      function activateChildLayers(layer, visible) {
-        if (layer.sublayers) {
-            layer.visible = visible; // Turn on/off each child layer
-            // layer.sublayers.forEach((sublayer) => {
-            //     sublayer.visible = visible; // Turn on/off each child layer
-            //     activateChildLayers(sublayer, visible); // Recursively activate deeper sublayers
-            // });
-        }
+      function activateChildLayers(layer, visible, clickedLayerID) {
+        // console.log(layer, "layerlayerlayerlayerlayerlayer");
+
+
+
+
+
+        // if (layer.sublayers && layer.type === "subtype-group") {
+        //   console.log(clickedLayerID, "clickedLayerIDclickedLayerIDclickedLayerID")
+        //     // layer.visible = visible; // Turn on/off each child layer
+        //     layer.sublayers.forEach(async (sublayer) => {
+        //       console.log(sublayer.id, "Checking sublayer ID");
+
+        //       clickedLayerID.sublayers.forEach((l) => {
+        //         if (sublayer.id === l.id) {
+        //           console.log(sublayer.type, "sublayer");
+        //           console.log(sublayer.title, "sublayer");
+        //           console.log(sublayer.id, "sublayer");
+        //           sublayer.visible = visible;
+        //         } else {
+        //           sublayer.visible = visible; // Turn on/off each child layer
+        //         }
+        //       })
+
+
+        //       // // console.log(sublayer.title, "sublayersublayersublayer", clickedSublayerTitle, "clickedSublayerTitle")
+        //       // if (sublayer.title === clickedSublayerTitle) {
+        //       //   sublayer.visible = visible; // Turn on/off each child layer
+        //       // } else {
+        //       //   sublayer.visible = visible; // Turn on/off each child layer
+        //       //   // activateChildLayers(sublayer, visible); // Recursively activate deeper sublayers
+        //       // }
+        //       // if (clickedSublayerTitle.type === "subtype-sublayer" && clickedSublayerTitle.title === tt) {
+        //       //   clickedSublayerTitle.visible = visible
+        //       // } else {
+        //       //   sublayer.visible = visible; // Turn on/off each child layer
+        //       // }
+        //     });
+        // }
+        
       }
 
       // NEW: Function to ensure sublayer checkboxes are unchecked when a parent is turned off
@@ -2135,8 +2230,6 @@ async function addWidgets() {
         }
       }
 
-
-      
       // Keep the event listener for action triggers
       layerList.on("trigger-action", (event) => {
           const id = event.action.id;
@@ -2160,12 +2253,10 @@ async function addWidgets() {
             toggleLayerLabels(layer, event.item);
           }
       });
-
+    
       // Function to toggle labels for a layer, handling multiple hierarchy levels
       function toggleLayerLabels(layer, item) {
         let hasLabels = false;
-        
-
         // If it's a SubtypeGroupLayer, toggle its sublayers' labels
         if (layer.type === "subtype-group" && layer.sublayers) {
             let newLabelState = !layer.sublayers.getItemAt(0)?.labelsVisible;
@@ -2224,7 +2315,6 @@ async function addWidgets() {
         console.warn(`Layer ${layer.title} does not support labels.`);
       }
 
-
       // Function to Update Icon Color Based on Label Visibility
       function updateIconColor(item, isLabelsVisible) {
         if (!item) {
@@ -2247,13 +2337,17 @@ async function addWidgets() {
       var fullscreen = new Fullscreen({
         view: view
       });
-      view.ui.add(fullscreen, "top-right");
-
+      view.ui.add(fullscreen, "bottom-right");
+    
+    
       let legend = new Legend({
         view: view,
-        container: document.getElementById("legendContainer") // Place Legend in the new container
+        container: document.getElementById("legendContainer"), // Place Legend in the new container,
       });
       legend.hideLayersNotInCurrentView = true;
+    
+
+
       await view.when();
       return [view, displayMap]; // You can return the view object
     } catch (error) {
