@@ -1976,16 +1976,16 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    // displayMap.add(WorkOrders);  // adds the layer to the map
-    // displayMap.add(WaterMains);  // adds the layer to the map
-    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    // displayMap.add(DMZBoundaries);  // adds the layer to the map
+    displayMap.add(WorkOrders);  // adds the layer to the map
+    displayMap.add(WaterMains);  // adds the layer to the map
+    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
-    // displayMap.add(Reservoirs);  // adds the layer to the map
-    // displayMap.add(KTM);
-    // displayMap.add(DMZCriticalPoints);
-    // displayMap.add(Customer_Locations);
+    displayMap.add(Reservoirs);  // adds the layer to the map
+    displayMap.add(KTM);
+    displayMap.add(DMZCriticalPoints);
+    displayMap.add(Customer_Locations);
 
 
 
@@ -2345,9 +2345,12 @@ async function addWidgets() {
         container: document.getElementById("legendContainer"), // Place Legend in the new container,
       });
       legend.hideLayersNotInCurrentView = true;
+
+
     
 
 
+  
       await view.when();
       return [view, displayMap]; // You can return the view object
     } catch (error) {
