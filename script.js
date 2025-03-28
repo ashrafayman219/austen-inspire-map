@@ -3267,16 +3267,16 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    // displayMap.add(WorkOrders);  // adds the layer to the map
-    // displayMap.add(WaterMains);  // adds the layer to the map
+    displayMap.add(WorkOrders);  // adds the layer to the map
+    displayMap.add(WaterMains);  // adds the layer to the map
     displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZMeterPoints);  // adds the layer to the map
     displayMap.add(DMZBoundaries);  // adds the layer to the map
-    // displayMap.add(WTP);  // adds the layer to the map
+    displayMap.add(WTP);  // adds the layer to the map
     displayMap.add(Reservoirs);  // adds the layer to the map
-    // displayMap.add(KTM);
-    // displayMap.add(DMZCriticalPoints);
-    // displayMap.add(Customer_Locations);
+    displayMap.add(KTM);
+    displayMap.add(DMZCriticalPoints);
+    displayMap.add(Customer_Locations);
 
 
 
