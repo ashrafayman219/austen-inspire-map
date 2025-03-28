@@ -88,33 +88,33 @@ h3 {
 
 
 
-
 .custom-popup {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   width: 100%;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 /* Tab Buttons */
 .tab-buttons {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 5px;
+  margin-bottom: 5px;
   background-color: #f7f7f7;
-  padding: 10px;
+  padding: 5px;
   border-bottom: 1px solid #ddd;
 }
 
 .tab-buttons button {
   background: #e0e0e0;
   border: none;
-  padding: 10px 15px;
+  padding: 6px 10px;
   cursor: pointer;
   font-weight: bold;
-  border-radius: 4px;
+  font-size: 12px;
+  border-radius: 3px;
   transition: background-color 0.3s, color 0.3s;
 }
 
@@ -131,8 +131,9 @@ h3 {
 /* Tab Content */
 .tab-content {
   display: none;
-  padding: 15px;
+  padding: 10px;
   background-color: #fff;
+  font-size: 12px;
 }
 
 .tab-content.active {
@@ -141,8 +142,8 @@ h3 {
 
 /* Content Styling */
 .tab-content p {
-  margin: 8px 0;
-  line-height: 1.5;
+  margin: 5px 0;
+  line-height: 1.4;
 }
 
 .tab-content p strong {
@@ -157,6 +158,6 @@ h3 {
 
   .tab-buttons button {
     width: 100%;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
   }
 }

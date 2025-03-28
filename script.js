@@ -1640,7 +1640,6 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassCustomerLocations ];
 
     // // Define a popup template for DMZ Critical Points Layers
     // const popupTemplateDMZCriticalPoints = {
@@ -1720,7 +1719,6 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassDMZCriticalPoints ];
 
     // // Define a popup template for KTM Layers
     // const popupTemplateKTM = {
@@ -1836,7 +1834,6 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassKTM ];
 
     // // Define a popup template for Reservoirs Layers
     // const popupTemplateReservoirs = {
@@ -1928,7 +1925,6 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassReservoirs ];
 
     // // Define a popup template for WTP Layers
     // const popupTemplateWTP = {
@@ -1991,7 +1987,6 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassWTP ]; 
 
     // // Define a popup template for DMZBoundaries Layers
     // const popupTemplateDMZBoundaries = {
@@ -2082,7 +2077,6 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassDMZBoundaries ];
 
     // // Define a popup template for DMZ Meter Points Layers
     // const popupTemplateDMZMeterPoints = {
@@ -2206,7 +2200,6 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassDMZMeterPoints ];
 
     // // Define a popup template for Transmission Main Meter Points Layers
     // const popupTemplateTransmissionMainMeterPoints = {
@@ -2322,7 +2315,6 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassTransmissionMainMeterPoints ];
 
     // // Define a popup template for Water Mains Layers
     // const popupTemplateWaterMains = {
@@ -2393,7 +2385,6 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassWaterMains ];
 
     // // Define a popup template for Work Orders Layers
     // const popupTemplateWorkOrders = {
@@ -2861,7 +2852,6 @@ async function displayLayers() {
       },
     ];
 
-
     const staticrenderer = {
       type: "simple",
       symbol: {
@@ -2876,7 +2866,22 @@ async function displayLayers() {
       }
     };
 
-
+    const WTPRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png",
+        width: "18px",
+        height: "18px"
+        // style: "circle",
+        // color: [2, 144, 227, 0.5],
+        // size: 9,
+        // outline: {
+        //   color: "#ffffff",
+        //   width: 1
+        // }
+      }
+    };
     // // Consumer Meters || Customer Locations Layers
     // Create SubtypeGroupLayers for CustomerLocations
     const subtypeGroupLayersCustomerLocations = layersCustomerLocations.map(layerInfo => {
@@ -3015,7 +3020,7 @@ async function displayLayers() {
       layer.when(() => {
         layer.sublayers.forEach(sublayer => {
           sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
+          sublayer.renderer = WTPRenderer;
           sublayer.labelingInfo = [ labelClassWTP ];
           sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateWTP;
@@ -3267,16 +3272,16 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    displayMap.add(WorkOrders);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
+    // displayMap.add(WorkOrders);  // adds the layer to the map
+    // displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(Customer_Locations);
+    // displayMap.add(Reservoirs);  // adds the layer to the map
+    // displayMap.add(KTM);
+    // displayMap.add(DMZCriticalPoints);
+    // displayMap.add(Customer_Locations);
 
 
 
@@ -3441,9 +3446,10 @@ async function addWidgets() {
         
         // Watch for visibility changes
         item.watch("visible", (visible) => {
+          console.log(visible, "visible");
           if (visible) {
               activateParentLayers(item.layer); // Turn on parent layers
-              activateChildLayers0(item.layer, visible); // Turn on all child sublayers if it's a subtype-group
+              activateChildLayers0(item.layer); // Turn on all child sublayers if it's a subtype-group
           } else {
               deactivateChildLayers(item.layer); // Turn off child sublayers when a layer is disabled
           }
@@ -3463,7 +3469,6 @@ async function addWidgets() {
 
 
 
-
       // Function to turn on parent layers when a sublayer is activated
       function activateParentLayers(layer) {
         let parentLayer = layer.parent;
@@ -3478,7 +3483,7 @@ async function addWidgets() {
         if (layer.sublayers) {
             layer.sublayers.forEach((sublayer) => {
                 sublayer.visible = visible; // Turn on/off each child layer
-                activateChildLayers0(sublayer, visible); // Recursively activate deeper sublayers
+                // activateChildLayers0(sublayer, visible); // Recursively activate deeper sublayers
             });
         }
 
