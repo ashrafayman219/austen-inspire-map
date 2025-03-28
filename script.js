@@ -167,179 +167,1458 @@ async function displayLayers() {
     // Here I will start coding to display some layers and style them
 
     
-    // Define a popup template for Customer Locations Layers
+    // const popupTemplateReservoirs = {
+    //   title: "WATER TREATMENT PLANT <br> Site: {site}",
+    //   outFields: ["*"],
+    //   content: function (feature) {
+    //     const attributes = feature.graphic.attributes;
+        
+    //     // Create the main container
+    //     const container = document.createElement("div");
+    //     container.classList.add("custom-popup");
+    
+    //     // Create tab buttons
+    //     const tabs = document.createElement("div");
+    //     tabs.classList.add("tab-buttons");
+    
+    //     const tab1Btn = document.createElement("button");
+    //     tab1Btn.innerText = "General Info";
+    //     tab1Btn.classList.add("active");
+    
+    //     const tab2Btn = document.createElement("button");
+    //     tab2Btn.innerText = "Location";
+    
+    //     // Create tab content containers
+    //     const tabContent1 = document.createElement("div");
+    //     tabContent1.classList.add("tab-content", "active");
+    //     tabContent1.innerHTML = `
+    //       <p><strong>Layer Name:</strong> Water Treatment Plant</p>
+    //       <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+    //       <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+    //     `;
+    
+    //     const tabContent2 = document.createElement("div");
+    //     tabContent2.classList.add("tab-content");
+    //     tabContent2.innerHTML = `
+    //       <p><strong>Latitude:</strong> ${attributes.Y}</p>
+    //       <p><strong>Longitude:</strong> ${attributes.X}</p>
+    //     `;
+    
+    //     // Append elements
+    //     tabs.appendChild(tab1Btn);
+    //     tabs.appendChild(tab2Btn);
+    //     container.appendChild(tabs);
+    //     container.appendChild(tabContent1);
+    //     container.appendChild(tabContent2);
+    
+    //     // Add event listeners for tab switching
+    //     tab1Btn.addEventListener("click", () => {
+    //       tab1Btn.classList.add("active");
+    //       tab2Btn.classList.remove("active");
+    //       tabContent1.classList.add("active");
+    //       tabContent2.classList.remove("active");
+    //     });
+    
+    //     tab2Btn.addEventListener("click", () => {
+    //       tab2Btn.classList.add("active");
+    //       tab1Btn.classList.remove("active");
+    //       tabContent2.classList.add("active");
+    //       tabContent1.classList.remove("active");
+    //     });
+    
+    //     return container;
+    //   }
+    // };
+
+
+
+    const popupTemplateReservoirs = {
+      title: "SERVICE RESERVOIR <br> Site: {site}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const infoTabBtn = document.createElement("button");
+        infoTabBtn.innerText = "Info";
+        infoTabBtn.classList.add("active");
+    
+        const loggedDataTabBtn = document.createElement("button");
+        loggedDataTabBtn.innerText = "Logged Data";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const infoTabContent = document.createElement("div");
+        infoTabContent.classList.add("tab-content", "active");
+        infoTabContent.innerHTML = `
+          <p><strong>Capacity (m3):</strong> ${attributes.capacity}</p>
+          <p><strong>Top Water Level (m):</strong> ${attributes.twl}</p>
+          <p><strong>Bottom Water Level (m):</strong> ${attributes.bwl}</p>
+          <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model} ${attributes.sub_model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+        `;
+    
+        const loggedDataTabContent = document.createElement("div");
+        loggedDataTabContent.classList.add("tab-content");
+        loggedDataTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Reservoirs</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(infoTabBtn);
+        tabs.appendChild(loggedDataTabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(infoTabContent);
+        container.appendChild(loggedDataTabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        infoTabBtn.addEventListener("click", () => {
+          infoTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          infoTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        loggedDataTabBtn.addEventListener("click", () => {
+          loggedDataTabBtn.classList.add("active");
+          infoTabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          loggedDataTabContent.classList.add("active");
+          infoTabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          infoTabBtn.classList.remove("active");
+          loggedDataTabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          infoTabContent.classList.remove("active");
+          loggedDataTabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
     const popupTemplateCustomerLocations = {
       title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
       outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "premisenum",
-              label: "Premise Number"
-            },
-            {
-              fieldName: "addr1",
-              label: "Address 1"
-            },
-            {
-              fieldName: "addr2",
-              label: "Address 2"
-            },
-            {
-              fieldName: "addr3",
-              label: "Address 3"
-            },
-            {
-              fieldName: "poscod",
-              label: "Post Code"
-            },
-            {
-              fieldName: "proptytyp",
-              label: "Property Type"
-            },
-            {
-              fieldName: "expression/BillingDistrict",
-              label: "Billing District"
-            },
-            {
-              fieldName: "expression/OperationalDistrict",
-              label: "Operational District"
-            },
-            {
-              fieldName: "expression/DMA",
-              label: "DMA"
-            },
-            {
-              fieldName: "accnum",
-              label: "Account Number"
-            },
-            {
-              fieldName: "supdat",
-              label: "Start Date"
-            },
-            {
-              fieldName: "closeaccdat",
-              label: "End Date"
-            },
-            {
-              fieldName: "expression/CustomerStatus",
-              label: "Customer Status"
-            },
-            {
-              fieldName: "congrp_descr",
-              label: "Customer Group"
-            },
-            {
-              fieldName: "contyp_descr",
-              label: "Customer Type"
-            },
-            {
-              fieldName: "expression/MasterRound",
-              label: "Meter Round"
-            },
-            {
-              fieldName: "mtrnum",
-              label: "Meter Number"
-            },
-            {
-              fieldName: "mtrmake_descr",
-              label: "Meter Make"
-            },
-            {
-              fieldName: "expression/MeterSize",
-              label: "Meter Size"
-            },
-            {
-              fieldName: "expression/MeterType",
-              label: "Meter Type"
-            },
-            {
-              fieldName: "expression/MeterStatus",
-              label: "Meter Status"
-            },
-            {
-              fieldName: "expression/MasterMeterStatus",
-              label: "Master Meter Status"
-            },
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "siteID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "gID",
-              label: "ObjectID"
-            },
-            {
-              fieldName: "X",
-              label: "Longitude (Dec Deg.)"
-            },
-            {
-              fieldName: "Y",
-              label: "Latitude (Dec Deg.)"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "BillingDistrict",
-          title: "Billing District",
-          expression: "Text($feature.regioncode, '00') + ' ' + $feature.regionname"
-        },
-        {
-          name: "OperationalDistrict",
-          title: "Operational District",
-          expression: "Text($feature.regioncode, '00') + ' ' + $feature.regionname"
-        },
-        {
-          name: "DMA",
-          title: "DMA",
-          expression: "Text($feature.sitecode, '00') + ' ' + $feature.sitename"
-        },
-        {
-          name: "CustomerStatus",
-          title: "Customer Status",
-          expression: "Text($feature.consta, '00') + ' ' + $feature.consta_descr"
-        },
-        {
-          name: "MeterSize",
-          title: "Meter Size",
-          expression: "Text($feature.mtrsiz, '00') + ' ' + $feature.mtrsiz_descr"
-        },
-        {
-          name: "MeterType",
-          title: "Meter Type",
-          expression: "Text($feature.mtrtyp, '00') + ' ' + $feature.mtrtyp_descr"
-        },
-        {
-          name: "MeterStatus",
-          title: "Meter Status",
-          expression: "Text($feature.mtrstat, '00') + ' ' + $feature.mtrstat_descr"
-        },
-        {
-          name: "MasterMeterStatus",
-          title: "Master Meter Status",
-          expression: "Text($feature.masmtrstat, '00') + ' ' + $feature.masmtrstat_descr"
-        },
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'Customer Locations'"
-        },
-        {
-          name: "MasterRound",
-          title: "Master Round",
-          expression: "$feature.zonnum + '-' + Text($feature.blknum, '00') + '-' + $feature.rounum"
-        },
-      ]
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const premiseInfoTabBtn = document.createElement("button");
+        premiseInfoTabBtn.innerText = "Premise Info";
+        premiseInfoTabBtn.classList.add("active");
+    
+        const accountInfoTabBtn = document.createElement("button");
+        accountInfoTabBtn.innerText = "Account Info";
+    
+        const meterInfoTabBtn = document.createElement("button");
+        meterInfoTabBtn.innerText = "Meter Info";
+    
+        const bmacTabBtn = document.createElement("button");
+        bmacTabBtn.innerText = "BMAC";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const premiseInfoTabContent = document.createElement("div");
+        premiseInfoTabContent.classList.add("tab-content", "active");
+        premiseInfoTabContent.innerHTML = `
+          <p><strong>Premise Number:</strong> ${attributes.premisenum}</p>
+          <p><strong>Address 1:</strong> ${attributes.addr1}</p>
+          <p><strong>Address 2:</strong> ${attributes.addr2}</p>
+          <p><strong>Address 3:</strong> ${attributes.addr3}</p>
+          <p><strong>Post Code:</strong> ${attributes.poscod}</p>
+          <p><strong>Property Type:</strong> ${attributes.proptytyp}</p>
+          <p><strong>Billing District:</strong> ${attributes.regioncode} ${attributes.regionname}</p>
+          <p><strong>Operational District:</strong> ${attributes.regioncode} ${attributes.regionname}</p>
+          <p><strong>DMA:</strong> ${attributes.sitecode} ${attributes.sitename}</p>
+        `;
+    
+        const accountInfoTabContent = document.createElement("div");
+        accountInfoTabContent.classList.add("tab-content");
+        accountInfoTabContent.innerHTML = `
+          <p><strong>Account Number:</strong> ${attributes.accnum}</p>
+          <p><strong>Start Date:</strong> ${attributes.supdat}</p>
+          <p><strong>End Date:</strong> ${attributes.closeaccdat}</p>
+          <p><strong>Customer Status:</strong> ${attributes.consta} ${attributes.consta_descr}</p>
+          <p><strong>Customer Group:</strong> ${attributes.congrp_descr}</p>
+          <p><strong>Customer Type:</strong> ${attributes.contyp_descr}</p>
+          <p><strong>Meter Round:</strong> ${attributes.zonnum}-${attributes.blknum}-${attributes.rounum}</p>
+        `;
+    
+        const meterInfoTabContent = document.createElement("div");
+        meterInfoTabContent.classList.add("tab-content");
+        meterInfoTabContent.innerHTML = `
+          <p><strong>Meter Number:</strong> ${attributes.mtrnum}</p>
+          <p><strong>Meter Make:</strong> ${attributes.mtrmake_descr}</p>
+          <p><strong>Meter Size:</strong> ${attributes.mtrsiz} ${attributes.mtrsiz_descr}</p>
+          <p><strong>Meter Type:</strong> ${attributes.mtrtyp} ${attributes.mtrtyp_descr}</p>
+          <p><strong>Meter Status:</strong> ${attributes.mtrstat} ${attributes.mtrstat_descr}</p>
+          <p><strong>Master Meter Status:</strong> ${attributes.masmtrstat} ${attributes.masmtrstat_descr}</p>
+        `;
+    
+        const bmacTabContent = document.createElement("div");
+        bmacTabContent.classList.add("tab-content");
+        bmacTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Customer Locations</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(premiseInfoTabBtn);
+        tabs.appendChild(accountInfoTabBtn);
+        tabs.appendChild(meterInfoTabBtn);
+        tabs.appendChild(bmacTabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(premiseInfoTabContent);
+        container.appendChild(accountInfoTabContent);
+        container.appendChild(meterInfoTabContent);
+        container.appendChild(bmacTabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        premiseInfoTabBtn.addEventListener("click", () => {
+          premiseInfoTabBtn.classList.add("active");
+          accountInfoTabBtn.classList.remove("active");
+          meterInfoTabBtn.classList.remove("active");
+          bmacTabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          premiseInfoTabContent.classList.add("active");
+          accountInfoTabContent.classList.remove("active");
+          meterInfoTabContent.classList.remove("active");
+          bmacTabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        accountInfoTabBtn.addEventListener("click", () => {
+          accountInfoTabBtn.classList.add("active");
+          premiseInfoTabBtn.classList.remove("active");
+          meterInfoTabBtn.classList.remove("active");
+          bmacTabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          accountInfoTabContent.classList.add("active");
+          premiseInfoTabContent.classList.remove("active");
+          meterInfoTabContent.classList.remove("active");
+          bmacTabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        meterInfoTabBtn.addEventListener("click", () => {
+          meterInfoTabBtn.classList.add("active");
+          premiseInfoTabBtn.classList.remove("active");
+          accountInfoTabBtn.classList.remove("active");
+          bmacTabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          meterInfoTabContent.classList.add("active");
+          premiseInfoTabContent.classList.remove("active");
+          accountInfoTabContent.classList.remove("active");
+          bmacTabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        bmacTabBtn.addEventListener("click", () => {
+          bmacTabBtn.classList.add("active");
+          premiseInfoTabBtn.classList.remove("active");
+          accountInfoTabBtn.classList.remove("active");
+          meterInfoTabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          bmacTabContent.classList.add("active");
+          premiseInfoTabContent.classList.remove("active");
+          accountInfoTabContent.classList.remove("active");
+          meterInfoTabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          premiseInfoTabBtn.classList.remove("active");
+          accountInfoTabBtn.classList.remove("active");
+          meterInfoTabBtn.classList.remove("active");
+          bmacTabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          premiseInfoTabContent.classList.remove("active");
+          accountInfoTabContent.classList.remove("active");
+          meterInfoTabContent.classList.remove("active");
+          bmacTabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
     };
+
+    const popupTemplateDMZCriticalPoints = {
+      title: "DMZ CRITICAL POINT <br> Site: {site}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const loggedDataTabBtn = document.createElement("button");
+        loggedDataTabBtn.innerText = "Logged Data";
+        loggedDataTabBtn.classList.add("active");
+    
+        const info1TabBtn = document.createElement("button");
+        info1TabBtn.innerText = "Info 1";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const loggedDataTabContent = document.createElement("div");
+        loggedDataTabContent.classList.add("tab-content", "active");
+        loggedDataTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const info1TabContent = document.createElement("div");
+        info1TabContent.classList.add("tab-content");
+        info1TabContent.innerHTML = `
+          <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> DMZ Critical Points</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(loggedDataTabBtn);
+        tabs.appendChild(info1TabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(loggedDataTabContent);
+        container.appendChild(info1TabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        loggedDataTabBtn.addEventListener("click", () => {
+          loggedDataTabBtn.classList.add("active");
+          info1TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          loggedDataTabContent.classList.add("active");
+          info1TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info1TabBtn.addEventListener("click", () => {
+          info1TabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info1TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+    
+    const popupTemplateKTM = {
+      title: "TRUNK MAIN METER POINT <br> Site: {site}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const loggedDataTabBtn = document.createElement("button");
+        loggedDataTabBtn.innerText = "Logged Data";
+        loggedDataTabBtn.classList.add("active");
+    
+        const monthlyAverageTabBtn = document.createElement("button");
+        monthlyAverageTabBtn.innerText = "Monthly Average";
+    
+        const info1TabBtn = document.createElement("button");
+        info1TabBtn.innerText = "Info 1";
+    
+        const info2TabBtn = document.createElement("button");
+        info2TabBtn.innerText = "Info 2";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const loggedDataTabContent = document.createElement("div");
+        loggedDataTabContent.classList.add("tab-content", "active");
+        loggedDataTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const monthlyAverageTabContent = document.createElement("div");
+        monthlyAverageTabContent.classList.add("tab-content");
+        monthlyAverageTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const info1TabContent = document.createElement("div");
+        info1TabContent.classList.add("tab-content");
+        info1TabContent.innerHTML = `
+          <p><strong>Meter Make:</strong> ${attributes.meter_make_descr}</p>
+          <p><strong>Meter Type:</strong> ${attributes.meter_type_descr}</p>
+          <p><strong>Serial Number:</strong> ${attributes.serial_number}</p>
+          <p><strong>Install Date:</strong> ${attributes.inst_date}</p>
+          <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+        `;
+    
+        const info2TabContent = document.createElement("div");
+        info2TabContent.classList.add("tab-content");
+        info2TabContent.innerHTML = `
+          <p><strong>Meter Point Type:</strong> ${attributes.mp_type_descr}</p>
+          <p><strong>Main Pipe Nom Diam:</strong> ${attributes.main_pipe_dn}</p>
+          <p><strong>Bypass:</strong> ${attributes.bypass}</p>
+          <p><strong>Bypass Nom Diam:</strong> ${attributes.bypass_pipe_dn}</p>
+          <p><strong>Meter Location:</strong> ${attributes.meter_locn_descr}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Trunk Main Meter Points</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(loggedDataTabBtn);
+        tabs.appendChild(monthlyAverageTabBtn);
+        tabs.appendChild(info1TabBtn);
+        tabs.appendChild(info2TabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(loggedDataTabContent);
+        container.appendChild(monthlyAverageTabContent);
+        container.appendChild(info1TabContent);
+        container.appendChild(info2TabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        loggedDataTabBtn.addEventListener("click", () => {
+          loggedDataTabBtn.classList.add("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          loggedDataTabContent.classList.add("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        monthlyAverageTabBtn.addEventListener("click", () => {
+          monthlyAverageTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          monthlyAverageTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info1TabBtn.addEventListener("click", () => {
+          info1TabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info1TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info2TabBtn.addEventListener("click", () => {
+          info2TabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info2TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
+    const popupTemplateWTP = {
+      title: "WATER TREATMENT PLANT <br> Site: {site}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const generalInfoTabBtn = document.createElement("button");
+        generalInfoTabBtn.innerText = "General Info";
+        generalInfoTabBtn.classList.add("active");
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const generalInfoTabContent = document.createElement("div");
+        generalInfoTabContent.classList.add("tab-content", "active");
+        generalInfoTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Water Treatment Plant</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Water Treatment Plant</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(generalInfoTabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(generalInfoTabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        generalInfoTabBtn.addEventListener("click", () => {
+          generalInfoTabBtn.classList.add("active");
+          gisTabBtn.classList.remove("active");
+          generalInfoTabContent.classList.add("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          generalInfoTabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          generalInfoTabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
+    const popupTemplateDMZBoundaries = {
+      title: "DMZ BOUNDARY <br> Site: {site}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const nrwReportTabBtn = document.createElement("button");
+        nrwReportTabBtn.innerText = "NRW Report";
+        nrwReportTabBtn.classList.add("active");
+    
+        const loggedDataTabBtn = document.createElement("button");
+        loggedDataTabBtn.innerText = "Logged Data";
+    
+        const info1TabBtn = document.createElement("button");
+        info1TabBtn.innerText = "Info 1";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const nrwReportTabContent = document.createElement("div");
+        nrwReportTabContent.classList.add("tab-content", "active");
+        nrwReportTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const loggedDataTabContent = document.createElement("div");
+        loggedDataTabContent.classList.add("tab-content");
+        loggedDataTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const info1TabContent = document.createElement("div");
+        info1TabContent.classList.add("tab-content");
+        info1TabContent.innerHTML = `
+          <p><strong>DMZ ID:</strong> ${attributes.siteID}</p>
+          <p><strong>DMZ Code:</strong> ${attributes.sitecode}</p>
+          <p><strong>DMZ Name:</strong> ${attributes.sitename}</p>
+          <p><strong>NRW Status:</strong> ${attributes.status_descr}</p>
+          <p><strong>Operational Status:</strong> ${attributes.category_name}</p>
+          <p><strong>Main Length (m):</strong> ${attributes.mLength}</p>
+          <p><strong>Premises:</strong> ${attributes.premises}</p>
+          <p><strong>Accounts:</strong> ${attributes.accounts}</p>
+          <p><strong>Meters:</strong> ${attributes.meters}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> DMZ Boundaries</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(nrwReportTabBtn);
+        tabs.appendChild(loggedDataTabBtn);
+        tabs.appendChild(info1TabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(nrwReportTabContent);
+        container.appendChild(loggedDataTabContent);
+        container.appendChild(info1TabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        nrwReportTabBtn.addEventListener("click", () => {
+          nrwReportTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          nrwReportTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        loggedDataTabBtn.addEventListener("click", () => {
+          loggedDataTabBtn.classList.add("active");
+          nrwReportTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          loggedDataTabContent.classList.add("active");
+          nrwReportTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info1TabBtn.addEventListener("click", () => {
+          info1TabBtn.classList.add("active");
+          nrwReportTabBtn.classList.remove("active");
+          loggedDataTabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info1TabContent.classList.add("active");
+          nrwReportTabContent.classList.remove("active");
+          loggedDataTabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          nrwReportTabBtn.classList.remove("active");
+          loggedDataTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          nrwReportTabContent.classList.remove("active");
+          loggedDataTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
+    const popupTemplateDMZMeterPoints = {
+      title: "DMZ METER POINT <br> Site: {site}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const loggedDataTabBtn = document.createElement("button");
+        loggedDataTabBtn.innerText = "Logged Data";
+        loggedDataTabBtn.classList.add("active");
+    
+        const monthlyAverageTabBtn = document.createElement("button");
+        monthlyAverageTabBtn.innerText = "Monthly Average";
+    
+        const info1TabBtn = document.createElement("button");
+        info1TabBtn.innerText = "Info 1";
+    
+        const info2TabBtn = document.createElement("button");
+        info2TabBtn.innerText = "Info 2";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const loggedDataTabContent = document.createElement("div");
+        loggedDataTabContent.classList.add("tab-content", "active");
+        loggedDataTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const monthlyAverageTabContent = document.createElement("div");
+        monthlyAverageTabContent.classList.add("tab-content");
+        monthlyAverageTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const info1TabContent = document.createElement("div");
+        info1TabContent.classList.add("tab-content");
+        info1TabContent.innerHTML = `
+          <p><strong>Meter Make:</strong> ${attributes.meter_make_descr}</p>
+          <p><strong>Meter Type:</strong> ${attributes.meter_type_descr}</p>
+          <p><strong>Serial Number:</strong> ${attributes.serial_number}</p>
+          <p><strong>Install Date:</strong> ${attributes.inst_date}</p>
+          <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+        `;
+    
+        const info2TabContent = document.createElement("div");
+        info2TabContent.classList.add("tab-content");
+        info2TabContent.innerHTML = `
+          <p><strong>Meter Point Type:</strong> ${attributes.mp_type_descr}</p>
+          <p><strong>Main Pipe Nom Diam:</strong> ${attributes.main_pipe_dn}</p>
+          <p><strong>Bypass:</strong> ${attributes.bypass}</p>
+          <p><strong>Bypass Nom Diam:</strong> ${attributes.bypass_pipe_dn}</p>
+          <p><strong>Meter Location:</strong> ${attributes.meter_locn_descr}</p>
+          <p><strong>Strainer:</strong> ${attributes.strainer}</p>
+          <p><strong>Strainer Nom Diam:</strong> ${attributes.strain_dn_descr}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> DMZ Meter Points</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(loggedDataTabBtn);
+        tabs.appendChild(monthlyAverageTabBtn);
+        tabs.appendChild(info1TabBtn);
+        tabs.appendChild(info2TabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(loggedDataTabContent);
+        container.appendChild(monthlyAverageTabContent);
+        container.appendChild(info1TabContent);
+        container.appendChild(info2TabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        loggedDataTabBtn.addEventListener("click", () => {
+          loggedDataTabBtn.classList.add("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          loggedDataTabContent.classList.add("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        monthlyAverageTabBtn.addEventListener("click", () => {
+          monthlyAverageTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          monthlyAverageTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info1TabBtn.addEventListener("click", () => {
+          info1TabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info1TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info2TabBtn.addEventListener("click", () => {
+          info2TabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info2TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
+    const popupTemplateTransmissionMainMeterPoints = {
+      title: "TRANSMISSION MAIN METER POINT <br> Site: {site}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const loggedDataTabBtn = document.createElement("button");
+        loggedDataTabBtn.innerText = "Logged Data";
+        loggedDataTabBtn.classList.add("active");
+    
+        const monthlyAverageTabBtn = document.createElement("button");
+        monthlyAverageTabBtn.innerText = "Monthly Average";
+    
+        const info1TabBtn = document.createElement("button");
+        info1TabBtn.innerText = "Info 1";
+    
+        const info2TabBtn = document.createElement("button");
+        info2TabBtn.innerText = "Info 2";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const loggedDataTabContent = document.createElement("div");
+        loggedDataTabContent.classList.add("tab-content", "active");
+        loggedDataTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const monthlyAverageTabContent = document.createElement("div");
+        monthlyAverageTabContent.classList.add("tab-content");
+        monthlyAverageTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const info1TabContent = document.createElement("div");
+        info1TabContent.classList.add("tab-content");
+        info1TabContent.innerHTML = `
+          <p><strong>Meter Make:</strong> ${attributes.meter_make_descr}</p>
+          <p><strong>Meter Type:</strong> ${attributes.meter_type_descr}</p>
+          <p><strong>Serial Number:</strong> ${attributes.serial_number}</p>
+          <p><strong>Install Date:</strong> ${attributes.inst_date}</p>
+          <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+        `;
+    
+        const info2TabContent = document.createElement("div");
+        info2TabContent.classList.add("tab-content");
+        info2TabContent.innerHTML = `
+          <p><strong>Meter Point Type:</strong> ${attributes.mp_type_descr}</p>
+          <p><strong>Main Pipe Nom Diam:</strong> ${attributes.main_pipe_dn}</p>
+          <p><strong>Bypass:</strong> ${attributes.bypass}</p>
+          <p><strong>Bypass Nom Diam:</strong> ${attributes.bypass_pipe_dn}</p>
+          <p><strong>Meter Location:</strong> ${attributes.meter_locn_descr}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Transmission Main Meter Points</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(loggedDataTabBtn);
+        tabs.appendChild(monthlyAverageTabBtn);
+        tabs.appendChild(info1TabBtn);
+        tabs.appendChild(info2TabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(loggedDataTabContent);
+        container.appendChild(monthlyAverageTabContent);
+        container.appendChild(info1TabContent);
+        container.appendChild(info2TabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        loggedDataTabBtn.addEventListener("click", () => {
+          loggedDataTabBtn.classList.add("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          loggedDataTabContent.classList.add("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        monthlyAverageTabBtn.addEventListener("click", () => {
+          monthlyAverageTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          monthlyAverageTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info1TabBtn.addEventListener("click", () => {
+          info1TabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info1TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info2TabBtn.addEventListener("click", () => {
+          info2TabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info2TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
+    const popupTemplateWaterMains = {
+      title: "WATER MAINS <br> Site: {site}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const generalInfoTabBtn = document.createElement("button");
+        generalInfoTabBtn.innerText = "General Info";
+        generalInfoTabBtn.classList.add("active");
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const generalInfoTabContent = document.createElement("div");
+        generalInfoTabContent.classList.add("tab-content", "active");
+        generalInfoTabContent.innerHTML = `
+          <p><strong>Pipe Type:</strong> ${attributes.pipe_type_descr}</p>
+          <p><strong>Pipe Value:</strong> ${attributes.pipe_dn_descr}</p>
+          <p><strong>Length:</strong> ${attributes.mLength}</p>
+          <p><strong>Pipe Mat:</strong> ${attributes.pipe_mat_descr}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Water Mains</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(generalInfoTabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(generalInfoTabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        generalInfoTabBtn.addEventListener("click", () => {
+          generalInfoTabBtn.classList.add("active");
+          gisTabBtn.classList.remove("active");
+          generalInfoTabContent.classList.add("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          generalInfoTabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          generalInfoTabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
+    const popupTemplateWorkOrders = {
+      title: "Work Order (New System) <br> Work Order Number: {workorder_dbID}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const info1TabBtn = document.createElement("button");
+        info1TabBtn.innerText = "Info 1";
+        info1TabBtn.classList.add("active");
+    
+        const info2TabBtn = document.createElement("button");
+        info2TabBtn.innerText = "Info 2";
+    
+        const info3TabBtn = document.createElement("button");
+        info3TabBtn.innerText = "Info 3";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const info1TabContent = document.createElement("div");
+        info1TabContent.classList.add("tab-content", "active");
+        info1TabContent.innerHTML = `
+          <p><strong>Careline Number:</strong> ${attributes.careline_num}</p>
+          <p><strong>Reported By:</strong> ${attributes.reportedby_descr}</p>
+          <p><strong>Work Order Status:</strong> ${attributes.status_descr}</p>
+          <p><strong>Reinstatement Status:</strong> ${attributes["Reinstatement Type"]}</p>
+          <p><strong>Program:</strong> ${attributes.program_descr}</p>
+          <p><strong>Contract:</strong> ${attributes.contract_descr}</p>
+          <p><strong>Contractor:</strong> ${attributes.contractor_descr}</p>
+        `;
+    
+        const info2TabContent = document.createElement("div");
+        info2TabContent.classList.add("tab-content");
+        info2TabContent.innerHTML = `
+          <p><strong>Work Order Status:</strong> ${attributes.status_descr}</p>
+          <p><strong>Date Reported:</strong> ${attributes.reported_date}</p>
+          <p><strong>Date Created:</strong> ${attributes.created_date}</p>
+          <p><strong>Date Allocated:</strong> ${attributes.allocated_date}</p>
+          <p><strong>Date Received:</strong> ${attributes.received_date}</p>
+          <p><strong>Date Completed:</strong> ${attributes.completed_date}</p>
+          <p><strong>Date Confirmed:</strong> ${attributes["Confirmed Date"]}</p>
+          <p><strong>Date Reinstatement Approved:</strong> ${attributes.approved_date}</p>
+          <p><strong>Date Cancelled:</strong> ${attributes.cancelled_date}</p>
+        `;
+    
+        const info3TabContent = document.createElement("div");
+        info3TabContent.classList.add("tab-content");
+        info3TabContent.innerHTML = `
+          <p><strong>Work Order Status:</strong> ${attributes.status_descr}</p>
+          <p><strong>Failure Type:</strong> ${attributes.failuretype_descr}</p>
+          <p><strong>Repair Type:</strong> ${attributes.repairtype_descr}</p>
+          <p><strong>Pipe Diameter (mm):</strong> ${attributes.pipesize_descr}</p>
+          <p><strong>Pipe Material:</strong> ${attributes.pipemat_descr}</p>
+          <p><strong>Excavation Type:</strong> ${attributes.exctype_descr}</p>
+          <p><strong>Reinstatement Type:</strong> ${attributes.reinstype_descr}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Work Orders (New System)</p>
+          <p><strong>ItemID:</strong> ${attributes.regionID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.OBJECTID}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(info1TabBtn);
+        tabs.appendChild(info2TabBtn);
+        tabs.appendChild(info3TabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(info1TabContent);
+        container.appendChild(info2TabContent);
+        container.appendChild(info3TabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        info1TabBtn.addEventListener("click", () => {
+          info1TabBtn.classList.add("active");
+          info2TabBtn.classList.remove("active");
+          info3TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info1TabContent.classList.add("active");
+          info2TabContent.classList.remove("active");
+          info3TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info2TabBtn.addEventListener("click", () => {
+          info2TabBtn.classList.add("active");
+          info1TabBtn.classList.remove("active");
+          info3TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info2TabContent.classList.add("active");
+          info1TabContent.classList.remove("active");
+          info3TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info3TabBtn.addEventListener("click", () => {
+          info3TabBtn.classList.add("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info3TabContent.classList.add("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          info3TabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          info3TabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
+
+    // // Define a popup template for Customer Locations Layers
+    // const popupTemplateCustomerLocations = {
+    //   title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "premisenum",
+    //           label: "Premise Number"
+    //         },
+    //         {
+    //           fieldName: "addr1",
+    //           label: "Address 1"
+    //         },
+    //         {
+    //           fieldName: "addr2",
+    //           label: "Address 2"
+    //         },
+    //         {
+    //           fieldName: "addr3",
+    //           label: "Address 3"
+    //         },
+    //         {
+    //           fieldName: "poscod",
+    //           label: "Post Code"
+    //         },
+    //         {
+    //           fieldName: "proptytyp",
+    //           label: "Property Type"
+    //         },
+    //         {
+    //           fieldName: "expression/BillingDistrict",
+    //           label: "Billing District"
+    //         },
+    //         {
+    //           fieldName: "expression/OperationalDistrict",
+    //           label: "Operational District"
+    //         },
+    //         {
+    //           fieldName: "expression/DMA",
+    //           label: "DMA"
+    //         },
+    //         {
+    //           fieldName: "accnum",
+    //           label: "Account Number"
+    //         },
+    //         {
+    //           fieldName: "supdat",
+    //           label: "Start Date"
+    //         },
+    //         {
+    //           fieldName: "closeaccdat",
+    //           label: "End Date"
+    //         },
+    //         {
+    //           fieldName: "expression/CustomerStatus",
+    //           label: "Customer Status"
+    //         },
+    //         {
+    //           fieldName: "congrp_descr",
+    //           label: "Customer Group"
+    //         },
+    //         {
+    //           fieldName: "contyp_descr",
+    //           label: "Customer Type"
+    //         },
+    //         {
+    //           fieldName: "expression/MasterRound",
+    //           label: "Meter Round"
+    //         },
+    //         {
+    //           fieldName: "mtrnum",
+    //           label: "Meter Number"
+    //         },
+    //         {
+    //           fieldName: "mtrmake_descr",
+    //           label: "Meter Make"
+    //         },
+    //         {
+    //           fieldName: "expression/MeterSize",
+    //           label: "Meter Size"
+    //         },
+    //         {
+    //           fieldName: "expression/MeterType",
+    //           label: "Meter Type"
+    //         },
+    //         {
+    //           fieldName: "expression/MeterStatus",
+    //           label: "Meter Status"
+    //         },
+    //         {
+    //           fieldName: "expression/MasterMeterStatus",
+    //           label: "Master Meter Status"
+    //         },
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "siteID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "gID",
+    //           label: "ObjectID"
+    //         },
+    //         {
+    //           fieldName: "X",
+    //           label: "Longitude (Dec Deg.)"
+    //         },
+    //         {
+    //           fieldName: "Y",
+    //           label: "Latitude (Dec Deg.)"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "BillingDistrict",
+    //       title: "Billing District",
+    //       expression: "Text($feature.regioncode, '00') + ' ' + $feature.regionname"
+    //     },
+    //     {
+    //       name: "OperationalDistrict",
+    //       title: "Operational District",
+    //       expression: "Text($feature.regioncode, '00') + ' ' + $feature.regionname"
+    //     },
+    //     {
+    //       name: "DMA",
+    //       title: "DMA",
+    //       expression: "Text($feature.sitecode, '00') + ' ' + $feature.sitename"
+    //     },
+    //     {
+    //       name: "CustomerStatus",
+    //       title: "Customer Status",
+    //       expression: "Text($feature.consta, '00') + ' ' + $feature.consta_descr"
+    //     },
+    //     {
+    //       name: "MeterSize",
+    //       title: "Meter Size",
+    //       expression: "Text($feature.mtrsiz, '00') + ' ' + $feature.mtrsiz_descr"
+    //     },
+    //     {
+    //       name: "MeterType",
+    //       title: "Meter Type",
+    //       expression: "Text($feature.mtrtyp, '00') + ' ' + $feature.mtrtyp_descr"
+    //     },
+    //     {
+    //       name: "MeterStatus",
+    //       title: "Meter Status",
+    //       expression: "Text($feature.mtrstat, '00') + ' ' + $feature.mtrstat_descr"
+    //     },
+    //     {
+    //       name: "MasterMeterStatus",
+    //       title: "Master Meter Status",
+    //       expression: "Text($feature.masmtrstat, '00') + ' ' + $feature.masmtrstat_descr"
+    //     },
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'Customer Locations'"
+    //     },
+    //     {
+    //       name: "MasterRound",
+    //       title: "Master Round",
+    //       expression: "$feature.zonnum + '-' + Text($feature.blknum, '00') + '-' + $feature.rounum"
+    //     },
+    //   ]
+    // };
     const labelClassCustomerLocations = {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -352,7 +1631,7 @@ async function displayLayers() {
           size: 7
          }
       },
-      labelPlacement: "center-center",
+      labelPlacement: "above-center",
       labelExpressionInfo: {
         expression: "$feature.mtrnum"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
@@ -363,46 +1642,63 @@ async function displayLayers() {
     };
     // sublayer.labelingInfo = [ labelClassCustomerLocations ];
 
-    // Define a popup template for DMZ Critical Points Layers
-    const popupTemplateDMZCriticalPoints = {
-      title: "DMZ CRITICAL POINT <br> Site: {site}",
-      outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "siteID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "gID",
-              label: "ObjectID"
-            },
-            {
-              fieldName: "X",
-              label: "Longitude (Dec Deg.)"
-            },
-            {
-              fieldName: "Y",
-              label: "Latitude (Dec Deg.)"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'DMZ Critical Points'"
-        },
-      ]
-    };
+    // // Define a popup template for DMZ Critical Points Layers
+    // const popupTemplateDMZCriticalPoints = {
+    //   title: "DMZ CRITICAL POINT <br> Site: {site}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "serial_number",
+    //           label: "Data Logger"
+    //         },
+    //         {
+    //           fieldName: "expression/LoggerType",
+    //           label: "Logger Type"
+    //         },
+    //         {
+    //           fieldName: "last_loggedtime",
+    //           label: "Last Recieved date/Time"
+    //         },
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "siteID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "gID",
+    //           label: "ObjectID"
+    //         },
+    //         {
+    //           fieldName: "X",
+    //           label: "Longitude (Dec Deg.)"
+    //         },
+    //         {
+    //           fieldName: "Y",
+    //           label: "Latitude (Dec Deg.)"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'DMZ Critical Points'"
+    //     },
+    //     {
+    //       name: "LoggerType",
+    //       title: "Logger Type",
+    //       expression: "$feature.make + ' ' + $feature.model"
+    //     },
+    //   ]
+    // };
     const labelClassDMZCriticalPoints= {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -415,7 +1711,7 @@ async function displayLayers() {
           size: 7
          }
       },
-      labelPlacement: "center-center",
+      labelPlacement: "above-center",
       labelExpressionInfo: {
         expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
@@ -426,99 +1722,99 @@ async function displayLayers() {
     };
     // sublayer.labelingInfo = [ labelClassDMZCriticalPoints ];
 
-    // Define a popup template for KTM Layers
-    const popupTemplateKTM = {
-      title: "TRUNK MAIN METER POINT <br> Site: {site}",
-      outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "meter_make_descr",
-              label: "Meter Make"
-            },
-            {
-              fieldName: "meter_type_descr",
-              label: "Meter Type"
-            },
-            {
-              fieldName: "serial_number",
-              label: "Serial Number"
-            },
-            {
-              fieldName: "inst_date",
-              label: "Install Date"
-            },
-            {
-              fieldName: "serial_number",
-              label: "Data Logger"
-            },
-            {
-              fieldName: "expression/LoggerType",
-              label: "Logger Type"
-            },
-            {
-              fieldName: "last_loggedtime",
-              label: "Last Received Date/Time"
-            },
-            {
-              fieldName: "mp_type_descr",
-              label: "Meter Point Type"
-            },
-            {
-              fieldName: "main_pipe_dn",
-              label: "Main Pipe Nom Diam"
-            },
-            {
-              fieldName: "bypass",
-              label: "Bypass"
-            },
-            {
-              fieldName: "bypass_pipe_dn",
-              label: "Bypass Nom Diam"
-            },
-            {
-              fieldName: "meter_locn_descr",
-              label: "Meter Location"
-            },
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "siteID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "gID",
-              label: "ObjectID"
-            },
-            {
-              fieldName: "X",
-              label: "Longitude (Dec Deg.)"
-            },
-            {
-              fieldName: "Y",
-              label: "Latitude (Dec Deg.)"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "LoggerType",
-          title: "Logger Type",
-          expression: "$feature.make + ' ' + $feature.model"
-        },
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'Trunk Main Meter Points'"
-        },
-      ]
-    };
+    // // Define a popup template for KTM Layers
+    // const popupTemplateKTM = {
+    //   title: "TRUNK MAIN METER POINT <br> Site: {site}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "meter_make_descr",
+    //           label: "Meter Make"
+    //         },
+    //         {
+    //           fieldName: "meter_type_descr",
+    //           label: "Meter Type"
+    //         },
+    //         {
+    //           fieldName: "serial_number",
+    //           label: "Serial Number"
+    //         },
+    //         {
+    //           fieldName: "inst_date",
+    //           label: "Install Date"
+    //         },
+    //         {
+    //           fieldName: "serial_number",
+    //           label: "Data Logger"
+    //         },
+    //         {
+    //           fieldName: "expression/LoggerType",
+    //           label: "Logger Type"
+    //         },
+    //         {
+    //           fieldName: "last_loggedtime",
+    //           label: "Last Received Date/Time"
+    //         },
+    //         {
+    //           fieldName: "mp_type_descr",
+    //           label: "Meter Point Type"
+    //         },
+    //         {
+    //           fieldName: "main_pipe_dn",
+    //           label: "Main Pipe Nom Diam"
+    //         },
+    //         {
+    //           fieldName: "bypass",
+    //           label: "Bypass"
+    //         },
+    //         {
+    //           fieldName: "bypass_pipe_dn",
+    //           label: "Bypass Nom Diam"
+    //         },
+    //         {
+    //           fieldName: "meter_locn_descr",
+    //           label: "Meter Location"
+    //         },
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "siteID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "gID",
+    //           label: "ObjectID"
+    //         },
+    //         {
+    //           fieldName: "X",
+    //           label: "Longitude (Dec Deg.)"
+    //         },
+    //         {
+    //           fieldName: "Y",
+    //           label: "Latitude (Dec Deg.)"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "LoggerType",
+    //       title: "Logger Type",
+    //       expression: "$feature.make + ' ' + $feature.model"
+    //     },
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'Trunk Main Meter Points'"
+    //     },
+    //   ]
+    // };
     const labelClassKTM= {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -531,7 +1827,7 @@ async function displayLayers() {
           size: 7
          }
       },
-      labelPlacement: "center-center",
+      labelPlacement: "above-center",
       labelExpressionInfo: {
         expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
@@ -542,75 +1838,75 @@ async function displayLayers() {
     };
     // sublayer.labelingInfo = [ labelClassKTM ];
 
-    // Define a popup template for Reservoirs Layers
-    const popupTemplateReservoirs = {
-      title: "SERVICE RESERVOIR <br> Site: {site}",
-      outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "capacity",
-              label: "Capacity (m3)"
-            },
-            {
-              fieldName: "twl",
-              label: "Top Water Level (m)"
-            },
-            {
-              fieldName: "bwl",
-              label: "Bottom Water Level (m)"
-            },
-            {
-              fieldName: "serial_number",
-              label: "Data Logger"
-            },
-            {
-              fieldName: "expression/LoggerType",
-              label: "Logger Type"
-            },
-            {
-              fieldName: "last_loggedtime",
-              label: "Last Received Date/Time"
-            },
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "siteID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "gID",
-              label: "ObjectID"
-            },
-            {
-              fieldName: "X",
-              label: "Longitude (Dec Deg.)"
-            },
-            {
-              fieldName: "Y",
-              label: "Latitude (Dec Deg.)"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "LoggerType",
-          title: "Logger Type",
-          expression: "$feature.make + ' ' + $feature.model + ' ' + $feature.sub_model"
-        },
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'Reservoirs'"
-        },
-      ]
-    };
+    // // Define a popup template for Reservoirs Layers
+    // const popupTemplateReservoirs = {
+    //   title: "SERVICE RESERVOIR <br> Site: {site}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "capacity",
+    //           label: "Capacity (m3)"
+    //         },
+    //         {
+    //           fieldName: "twl",
+    //           label: "Top Water Level (m)"
+    //         },
+    //         {
+    //           fieldName: "bwl",
+    //           label: "Bottom Water Level (m)"
+    //         },
+    //         {
+    //           fieldName: "serial_number",
+    //           label: "Data Logger"
+    //         },
+    //         {
+    //           fieldName: "expression/LoggerType",
+    //           label: "Logger Type"
+    //         },
+    //         {
+    //           fieldName: "last_loggedtime",
+    //           label: "Last Received Date/Time"
+    //         },
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "siteID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "gID",
+    //           label: "ObjectID"
+    //         },
+    //         {
+    //           fieldName: "X",
+    //           label: "Longitude (Dec Deg.)"
+    //         },
+    //         {
+    //           fieldName: "Y",
+    //           label: "Latitude (Dec Deg.)"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "LoggerType",
+    //       title: "Logger Type",
+    //       expression: "$feature.make + ' ' + $feature.model + ' ' + $feature.sub_model"
+    //     },
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'Reservoirs'"
+    //     },
+    //   ]
+    // };
     const labelClassReservoirs= {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -623,9 +1919,9 @@ async function displayLayers() {
           size: 7
          }
       },
-      labelPlacement: "center-center",
+      labelPlacement: "above-center",
       labelExpressionInfo: {
-        expression: "$feature.sitename"
+        expression: "$feature.site"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
@@ -634,47 +1930,46 @@ async function displayLayers() {
     };
     // sublayer.labelingInfo = [ labelClassReservoirs ];
 
-
-    // Define a popup template for WTP Layers
-    const popupTemplateWTP = {
-      title: "WATER TREATMENT PLANT <br> Site: {site}",
-      outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "siteID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "gID",
-              label: "ObjectID"
-            },
-            {
-              fieldName: "X",
-              label: "Longitude (Dec Deg.)"
-            },
-            {
-              fieldName: "Y",
-              label: "Latitude (Dec Deg.)"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'Water Treatment Plant'"
-        },
-      ]
-    };
+    // // Define a popup template for WTP Layers
+    // const popupTemplateWTP = {
+    //   title: "WATER TREATMENT PLANT <br> Site: {site}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "siteID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "gID",
+    //           label: "ObjectID"
+    //         },
+    //         {
+    //           fieldName: "X",
+    //           label: "Longitude (Dec Deg.)"
+    //         },
+    //         {
+    //           fieldName: "Y",
+    //           label: "Latitude (Dec Deg.)"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'Water Treatment Plant'"
+    //     },
+    //   ]
+    // };
     const labelClassWTP= {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -687,7 +1982,7 @@ async function displayLayers() {
           size: 7
           }
       },
-      labelPlacement: "center-center",
+      labelPlacement: "above-center",
       labelExpressionInfo: {
         expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
@@ -696,77 +1991,76 @@ async function displayLayers() {
       minScale: 18055.9548215,
       // where: "Conference = 'AFC'"
     };
-    // sublayer.labelingInfo = [ labelClassWTP ];
-    
+    // sublayer.labelingInfo = [ labelClassWTP ]; 
 
-    // Define a popup template for DMZBoundaries Layers
-    const popupTemplateDMZBoundaries = {
-      title: "DMZ BOUNDARY <br> Site: {site}",
-      outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "siteID",
-              label: "DMZ ID"
-            },
-            {
-              fieldName: "sitecode",
-              label: "DMZ Code"
-            },
-            {
-              fieldName: "sitename",
-              label: "DMZ Name"
-            },
-            {
-              fieldName: "status_descr",
-              label: "NRW Status"
-            },
-            {
-              fieldName: "category_name",
-              label: "Opretional Status"
-            },
-            {
-              fieldName: "mLength",
-              label: "Main Length (m)"
-            },
-            {
-              fieldName: "premises",
-              label: "Premises"
-            },
-            {
-              fieldName: "accounts",
-              label: "Accounts"
-            },
-            {
-              fieldName: "meters",
-              label: "Meters"
-            },
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "siteID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "gID",
-              label: "ObjectID"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'DMZ Boundaries'"
-        },
-      ]
-    };
+    // // Define a popup template for DMZBoundaries Layers
+    // const popupTemplateDMZBoundaries = {
+    //   title: "DMZ BOUNDARY <br> Site: {site}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "siteID",
+    //           label: "DMZ ID"
+    //         },
+    //         {
+    //           fieldName: "sitecode",
+    //           label: "DMZ Code"
+    //         },
+    //         {
+    //           fieldName: "sitename",
+    //           label: "DMZ Name"
+    //         },
+    //         {
+    //           fieldName: "status_descr",
+    //           label: "NRW Status"
+    //         },
+    //         {
+    //           fieldName: "category_name",
+    //           label: "Opretional Status"
+    //         },
+    //         {
+    //           fieldName: "mLength",
+    //           label: "Main Length (m)"
+    //         },
+    //         {
+    //           fieldName: "premises",
+    //           label: "Premises"
+    //         },
+    //         {
+    //           fieldName: "accounts",
+    //           label: "Accounts"
+    //         },
+    //         {
+    //           fieldName: "meters",
+    //           label: "Meters"
+    //         },
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "siteID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "gID",
+    //           label: "ObjectID"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'DMZ Boundaries'"
+    //     },
+    //   ]
+    // };
     const labelClassDMZBoundaries = {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -790,108 +2084,107 @@ async function displayLayers() {
     };
     // sublayer.labelingInfo = [ labelClassDMZBoundaries ];
 
-
-    // Define a popup template for DMZ Meter Points Layers
-    const popupTemplateDMZMeterPoints = {
-      title: "DMZ METER POINT <br> Site: {site}",
-      outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "meter_make_descr",
-              label: "Meter Make"
-            },
-            {
-              fieldName: "meter_type_descr",
-              label: "Meter Type"
-            },
-            {
-              fieldName: "serial_number",
-              label: "Serial Number"
-            },
-            {
-              fieldName: "inst_date",
-              label: "Install Date"
-            },
-            {
-              fieldName: "serial_number",
-              label: "Data Logger"
-            },
-            {
-              fieldName: "expression/LoggerType",
-              label: "Logger Type"
-            },
-            {
-              fieldName: "last_loggedtime",
-              label: "Last Received Date/Time"
-            },
-            {
-              fieldName: "mp_type_descr",
-              label: "Meter Point Type"
-            },
-            {
-              fieldName: "main_pipe_dn",
-              label: "Main Pipe Nom Diam"
-            },
-            {
-              fieldName: "bypass",
-              label: "Bypass"
-            },
-            {
-              fieldName: "bypass_pipe_dn",
-              label: "Bypass Nom Diam"
-            },
-            {
-              fieldName: "meter_locn_descr",
-              label: "Meter Location"
-            },
-            {
-              fieldName: "strainer",
-              label: "Strainer"
-            },
-            {
-              fieldName: "strain_dn_descr",
-              label: "Strainer Nom Diam"
-            },
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "siteID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "gID",
-              label: "ObjectID"
-            },
-            {
-              fieldName: "X",
-              label: "Longitude (Dec Deg.)"
-            },
-            {
-              fieldName: "Y",
-              label: "Latitude (Dec Deg.)"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "LoggerType",
-          title: "Logger Type",
-          expression: "$feature.make + ' ' + $feature.model"
-        },
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'DMZ Meter Points'"
-        },
-      ]
-    };
+    // // Define a popup template for DMZ Meter Points Layers
+    // const popupTemplateDMZMeterPoints = {
+    //   title: "DMZ METER POINT <br> Site: {site}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "meter_make_descr",
+    //           label: "Meter Make"
+    //         },
+    //         {
+    //           fieldName: "meter_type_descr",
+    //           label: "Meter Type"
+    //         },
+    //         {
+    //           fieldName: "serial_number",
+    //           label: "Serial Number"
+    //         },
+    //         {
+    //           fieldName: "inst_date",
+    //           label: "Install Date"
+    //         },
+    //         {
+    //           fieldName: "serial_number",
+    //           label: "Data Logger"
+    //         },
+    //         {
+    //           fieldName: "expression/LoggerType",
+    //           label: "Logger Type"
+    //         },
+    //         {
+    //           fieldName: "last_loggedtime",
+    //           label: "Last Received Date/Time"
+    //         },
+    //         {
+    //           fieldName: "mp_type_descr",
+    //           label: "Meter Point Type"
+    //         },
+    //         {
+    //           fieldName: "main_pipe_dn",
+    //           label: "Main Pipe Nom Diam"
+    //         },
+    //         {
+    //           fieldName: "bypass",
+    //           label: "Bypass"
+    //         },
+    //         {
+    //           fieldName: "bypass_pipe_dn",
+    //           label: "Bypass Nom Diam"
+    //         },
+    //         {
+    //           fieldName: "meter_locn_descr",
+    //           label: "Meter Location"
+    //         },
+    //         {
+    //           fieldName: "strainer",
+    //           label: "Strainer"
+    //         },
+    //         {
+    //           fieldName: "strain_dn_descr",
+    //           label: "Strainer Nom Diam"
+    //         },
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "siteID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "gID",
+    //           label: "ObjectID"
+    //         },
+    //         {
+    //           fieldName: "X",
+    //           label: "Longitude (Dec Deg.)"
+    //         },
+    //         {
+    //           fieldName: "Y",
+    //           label: "Latitude (Dec Deg.)"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "LoggerType",
+    //       title: "Logger Type",
+    //       expression: "$feature.make + ' ' + $feature.model"
+    //     },
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'DMZ Meter Points'"
+    //     },
+    //   ]
+    // };
     const labelClassDMZMeterPoints= {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -904,7 +2197,7 @@ async function displayLayers() {
           size: 7
          }
       },
-      labelPlacement: "center-center",
+      labelPlacement: "above-center",
       labelExpressionInfo: {
         expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
@@ -915,100 +2208,99 @@ async function displayLayers() {
     };
     // sublayer.labelingInfo = [ labelClassDMZMeterPoints ];
 
-
-    // Define a popup template for Transmission Main Meter Points Layers
-    const popupTemplateTransmissionMainMeterPoints = {
-      title: "TRANSMISSION MAIN METER POINT <br> Site: {site}",
-      outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "meter_make_descr",
-              label: "Meter Make"
-            },
-            {
-              fieldName: "meter_type_descr",
-              label: "Meter Type"
-            },
-            {
-              fieldName: "serial_number",
-              label: "Serial Number"
-            },
-            {
-              fieldName: "inst_date",
-              label: "Install Date"
-            },
-            {
-              fieldName: "serial_number",
-              label: "Data Logger"
-            },
-            {
-              fieldName: "expression/LoggerType",
-              label: "Logger Type"
-            },
-            {
-              fieldName: "last_loggedtime",
-              label: "Last Received Date/Time"
-            },
-            {
-              fieldName: "mp_type_descr",
-              label: "Meter Point Type"
-            },
-            {
-              fieldName: "main_pipe_dn",
-              label: "Main Pipe Nom Diam"
-            },
-            {
-              fieldName: "bypass",
-              label: "Bypass"
-            },
-            {
-              fieldName: "bypass_pipe_dn",
-              label: "Bypass Nom Diam"
-            },
-            {
-              fieldName: "meter_locn_descr",
-              label: "Meter Location"
-            },
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "siteID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "gID",
-              label: "ObjectID"
-            },
-            {
-              fieldName: "X",
-              label: "Longitude (Dec Deg.)"
-            },
-            {
-              fieldName: "Y",
-              label: "Latitude (Dec Deg.)"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "LoggerType",
-          title: "Logger Type",
-          expression: "$feature.make + ' ' + $feature.model"
-        },
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'Transmission Main Meter Points'"
-        },
-      ]
-    };
+    // // Define a popup template for Transmission Main Meter Points Layers
+    // const popupTemplateTransmissionMainMeterPoints = {
+    //   title: "TRANSMISSION MAIN METER POINT <br> Site: {site}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "meter_make_descr",
+    //           label: "Meter Make"
+    //         },
+    //         {
+    //           fieldName: "meter_type_descr",
+    //           label: "Meter Type"
+    //         },
+    //         {
+    //           fieldName: "serial_number",
+    //           label: "Serial Number"
+    //         },
+    //         {
+    //           fieldName: "inst_date",
+    //           label: "Install Date"
+    //         },
+    //         {
+    //           fieldName: "serial_number",
+    //           label: "Data Logger"
+    //         },
+    //         {
+    //           fieldName: "expression/LoggerType",
+    //           label: "Logger Type"
+    //         },
+    //         {
+    //           fieldName: "last_loggedtime",
+    //           label: "Last Received Date/Time"
+    //         },
+    //         {
+    //           fieldName: "mp_type_descr",
+    //           label: "Meter Point Type"
+    //         },
+    //         {
+    //           fieldName: "main_pipe_dn",
+    //           label: "Main Pipe Nom Diam"
+    //         },
+    //         {
+    //           fieldName: "bypass",
+    //           label: "Bypass"
+    //         },
+    //         {
+    //           fieldName: "bypass_pipe_dn",
+    //           label: "Bypass Nom Diam"
+    //         },
+    //         {
+    //           fieldName: "meter_locn_descr",
+    //           label: "Meter Location"
+    //         },
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "siteID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "gID",
+    //           label: "ObjectID"
+    //         },
+    //         {
+    //           fieldName: "X",
+    //           label: "Longitude (Dec Deg.)"
+    //         },
+    //         {
+    //           fieldName: "Y",
+    //           label: "Latitude (Dec Deg.)"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "LoggerType",
+    //       title: "Logger Type",
+    //       expression: "$feature.make + ' ' + $feature.model"
+    //     },
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'Transmission Main Meter Points'"
+    //     },
+    //   ]
+    // };
     const labelClassTransmissionMainMeterPoints= {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -1021,7 +2313,7 @@ async function displayLayers() {
           size: 7
          }
       },
-      labelPlacement: "center-center",
+      labelPlacement: "above-center",
       labelExpressionInfo: {
         expression: "$feature.sitename"
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
@@ -1032,56 +2324,54 @@ async function displayLayers() {
     };
     // sublayer.labelingInfo = [ labelClassTransmissionMainMeterPoints ];
 
-
-
-    // Define a popup template for Water Mains Layers
-    const popupTemplateWaterMains = {
-      title: "WATER MAINS <br> Site: {site}",
-      outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "pipe_type_descr",
-              label: "Pipe Type"
-            },
-            {
-              fieldName: "pipe_dn_descr",
-              label: "Pipe Value"
-            },
-            {
-              fieldName: "mLength",
-              label: "Length"
-            },
-            {
-              fieldName: "pipe_mat_descr",
-              label: "Pipe Mat"
-            },
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "siteID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "gID",
-              label: "ObjectID"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'Water Mains'"
-        },
-      ]
-    };
+    // // Define a popup template for Water Mains Layers
+    // const popupTemplateWaterMains = {
+    //   title: "WATER MAINS <br> Site: {site}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "pipe_type_descr",
+    //           label: "Pipe Type"
+    //         },
+    //         {
+    //           fieldName: "pipe_dn_descr",
+    //           label: "Pipe Value"
+    //         },
+    //         {
+    //           fieldName: "mLength",
+    //           label: "Length"
+    //         },
+    //         {
+    //           fieldName: "pipe_mat_descr",
+    //           label: "Pipe Mat"
+    //         },
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "siteID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "gID",
+    //           label: "ObjectID"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'Water Mains'"
+    //     },
+    //   ]
+    // };
     const labelClassWaterMains= {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -1105,142 +2395,138 @@ async function displayLayers() {
     };
     // sublayer.labelingInfo = [ labelClassWaterMains ];
 
-
-
-
-
-    // Define a popup template for Work Orders Layers
-    const popupTemplateWorkOrders = {
-      title: "Work Order (New System) <br> Work Order Number: {workorder_dbID}",
-      outFields: ["*"],
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "careline_num",
-              label: "Careline Number"
-            },
-            {
-              fieldName: "reportedby_descr",
-              label: "Reported By"
-            },
-            {
-              fieldName: "status_descr",
-              label: "Work Order Status"
-            },
-            {
-              fieldName: "Reinstatement Type",
-              label: "Reinstatement Status"
-            },
-            {
-              fieldName: "program_descr",
-              label: "Program"
-            },
-            {
-              fieldName: "contract_descr",
-              label: "Contract"
-            },
-            {
-              fieldName: "contractor_descr",
-              label: "Contractor"
-            },
-            {
-              fieldName: "status_descr",
-              label: "Work Order Status"
-            },
-            {
-              fieldName: "reported_date",
-              label: "Date Reported"
-            },
-            {
-              fieldName: "created_date",
-              label: "Date Created"
-            },
-            {
-              fieldName: "allocated_date",
-              label: "Date Allocated"
-            },
-            {
-              fieldName: "received_date",
-              label: "Date Recieved"
-            },
-            {
-              fieldName: "completed_date",
-              label: "Date Completed"
-            },
-            {
-              fieldName: "Confirmed Date",
-              label: "Date Confirmed"
-            },
-            {
-              fieldName: "approved_date",
-              label: "Date Reinstatement Approved"
-            },
-            {
-              fieldName: "cancelled_date",
-              label: "Date Cancelled"
-            },
-            {
-              fieldName: "status_descr",
-              label: "Work Order Status"
-            },
-            {
-              fieldName: "failuretype_descr",
-              label: "Failur Type"
-            },
-            {
-              fieldName: "repairtype_descr",
-              label: "Repair Type"
-            },
-            {
-              fieldName: "pipesize_descr",
-              label: "Pipe Diameter (mm)"
-            },
-            {
-              fieldName: "pipemat_descr",
-              label: "Pipe Material"
-            },
-            {
-              fieldName: "exctype_descr",
-              label: "Excavation Type"
-            },
-            {
-              fieldName: "reinstype_descr",
-              label: "Reinstatement Type"
-            },
-            {
-              fieldName: "expression/staticField",
-              label: "Layer Name"
-            },
-            {
-              fieldName: "regionID",
-              label: "ItemID"
-            },
-            {
-              fieldName: "OBJECTID",
-              label: "ObjectID"
-            },
-            {
-              fieldName: "X",
-              label: "Longitude (Dec Deg.)"
-            },
-            {
-              fieldName: "Y",
-              label: "Latitude (Dec Deg.)"
-            },
-            // Add more fields as needed
-          ]
-        }
-      ],
-      expressionInfos: [
-        {
-          name: "staticField",
-          title: "Layer Name",
-          expression: "'Work Orders (New System)'"
-        },
-      ]
-    };
+    // // Define a popup template for Work Orders Layers
+    // const popupTemplateWorkOrders = {
+    //   title: "Work Order (New System) <br> Work Order Number: {workorder_dbID}",
+    //   outFields: ["*"],
+    //   content: [
+    //     {
+    //       type: "fields",
+    //       fieldInfos: [
+    //         {
+    //           fieldName: "careline_num",
+    //           label: "Careline Number"
+    //         },
+    //         {
+    //           fieldName: "reportedby_descr",
+    //           label: "Reported By"
+    //         },
+    //         {
+    //           fieldName: "status_descr",
+    //           label: "Work Order Status"
+    //         },
+    //         {
+    //           fieldName: "Reinstatement Type",
+    //           label: "Reinstatement Status"
+    //         },
+    //         {
+    //           fieldName: "program_descr",
+    //           label: "Program"
+    //         },
+    //         {
+    //           fieldName: "contract_descr",
+    //           label: "Contract"
+    //         },
+    //         {
+    //           fieldName: "contractor_descr",
+    //           label: "Contractor"
+    //         },
+    //         {
+    //           fieldName: "status_descr",
+    //           label: "Work Order Status"
+    //         },
+    //         {
+    //           fieldName: "reported_date",
+    //           label: "Date Reported"
+    //         },
+    //         {
+    //           fieldName: "created_date",
+    //           label: "Date Created"
+    //         },
+    //         {
+    //           fieldName: "allocated_date",
+    //           label: "Date Allocated"
+    //         },
+    //         {
+    //           fieldName: "received_date",
+    //           label: "Date Recieved"
+    //         },
+    //         {
+    //           fieldName: "completed_date",
+    //           label: "Date Completed"
+    //         },
+    //         {
+    //           fieldName: "Confirmed Date",
+    //           label: "Date Confirmed"
+    //         },
+    //         {
+    //           fieldName: "approved_date",
+    //           label: "Date Reinstatement Approved"
+    //         },
+    //         {
+    //           fieldName: "cancelled_date",
+    //           label: "Date Cancelled"
+    //         },
+    //         {
+    //           fieldName: "status_descr",
+    //           label: "Work Order Status"
+    //         },
+    //         {
+    //           fieldName: "failuretype_descr",
+    //           label: "Failur Type"
+    //         },
+    //         {
+    //           fieldName: "repairtype_descr",
+    //           label: "Repair Type"
+    //         },
+    //         {
+    //           fieldName: "pipesize_descr",
+    //           label: "Pipe Diameter (mm)"
+    //         },
+    //         {
+    //           fieldName: "pipemat_descr",
+    //           label: "Pipe Material"
+    //         },
+    //         {
+    //           fieldName: "exctype_descr",
+    //           label: "Excavation Type"
+    //         },
+    //         {
+    //           fieldName: "reinstype_descr",
+    //           label: "Reinstatement Type"
+    //         },
+    //         {
+    //           fieldName: "expression/staticField",
+    //           label: "Layer Name"
+    //         },
+    //         {
+    //           fieldName: "regionID",
+    //           label: "ItemID"
+    //         },
+    //         {
+    //           fieldName: "OBJECTID",
+    //           label: "ObjectID"
+    //         },
+    //         {
+    //           fieldName: "X",
+    //           label: "Longitude (Dec Deg.)"
+    //         },
+    //         {
+    //           fieldName: "Y",
+    //           label: "Latitude (Dec Deg.)"
+    //         },
+    //         // Add more fields as needed
+    //       ]
+    //     }
+    //   ],
+    //   expressionInfos: [
+    //     {
+    //       name: "staticField",
+    //       title: "Layer Name",
+    //       expression: "'Work Orders (New System)'"
+    //     },
+    //   ]
+    // };
     const labelClassWorkOrders= {  // autocasts as new LabelClass()
       symbol: {
         type: "text",  // autocasts as new TextSymbol()
@@ -1608,6 +2894,7 @@ async function displayLayers() {
           sublayer.visible = false;
           sublayer.renderer = staticrenderer;
           sublayer.labelingInfo = [ labelClassCustomerLocations ];
+          sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateCustomerLocations;
         });
       });
@@ -1637,12 +2924,12 @@ async function displayLayers() {
           sublayer.visible = false;
           sublayer.renderer = staticrenderer;
           sublayer.labelingInfo = [ labelClassDMZCriticalPoints ];
+          sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateDMZCriticalPoints;
         });
       });
       return layer;
     });
-
     const DMZCriticalPoints = new GroupLayer({
       title: "DMZ Critical Points",
       layers: subtypeGroupLayersDMZCriticalPoints,
@@ -1666,6 +2953,7 @@ async function displayLayers() {
           sublayer.visible = false;
           sublayer.renderer = staticrenderer;
           sublayer.labelingInfo = [ labelClassKTM ];
+          sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateKTM;
         });
       });
@@ -1694,6 +2982,7 @@ async function displayLayers() {
           sublayer.visible = false;
           sublayer.renderer = staticrenderer;
           sublayer.labelingInfo = [ labelClassReservoirs ];
+          sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateReservoirs;
         });
       });
@@ -1728,12 +3017,12 @@ async function displayLayers() {
           sublayer.visible = false;
           sublayer.renderer = staticrenderer;
           sublayer.labelingInfo = [ labelClassWTP ];
+          sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateWTP;
         });
       });
       return layer;
     });
-
     const WTP = new GroupLayer({
       title: "Water Treatment Plant",
       layers: subtypeGroupLayersWTP,
@@ -1760,6 +3049,7 @@ async function displayLayers() {
           sublayer.visible = false;
           sublayer.renderer.symbol.color.a = 0.3;
           sublayer.labelingInfo = [ labelClassDMZBoundaries ];
+          sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateDMZBoundaries;
         });
       });
@@ -1790,6 +3080,7 @@ async function displayLayers() {
           sublayer.visible = false;
           sublayer.renderer = staticrenderer;
           sublayer.labelingInfo = [ labelClassDMZMeterPoints ];
+          sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateDMZMeterPoints;
         });
       });
@@ -1820,6 +3111,7 @@ async function displayLayers() {
           sublayer.visible = false;
           sublayer.renderer = staticrenderer;
           sublayer.labelingInfo = [ labelClassTransmissionMainMeterPoints ];
+          sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateTransmissionMainMeterPoints;
         });
       });
@@ -1918,6 +3210,7 @@ async function displayLayers() {
             if (renderers[subGroup.title]) {
               sublayer.renderer = renderers[subGroup.title];
               sublayer.labelingInfo = [ labelClassWaterMains ];
+              sublayer.labelsVisible = false;
               sublayer.popupTemplate = popupTemplateWaterMains;
             }
           });
@@ -1930,7 +3223,6 @@ async function displayLayers() {
         visible: false // Hide all sublayers initially
       });
     });
-
     // Create the Main Water Main Group Layer
     const WaterMains = new GroupLayer({
       title: "Water Main",
@@ -1968,7 +3260,6 @@ async function displayLayers() {
         visible: false // Hide all sublayers initially
       });
     });
-
     // Create the Main Water Main Group Layer
     const WorkOrders = new GroupLayer({
       title: "Work Orders (New System)",
@@ -1976,16 +3267,16 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    displayMap.add(WorkOrders);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(WorkOrders);  // adds the layer to the map
+    // displayMap.add(WaterMains);  // adds the layer to the map
     displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
     displayMap.add(DMZBoundaries);  // adds the layer to the map
-    displayMap.add(WTP);  // adds the layer to the map
+    // displayMap.add(WTP);  // adds the layer to the map
     displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(Customer_Locations);
+    // displayMap.add(KTM);
+    // displayMap.add(DMZCriticalPoints);
+    // displayMap.add(Customer_Locations);
 
 
 
@@ -2056,6 +3347,7 @@ async function addWidgets() {
       layerList.visibilityAppearance = "checkbox";
       layerList.listItemCreatedFunction = function(event) {
         const item = event.item;
+        const layer = item.layer;
 
         // if (item.children.length > 0) {  // Only apply logic to group layers
         //   item.watch("open", function (expanded) {
@@ -2069,6 +3361,11 @@ async function addWidgets() {
         //   });
         // }
         
+        // item.panel = {
+        //   content: `<img src="https://github.com/ashrafayman219/austen-inspire-map/blob/main/kisspng-jabatan-air-negeri-sabah-water-department-malaysia-police-malaysia-5b0be841d040f2.638208291527507009853.png?raw=true" alt="kisspng-jabatan-air-negeri-sabah-water-department-malaysia-police-malaysia" style="width:20px; height:20px;"> ${item.title}`,
+        //   open: false
+        // };
+
         if (item.children.length > 0) {  // Only apply logic to group layers
           item.watch("open", function (expanded) {
             if (expanded) {
@@ -2118,14 +3415,6 @@ async function addWidgets() {
         // Check if the layer is a top-level GroupLayer
         const isTopLevelGroupLayer = view.map.layers.includes(item.layer);
 
-        // if (item.layer.type != "group") {
-        //   // don't show legend twice
-        //   item.panel = {
-        //     content: "legend",
-        //     open: true
-        //   };
-        // }
-
         if (item.layer.type === "group" && isTopLevelGroupLayer) {
             console.log("Top-Level GroupLayer:", item.layer.title);
             item.actionsSections.push([
@@ -2152,20 +3441,28 @@ async function addWidgets() {
         
         // Watch for visibility changes
         item.watch("visible", (visible) => {
-          var itemID = item.layer;
           if (visible) {
-            // console.log(item, "itemitemitem");
-            activateParentLayers(item.layer);  // Ensure parent layers turn on
-          }
-            else if (item.layer.type === "subtype-sublayer") {
-              activateChildLayers(item.layer, visible, itemID); // Ensure all sublayers turn on
-            }
-           else {
-            // if the parent is turned off, ensure all sublayers are also unchecked
-            deactivateChildLayers(item.layer);
+              activateParentLayers(item.layer); // Turn on parent layers
+              activateChildLayers0(item.layer, visible); // Turn on all child sublayers if it's a subtype-group
+          } else {
+              deactivateChildLayers(item.layer); // Turn off child sublayers when a layer is disabled
           }
         });
+      
+
+        // layer.watch('visible', (visibility, a, eventName,layer) => {
+        //   console.log("visible: ", visibility);
+        //   console.log(layer.title, eventName, a);
+        // });
+
+
+        
+
+
       };
+
+
+
 
       // Function to turn on parent layers when a sublayer is activated
       function activateParentLayers(layer) {
@@ -2175,6 +3472,29 @@ async function addWidgets() {
             parentLayer = parentLayer.parent; // Move up the hierarchy
         }
       }
+
+      function activateChildLayers0(layer, visible) {
+        // console.log(layer, "HHHHH");
+        if (layer.sublayers) {
+            layer.sublayers.forEach((sublayer) => {
+                sublayer.visible = visible; // Turn on/off each child layer
+                activateChildLayers0(sublayer, visible); // Recursively activate deeper sublayers
+            });
+        }
+
+        // if (layer.type === "group") {
+        //   layer.layers.forEach((s) => {
+        //     // console.log(s, "ssss")
+        //     if (s.sublayers) {
+        //       s.sublayers.forEach((sublayer1) => {
+        //         sublayer1.visible = visible; // Turn on/off each child layer
+        //         // activateChildLayers0(sublayer1, visible); // Recursively activate deeper sublayers
+        //       });
+        //     }
+        //   })
+        // }
+      }
+    
 
       // Recursive function to turn on all sublayers when a parent is activated
       function activateChildLayers(layer, visible, clickedLayerID) {
@@ -2228,6 +3548,20 @@ async function addWidgets() {
                 deactivateChildLayers(sublayer); // Recursively deactivate deeper sublayers
             });
         }
+
+        // if (layer.type === "group") {
+        //   layer.layers.forEach((s) => {
+        //     if (s.sublayers) {
+        //       s.visible = false;  // Turn off visibility
+        //       s.listItem && (s.listItem.visible = false); // Uncheck the checkbox in UI
+        //       s.sublayers.forEach((sublayer1) => {
+        //         sublayer1.visible = false;  // Turn off visibility
+        //         sublayer1.listItem && (sublayer1.listItem.visible = false); // Uncheck the checkbox in UI
+        //         deactivateChildLayers(sublayer1); // Recursively deactivate deeper sublayers
+        //       });
+        //     }
+        //   })
+        // }
       }
 
       // Keep the event listener for action triggers

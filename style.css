@@ -77,3 +77,51 @@ h3 {
   height: 100%;
   background-color: rgb(192, 199, 199);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.custom-popup {
+  font-family: Arial, sans-serif;
+  width: 100%;
+}
+
+/* Tab Buttons */
+.tab-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tab-buttons button {
+  background: #ddd;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.tab-buttons button.active {
+  background: #0290e3;
+  color: white;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
