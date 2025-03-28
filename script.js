@@ -3449,7 +3449,7 @@ async function addWidgets() {
           console.log(visible, "visible");
           if (visible) {
               activateParentLayers(item.layer); // Turn on parent layers
-              activateChildLayers0(item.layer); // Turn on all child sublayers if it's a subtype-group
+              activateChildLayers0(item.layer, visible); // Turn on all child sublayers if it's a subtype-group
           } else {
               deactivateChildLayers(item.layer); // Turn off child sublayers when a layer is disabled
           }
