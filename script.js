@@ -3310,16 +3310,16 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    displayMap.add(WorkOrders);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
+    // displayMap.add(WorkOrders);  // adds the layer to the map
+    // displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(Customer_Locations);
+    // displayMap.add(Reservoirs);  // adds the layer to the map
+    // displayMap.add(KTM);
+    // displayMap.add(DMZCriticalPoints);
+    // displayMap.add(Customer_Locations);
 
 
 
@@ -3389,26 +3389,12 @@ async function addWidgets() {
 
       layerList.visibilityAppearance = "checkbox";
       layerList.listItemCreatedFunction = async function(event) {
-        const item = await event.item;
-        await item.layer.when();
-
-        // if (item.children.length > 0) {  // Only apply logic to group layers
-        //   item.watch("open", function (expanded) {
-        //     if (expanded) {
-        //       layerList.operationalItems.forEach((otherItem) => {
-        //         if (otherItem !== item && otherItem.open) {
-        //           otherItem.open = false;  // Collapse all other groups
-        //         }
-        //       });
-        //     }
-        //   });
-        // }
-        
-        // item.panel = {
-        //   content: `<img src="https://github.com/ashrafayman219/austen-inspire-map/blob/main/kisspng-jabatan-air-negeri-sabah-water-department-malaysia-police-malaysia-5b0be841d040f2.638208291527507009853.png?raw=true" alt="kisspng-jabatan-air-negeri-sabah-water-department-malaysia-police-malaysia" style="width:20px; height:20px;"> ${item.title}`,
-        //   open: false
-        // };
-
+        const item = event.item;
+        // await item.layer.when();
+        // console.log(item, "here is the item...");
+        if (item.children.length > 0) {
+          console.log(item, "M");
+        }
         if (item.children.length > 0) {  // Only apply logic to group layers
           item.watch("open", function (expanded) {
             if (expanded) {
@@ -3469,6 +3455,8 @@ async function addWidgets() {
             ]);
         }
 
+
+
         // // Add logic to ensure parent layers are turned on when a sublayer is toggled
         // item.watch("visible", (visible) => {
         //   if (visible) {
@@ -3482,26 +3470,144 @@ async function addWidgets() {
         // });
         
         
-        // Watch for visibility changes
-        item.watch("visible", (visible) => {
-          console.log(visible, "visible");
-          if (visible) {
-              activateParentLayers(item.layer); // Turn on parent layers
-              activateChildLayers0(item.layer, visible); // Turn on all child sublayers if it's a subtype-group
-          } else {
-              deactivateChildLayers(item.layer); // Turn off child sublayers when a layer is disabled
-          }
-        });
-      
-
-        // layer.watch('visible', (visibility, a, eventName,layer) => {
-        //   console.log("visible: ", visibility);
-        //   console.log(layer.title, eventName, a);
+        // // Watch for visibility changes
+        // item.watch("visible", (visible) => {
+        //   console.log(visible, "visible");
+        //   if (visible) {
+        //       activateParentLayers(item.layer); // Turn on parent layers
+        //       activateChildLayers0(item.layer, visible); // Turn on all child sublayers if it's a subtype-group
+        //   } else {
+        //       deactivateChildLayers(item.layer); // Turn off child sublayers when a layer is disabled
+        //   }
         // });
 
 
-        
+        let isUpdatingVisibility = false;
 
+        item.watch("visible", (visible) => {
+          if (isUpdatingVisibility) return; // Exit if already updating visibility
+        
+          isUpdatingVisibility = true; // Set flag to true
+        
+          console.log(item.layer, "item.layer");
+        
+          if (visible) {
+            console.log("NNNN");
+            if ( item.layer.type === "subtype-sublayer") {
+              console.log("GGGGG")
+              let parentLayer = item.layer.parent;
+              while (parentLayer) {
+                if (parentLayer.visible === false) {
+                  parentLayer.visible = true;
+                  console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
+                }
+                parentLayer = parentLayer.parent; // Move up the hierarchy
+              }
+              // return;
+            } else {
+            if (item.layer.type === "subtype-group" && item.layer.parent.type === "group") { // &&
+              console.log(item.layer, "subtype-group groupgroupgroupgroupgroupgroup");
+              if (item.layer.sublayers && item.layer.sublayers.some(sublayer => sublayer.visible)) {
+                return;
+              } else {
+                let parentLayer = item.layer.parent;
+                while (parentLayer) {
+                  if (parentLayer.visible === false) {
+                    parentLayer.visible = true;
+                    console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
+                  }
+                  parentLayer = parentLayer.parent; // Move up the hierarchy
+                }
+          
+                // Remove or modify this block to prevent all sublayers from being turned on
+                if (item.layer.sublayers && item.layer.type === "subtype-group") { // Ensure sublayers exist
+                  console.log("CCCCCC")
+                  item.layer.sublayers.forEach((sublayer) => {
+                    if (!sublayer.visible) { // Only change if not already visible
+                      sublayer.visible = true;
+                      console.log("Sublayer Made Visible:", sublayer.title);
+                    }
+                  });
+                }
+              }
+
+
+            } else {
+              console.log("GGGGG")
+              let parentLayer = item.layer.parent;
+              while (parentLayer) {
+                if (parentLayer.visible === false) {
+                  parentLayer.visible = true;
+                  console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
+                }
+                parentLayer = parentLayer.parent; // Move up the hierarchy
+              }
+            }
+          }
+          }
+        
+          if (item.layer.type === "subtype-sublayer") {
+            console.log("LLLLL");
+            // Apply to all children, outside the condition
+            item.children.forEach(child => {
+              // console.log(item, "itemitemitemitemitem")
+              child.watch("visible", (childVisible) => {
+                console.log("Child Layer Visibility Changed:", child.layer.title, childVisible);
+              });
+            });
+          }
+        
+          isUpdatingVisibility = false; // Reset flag after updating
+        });
+      
+
+
+
+
+      //   item.watch("visible", (visible) => {
+      //     console.log(item.layer, "item.layer");
+      
+      //     if (visible) {
+      //       console.log("NNNN")
+      //         if (item.layer.type === "subtype-group") {
+      //             console.log(item.layer, "subtype-group");
+      
+      //             let parentLayer = item.layer.parent;
+      //             while (parentLayer) {
+      //                 if (parentLayer.visible === false) {
+      //                     parentLayer.visible = true;
+      //                     console.log("Parent Layer Made Visible:", parentLayer.title);
+      //                 }
+      //                 parentLayer = parentLayer.parent; // Move up the hierarchy
+      //             }
+      
+      //             if (item.layer.sublayers) { // Ensure sublayers exist
+      //                 item.layer.sublayers.forEach((sublayer) => {
+      //                     sublayer.visible = true;
+      //                     console.log("Sublayer Made Visible:", sublayer.title);
+      //                 });
+      //             }
+      //         } else {
+      //           let parentLayer = item.layer.parent;
+      //           while (parentLayer) {
+      //               if (parentLayer.visible === false) {
+      //                   parentLayer.visible = true;
+      //                   console.log("Parent Layer Made Visible:", parentLayer.title);
+      //               }
+      //               parentLayer = parentLayer.parent; // Move up the hierarchy
+      //           }
+      //         }
+      //     }
+      
+      //     // Apply to all children, outside the condition
+      //     item.children.forEach(child => {
+      //         child.watch("visible", (childVisible) => {
+      //             console.log("Child Layer Visibility Changed:", child.layer.title, childVisible);
+      //         });
+      //     });
+      // });
+
+      
 
       };
 
@@ -3539,73 +3645,31 @@ async function addWidgets() {
       }
     
 
-      // Recursive function to turn on all sublayers when a parent is activated
-      function activateChildLayers(layer, visible, clickedLayerID) {
-        // console.log(layer, "layerlayerlayerlayerlayerlayer");
 
+      // // NEW: Function to ensure sublayer checkboxes are unchecked when a parent is turned off
+      // function deactivateChildLayers(layer) {
+      //   if (layer.sublayers) {
+      //       layer.sublayers.forEach((sublayer) => {
+      //           sublayer.visible = false;  // Turn off visibility
+      //           sublayer.listItem && (sublayer.listItem.visible = false); // Uncheck the checkbox in UI
+      //           deactivateChildLayers(sublayer); // Recursively deactivate deeper sublayers
+      //       });
+      //   }
 
-
-
-
-        // if (layer.sublayers && layer.type === "subtype-group") {
-        //   console.log(clickedLayerID, "clickedLayerIDclickedLayerIDclickedLayerID")
-        //     // layer.visible = visible; // Turn on/off each child layer
-        //     layer.sublayers.forEach(async (sublayer) => {
-        //       console.log(sublayer.id, "Checking sublayer ID");
-
-        //       clickedLayerID.sublayers.forEach((l) => {
-        //         if (sublayer.id === l.id) {
-        //           console.log(sublayer.type, "sublayer");
-        //           console.log(sublayer.title, "sublayer");
-        //           console.log(sublayer.id, "sublayer");
-        //           sublayer.visible = visible;
-        //         } else {
-        //           sublayer.visible = visible; // Turn on/off each child layer
-        //         }
-        //       })
-
-
-        //       // // console.log(sublayer.title, "sublayersublayersublayer", clickedSublayerTitle, "clickedSublayerTitle")
-        //       // if (sublayer.title === clickedSublayerTitle) {
-        //       //   sublayer.visible = visible; // Turn on/off each child layer
-        //       // } else {
-        //       //   sublayer.visible = visible; // Turn on/off each child layer
-        //       //   // activateChildLayers(sublayer, visible); // Recursively activate deeper sublayers
-        //       // }
-        //       // if (clickedSublayerTitle.type === "subtype-sublayer" && clickedSublayerTitle.title === tt) {
-        //       //   clickedSublayerTitle.visible = visible
-        //       // } else {
-        //       //   sublayer.visible = visible; // Turn on/off each child layer
-        //       // }
-        //     });
-        // }
-        
-      }
-
-      // NEW: Function to ensure sublayer checkboxes are unchecked when a parent is turned off
-      function deactivateChildLayers(layer) {
-        if (layer.sublayers) {
-            layer.sublayers.forEach((sublayer) => {
-                sublayer.visible = false;  // Turn off visibility
-                sublayer.listItem && (sublayer.listItem.visible = false); // Uncheck the checkbox in UI
-                deactivateChildLayers(sublayer); // Recursively deactivate deeper sublayers
-            });
-        }
-
-        // if (layer.type === "group") {
-        //   layer.layers.forEach((s) => {
-        //     if (s.sublayers) {
-        //       s.visible = false;  // Turn off visibility
-        //       s.listItem && (s.listItem.visible = false); // Uncheck the checkbox in UI
-        //       s.sublayers.forEach((sublayer1) => {
-        //         sublayer1.visible = false;  // Turn off visibility
-        //         sublayer1.listItem && (sublayer1.listItem.visible = false); // Uncheck the checkbox in UI
-        //         deactivateChildLayers(sublayer1); // Recursively deactivate deeper sublayers
-        //       });
-        //     }
-        //   })
-        // }
-      }
+      //   // if (layer.type === "group") {
+      //   //   layer.layers.forEach((s) => {
+      //   //     if (s.sublayers) {
+      //   //       s.visible = false;  // Turn off visibility
+      //   //       s.listItem && (s.listItem.visible = false); // Uncheck the checkbox in UI
+      //   //       s.sublayers.forEach((sublayer1) => {
+      //   //         sublayer1.visible = false;  // Turn off visibility
+      //   //         sublayer1.listItem && (sublayer1.listItem.visible = false); // Uncheck the checkbox in UI
+      //   //         deactivateChildLayers(sublayer1); // Recursively deactivate deeper sublayers
+      //   //       });
+      //   //     }
+      //   //   })
+      //   // }
+      // }
 
       // Keep the event listener for action triggers
       layerList.on("trigger-action", (event) => {
