@@ -1625,6 +1625,7 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -1704,6 +1705,7 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -1819,6 +1821,7 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -1910,6 +1913,7 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -1972,6 +1976,7 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -2185,6 +2190,7 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -2300,6 +2306,7 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -2370,6 +2377,7 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -2524,6 +2532,7 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -2896,8 +2905,8 @@ async function displayLayers() {
       symbol: {
         type: "picture-marker",
         url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png",
-        width: "25px",
-        height: "25px"
+        width: "50px",
+        height: "50px"
       }
     };
     const DMZRenderer = {
@@ -2914,8 +2923,8 @@ async function displayLayers() {
       symbol: {
         type: "picture-marker",
         url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/Critical%20Points.png",
-        width: "25px",
-        height: "25px"
+        width: "50px",
+        height: "50px"
       }
     };
 
@@ -3091,6 +3100,7 @@ async function displayLayers() {
         layer.sublayers.forEach(sublayer => {
           sublayer.visible = false;
           sublayer.renderer.symbol.color.a = 0.3;
+          sublayer.renderer.symbol.outline.width = 1;
           sublayer.labelingInfo = [ labelClassDMZBoundaries ];
           sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateDMZBoundaries;
@@ -3544,6 +3554,13 @@ async function addWidgets() {
               }
             }
           }
+          } else {
+              if (item.layer.sublayers) {
+                item.layer.sublayers.forEach((sublayer) => {
+                      sublayer.visible = false;  // Turn off visibility
+                      sublayer.listItem && (sublayer.listItem.visible = false); // Uncheck the checkbox in UI
+                  });
+              }
           }
         
           if (item.layer.type === "subtype-sublayer") {
