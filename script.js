@@ -3492,12 +3492,12 @@ async function addWidgets() {
         // });
 
 
-        let isUpdatingVisibility = false;
+        // let isUpdatingVisibility = false;
 
         item.watch("visible", (visible) => {
-          if (isUpdatingVisibility) return; // Exit if already updating visibility
+          // if (isUpdatingVisibility) return; // Exit if already updating visibility
         
-          isUpdatingVisibility = true; // Set flag to true
+          // isUpdatingVisibility = true; // Set flag to true
         
           // console.log(item.layer, "item.layer");
         
@@ -3574,7 +3574,7 @@ async function addWidgets() {
             });
           }
         
-          isUpdatingVisibility = false; // Reset flag after updating
+          // isUpdatingVisibility = false; // Reset flag after updating
         });
       
 
