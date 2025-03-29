@@ -3310,16 +3310,16 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    // displayMap.add(WorkOrders);  // adds the layer to the map
-    // displayMap.add(WaterMains);  // adds the layer to the map
-    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    // displayMap.add(DMZBoundaries);  // adds the layer to the map
+    displayMap.add(WorkOrders);  // adds the layer to the map
+    displayMap.add(WaterMains);  // adds the layer to the map
+    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
-    // displayMap.add(Reservoirs);  // adds the layer to the map
-    // displayMap.add(KTM);
-    // displayMap.add(DMZCriticalPoints);
-    // displayMap.add(Customer_Locations);
+    displayMap.add(Reservoirs);  // adds the layer to the map
+    displayMap.add(KTM);
+    displayMap.add(DMZCriticalPoints);
+    displayMap.add(Customer_Locations);
 
 
 
@@ -3392,9 +3392,9 @@ async function addWidgets() {
         const item = event.item;
         // await item.layer.when();
         // console.log(item, "here is the item...");
-        if (item.children.length > 0) {
-          console.log(item, "M");
-        }
+        // if (item.children.length > 0) {
+        //   console.log(item, "M");
+        // }
         if (item.children.length > 0) {  // Only apply logic to group layers
           item.watch("open", function (expanded) {
             if (expanded) {
@@ -3489,12 +3489,12 @@ async function addWidgets() {
         
           isUpdatingVisibility = true; // Set flag to true
         
-          console.log(item.layer, "item.layer");
+          // console.log(item.layer, "item.layer");
         
           if (visible) {
-            console.log("NNNN");
+            // console.log("NNNN");
             if ( item.layer.type === "subtype-sublayer") {
-              console.log("GGGGG")
+              // console.log("GGGGG")
               let parentLayer = item.layer.parent;
               while (parentLayer) {
                 if (parentLayer.visible === false) {
@@ -3506,7 +3506,7 @@ async function addWidgets() {
               // return;
             } else {
             if (item.layer.type === "subtype-group" && item.layer.parent.type === "group") { // &&
-              console.log(item.layer, "subtype-group groupgroupgroupgroupgroupgroup");
+              // console.log(item.layer, "subtype-group groupgroupgroupgroupgroupgroup");
               if (item.layer.sublayers && item.layer.sublayers.some(sublayer => sublayer.visible)) {
                 return;
               } else {
@@ -3521,7 +3521,7 @@ async function addWidgets() {
           
                 // Remove or modify this block to prevent all sublayers from being turned on
                 if (item.layer.sublayers && item.layer.type === "subtype-group") { // Ensure sublayers exist
-                  console.log("CCCCCC")
+                  // console.log("CCCCCC")
                   item.layer.sublayers.forEach((sublayer) => {
                     if (!sublayer.visible) { // Only change if not already visible
                       sublayer.visible = true;
@@ -3533,7 +3533,7 @@ async function addWidgets() {
 
 
             } else {
-              console.log("GGGGG")
+              // console.log("GGGGG")
               let parentLayer = item.layer.parent;
               while (parentLayer) {
                 if (parentLayer.visible === false) {
@@ -3547,7 +3547,7 @@ async function addWidgets() {
           }
         
           if (item.layer.type === "subtype-sublayer") {
-            console.log("LLLLL");
+            // console.log("LLLLL");
             // Apply to all children, outside the condition
             item.children.forEach(child => {
               // console.log(item, "itemitemitemitemitem")
