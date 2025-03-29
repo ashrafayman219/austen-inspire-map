@@ -2070,7 +2070,7 @@ async function displayLayers() {
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
-          size: 10
+          size: 8
          }
       },
       labelPlacement: "always-horizontal",
@@ -2377,7 +2377,6 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
-        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -2905,8 +2904,8 @@ async function displayLayers() {
       symbol: {
         type: "picture-marker",
         url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png",
-        width: "50px",
-        height: "50px"
+        width: "25px",
+        height: "25px"
       }
     };
     const DMZRenderer = {
@@ -2922,12 +2921,29 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/Critical%20Points.png",
-        width: "50px",
-        height: "50px"
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png",
+        width: "25px",
+        height: "25px"
       }
     };
-
+    const CustomerLocationsRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
+    const ReservoirRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
 
     // // Consumer Meters || Customer Locations Layers
     // Create SubtypeGroupLayers for CustomerLocations
@@ -2944,7 +2960,7 @@ async function displayLayers() {
       layer.when(() => {
         layer.sublayers.forEach(sublayer => {
           sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
+          sublayer.renderer = CustomerLocationsRenderer;
           sublayer.labelingInfo = [ labelClassCustomerLocations ];
           sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateCustomerLocations;
@@ -3032,7 +3048,7 @@ async function displayLayers() {
       layer.when(() => {
         layer.sublayers.forEach(sublayer => {
           sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
+          sublayer.renderer = ReservoirRenderer;
           sublayer.labelingInfo = [ labelClassReservoirs ];
           sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateReservoirs;
@@ -3320,15 +3336,15 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    displayMap.add(WorkOrders);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(WorkOrders);  // adds the layer to the map
+    // displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
     displayMap.add(DMZBoundaries);  // adds the layer to the map
-    displayMap.add(WTP);  // adds the layer to the map
+    // displayMap.add(WTP);  // adds the layer to the map
     displayMap.add(Reservoirs);  // adds the layer to the map
     displayMap.add(KTM);
-    displayMap.add(DMZCriticalPoints);
+    // displayMap.add(DMZCriticalPoints);
     displayMap.add(Customer_Locations);
 
 
@@ -3366,16 +3382,7 @@ async function addWidgets() {
         loadModule("esri/widgets/Legend"),
       ]);
 
-      let basemapGallery = new BasemapGallery({
-        view: view
-      });
 
-      const basemapGalleryExpand = new Expand({
-        expandIcon: "basemap",
-        view: view,
-        content: basemapGallery
-      });
-      view.ui.add(basemapGalleryExpand, "top-right");
 
       var search = new Search({
         //Add Search widget
@@ -3791,12 +3798,24 @@ async function addWidgets() {
         layerList.renderNow(); // Refresh UI to reflect icon change
       }
 
+
       // view.ui.add([Expand5], { position: "top-left", index: 6 });
       var fullscreen = new Fullscreen({
         view: view
       });
-      view.ui.add(fullscreen, "bottom-right");
+      view.ui.add(fullscreen, { position: "bottom-right", index: 1 });
     
+      let basemapGallery = new BasemapGallery({
+        view: view
+      });
+
+      const basemapGalleryExpand = new Expand({
+        expandIcon: "basemap",
+        view: view,
+        content: basemapGallery
+      });
+      view.ui.add(basemapGalleryExpand, { position: "bottom-right", index: 0 });
+      
     
       let legend = new Legend({
         view: view,
@@ -3804,7 +3823,7 @@ async function addWidgets() {
       });
       legend.hideLayersNotInCurrentView = true;
 
-
+      view.ui.add("logoDiv", "top-right");
     
 
 

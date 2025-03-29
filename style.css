@@ -39,9 +39,17 @@ html, body, #container {
 
 
 #title p {
-  margin: 10px 0 5px 0; /* Adds spacing above and below */
+  margin: 10px 0; /* Adjust the gap between the lines */
+  font-size: 1rem;
+  text-align: center;
+}
+
+#title p strong {
   font-weight: bold;
-  font-size: 1.2rem;
+}
+
+#title p span {
+  font-size: 0.9rem; /* Adjust font size if needed */
 }
 
 #title hr {
@@ -51,7 +59,8 @@ html, body, #container {
 }
 
 h3 {
-  color: #0290e3;
+  color: #4a4a4a;
+  margin-bottom: auto;
 }
 
 #layerListSection {
@@ -160,4 +169,36 @@ h3 {
     width: 100%;
     margin-bottom: 3px;
   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.esri-ui-bottom-right {
+  flex-flow: column;
+  gap: 10px;
+}
+
+#logoDiv {
+  background-color: transparent;
+  border-radius: 8px;
+  padding: 4px; /* Reduce padding */
+  width: 70px; /* Reduce width */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#logoDiv img {
+  width: 100%;
+  height: auto;
 }
