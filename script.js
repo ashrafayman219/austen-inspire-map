@@ -2865,14 +2865,14 @@ async function displayLayers() {
         }
       }
     };
-
+    
     const WTPRenderer = {
       type: "simple",
       symbol: {
         type: "picture-marker",
         url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png",
-        width: "18px",
-        height: "18px"
+        width: "25px",
+        height: "25px"
         // style: "circle",
         // color: [2, 144, 227, 0.5],
         // size: 9,
@@ -2882,6 +2882,44 @@ async function displayLayers() {
         // }
       }
     };
+    const TMMRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
+    const TKMRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
+    const DMZRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
+    const CriticalPointsRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/Critical%20Points.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
+
+
     // // Consumer Meters || Customer Locations Layers
     // Create SubtypeGroupLayers for CustomerLocations
     const subtypeGroupLayersCustomerLocations = layersCustomerLocations.map(layerInfo => {
@@ -2927,7 +2965,7 @@ async function displayLayers() {
       layer.when(() => {
         layer.sublayers.forEach(sublayer => {
           sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
+          sublayer.renderer = CriticalPointsRenderer;
           sublayer.labelingInfo = [ labelClassDMZCriticalPoints ];
           sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateDMZCriticalPoints;
@@ -2956,7 +2994,7 @@ async function displayLayers() {
       layer.when(() => {
         layer.sublayers.forEach(sublayer => {
           sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
+          sublayer.renderer = TKMRenderer;
           sublayer.labelingInfo = [ labelClassKTM ];
           sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateKTM;
@@ -3083,7 +3121,7 @@ async function displayLayers() {
       layer.when(() => {
         layer.sublayers.forEach(sublayer => {
           sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
+          sublayer.renderer = DMZRenderer;
           sublayer.labelingInfo = [ labelClassDMZMeterPoints ];
           sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateDMZMeterPoints;
@@ -3114,7 +3152,7 @@ async function displayLayers() {
       layer.when(() => {
         layer.sublayers.forEach(sublayer => {
           sublayer.visible = false;
-          sublayer.renderer = staticrenderer;
+          sublayer.renderer = TMMRenderer;
           sublayer.labelingInfo = [ labelClassTransmissionMainMeterPoints ];
           sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateTransmissionMainMeterPoints;
@@ -3350,9 +3388,9 @@ async function addWidgets() {
       });
 
       layerList.visibilityAppearance = "checkbox";
-      layerList.listItemCreatedFunction = function(event) {
-        const item = event.item;
-        const layer = item.layer;
+      layerList.listItemCreatedFunction = async function(event) {
+        const item = await event.item;
+        await item.layer.when();
 
         // if (item.children.length > 0) {  // Only apply logic to group layers
         //   item.watch("open", function (expanded) {
