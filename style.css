@@ -205,3 +205,23 @@ h3 {
   margin-right: -110px;
   margin-top: -41px;
 }
+
+
+
+.legend-item {
+  margin: 5px 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center; /* Aligns items vertically */
+}
+
+.legend-item img {
+  width: 20px; /* Adjust size as needed */
+  height: 20px; /* Adjust size as needed */
+  margin-right: 5px; /* Space between icon and text */
+}
+
+.legend-item span {
+  margin-left: auto; /* Pushes the count to the right */
+  margin-right: 10px; /* Space between the feature name and count */
+}
