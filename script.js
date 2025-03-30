@@ -3347,131 +3347,16 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    await displayMap.add(WorkOrders);  // adds the layer to the map
-    await displayMap.add(WaterMains);  // adds the layer to the map
-    await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    await displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    await displayMap.add(DMZBoundaries);  // adds the layer to the map
-    await displayMap.add(WTP);  // adds the layer to the map
-    await displayMap.add(Reservoirs);  // adds the layer to the map
-    await displayMap.add(KTM);
-    await displayMap.add(DMZCriticalPoints);
-    await displayMap.add(Customer_Locations);
-
-
-
-    
-      // Sample data for the legend with image URLs
-      const legendData = [
-        { feature: "Customer Locations", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
-        // { feature: "DMZ Boundaries", count: 0, icon: "path/to/dmz-boundaries-icon.png" },
-        // { feature: "DMZ Critical Points", count: 0, icon: "path/to/dmz-critical-icon.png" },
-        // { feature: "DMZ Meter Points", count: 0, icon: "path/to/dmz-meter-icon.png" },
-        // { feature: "Reservoirs", count: 0, icon: "path/to/reservoirs-icon.png" },
-        { feature: "Transmission Main Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
-        { feature: "Trunk Main Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
-        { feature: "Water Treatment Plant", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-        // { feature: "Water Mains", count: 0, icon: "path/to/water-mains-icon.png" },
-        // { feature: "Work Orders (New System)", count: 0, icon: "path/to/work-orders-icon.png" },
-      ];
-
-// Function to create the legend
-function createLegend() {
-  const legendContainer = document.getElementById('legendContainer');
-  legendContainer.innerHTML = ''; // Clear existing content
-
-  legendData.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'legend-item';
-      row.innerHTML = `
-          <img src="${item.icon}" alt="${item.feature}">
-          ${item.feature} <span id="${item.feature.replace(/\s+/g, '')}Count">${item.count}</span>
-      `;
-      legendContainer.appendChild(row);
-  });
-}
-
-// Function to update the count of displayed features
-function updateFeatureCount(featureName, count) {
-  const featureCountElement = document.getElementById(featureName.replace(/\s+/g, '') + 'Count');
-  if (featureCountElement) {
-      featureCountElement.textContent = count;
-  }
-}
-
-function animateCount(element, targetCount, duration = 1000) {
-  const startCount = parseInt(element.textContent) || 0; // Get the current count or start from 0
-  const increment = Math.ceil((targetCount - startCount) / (duration / 100)); // Calculate increment per interval
-  let currentCount = startCount;
-
-  const interval = setInterval(() => {
-      currentCount += increment;
-      if (currentCount >= targetCount) {
-          currentCount = targetCount; // Ensure it doesn't exceed the target
-          clearInterval(interval); // Stop the interval
-      }
-      element.textContent = currentCount.toLocaleString(); // Update the displayed count with formatting
-  }, 100); // Update every 100ms
-}
-
-
-view.map.layers.forEach((layer) => {
-  if (layer.type === "group") {
-    // layer.watch('visible', (visible) => {
-      // console.log(visible, "visible Event");
-      // console.log(layer, "Layer changed");
-      // Here is the title to check layer.title => title of the visible layer, and the same title in the legendData
-      layer.layers.forEach((subtypegrouplayer) => {
-          if (subtypegrouplayer.sublayers) {
-        // subtypegrouplayer.queryFeatureCount().then(function(numFeatures){
-          // prints the total count to the console
-          // console.log(subtypegrouplayer, subtypegrouplayer.title, numFeatures);
-
-          // each subtypegrouplayer have sublayers object, and this will loob through them and count all have visible true.
-          subtypegrouplayer.sublayers.forEach((sublayer) => {
-            let sublayerCount = 0; // Store the count for this sublayer
-            // console.log(sublayer, "sublayer");
-            sublayer.watch('visible', async () => {
-              const matchingLegendItem = legendData.find(item => item.feature === layer.title);
-              console.log(matchingLegendItem, "matchingLegendItem")
-              if (matchingLegendItem) {
-                if (sublayer.visible) { // =>>> then we have one count. and so on
-                  // Wait for the count to be retrieved
-                  sublayerCount = await sublayer.queryFeatureCount();
-                  console.log(sublayerCount, "numFeatures for visible sublayer");
-                  matchingLegendItem.count += sublayerCount; // Increment count
-                  // Animate the count in the legend
-                  const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
-                  animateCount(countElement, matchingLegendItem.count);
-
-                } else {
-                  // Decrement the count for the corresponding feature
-                  matchingLegendItem.count -= sublayerCount; // Use the stored count
-
-                                              // Animate the count in the legend
-                                              const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
-                                              animateCount(countElement, matchingLegendItem.count);
-                }
-
-              }
-            });
-              
-
-
-          })
-          }
-
-        // });
-      })
-    // });
-  }
-})
-
-// Call the function to create the legend initially
-createLegend();
-
-
-
+    displayMap.add(WorkOrders);  // adds the layer to the map
+    displayMap.add(WaterMains);  // adds the layer to the map
+    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZBoundaries);  // adds the layer to the map
+    displayMap.add(WTP);  // adds the layer to the map
+    displayMap.add(Reservoirs);  // adds the layer to the map
+    displayMap.add(KTM);
+    displayMap.add(DMZCriticalPoints);
+    displayMap.add(Customer_Locations);
 
 
 
@@ -3948,6 +3833,116 @@ async function addWidgets() {
       //   container: document.getElementById("legendContainer"), // Place Legend in the new container,
       // });
       // legend.hideLayersNotInCurrentView = true;
+
+
+      // Sample data for the legend with image URLs
+      const legendData = [
+        { feature: "Customer Locations", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+        // { feature: "DMZ Boundaries", count: 0, icon: "path/to/dmz-boundaries-icon.png" },
+        // { feature: "DMZ Critical Points", count: 0, icon: "path/to/dmz-critical-icon.png" },
+        // { feature: "DMZ Meter Points", count: 0, icon: "path/to/dmz-meter-icon.png" },
+        // { feature: "Reservoirs", count: 0, icon: "path/to/reservoirs-icon.png" },
+        { feature: "Transmission Main Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
+        { feature: "Trunk Main Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
+        { feature: "Water Treatment Plant", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
+        // { feature: "Water Mains", count: 0, icon: "path/to/water-mains-icon.png" },
+        // { feature: "Work Orders (New System)", count: 0, icon: "path/to/work-orders-icon.png" },
+      ];
+
+// Function to create the legend
+function createLegend() {
+  const legendContainer = document.getElementById('legendContainer');
+  legendContainer.innerHTML = ''; // Clear existing content
+
+  legendData.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'legend-item';
+      row.innerHTML = `
+          <img src="${item.icon}" alt="${item.feature}">
+          ${item.feature} <span id="${item.feature.replace(/\s+/g, '')}Count">${item.count}</span>
+      `;
+      legendContainer.appendChild(row);
+  });
+}
+
+// Function to update the count of displayed features
+function updateFeatureCount(featureName, count) {
+  const featureCountElement = document.getElementById(featureName.replace(/\s+/g, '') + 'Count');
+  if (featureCountElement) {
+      featureCountElement.textContent = count;
+  }
+}
+
+function animateCount(element, targetCount, duration = 1000) {
+  const startCount = parseInt(element.textContent) || 0; // Get the current count or start from 0
+  const increment = Math.ceil((targetCount - startCount) / (duration / 100)); // Calculate increment per interval
+  let currentCount = startCount;
+
+  const interval = setInterval(() => {
+      currentCount += increment;
+      if (currentCount >= targetCount) {
+          currentCount = targetCount; // Ensure it doesn't exceed the target
+          clearInterval(interval); // Stop the interval
+      }
+      element.textContent = currentCount.toLocaleString(); // Update the displayed count with formatting
+  }, 100); // Update every 100ms
+}
+
+
+view.map.layers.forEach((layer) => {
+  if (layer.type === "group") {
+    // layer.watch('visible', (visible) => {
+      // console.log(visible, "visible Event");
+      // console.log(layer, "Layer changed");
+      // Here is the title to check layer.title => title of the visible layer, and the same title in the legendData
+      layer.layers.forEach((subtypegrouplayer) => {
+        // subtypegrouplayer.queryFeatureCount().then(function(numFeatures){
+          // prints the total count to the console
+          // console.log(subtypegrouplayer, subtypegrouplayer.title, numFeatures);
+        if (subtypegrouplayer.sublayers) {
+          // each subtypegrouplayer have sublayers object, and this will loob through them and count all have visible true.
+          subtypegrouplayer.sublayers.forEach((sublayer) => {
+            let sublayerCount = 0; // Store the count for this sublayer
+            // console.log(sublayer, "sublayer");
+            sublayer.watch('visible', async () => {
+              const matchingLegendItem = legendData.find(item => item.feature === layer.title);
+              console.log(matchingLegendItem, "matchingLegendItem");
+              if (matchingLegendItem) {
+                if (sublayer.visible) { // =>>> then we have one count. and so on
+                  // Wait for the count to be retrieved
+                  sublayerCount = await sublayer.queryFeatureCount();
+                  console.log(sublayerCount, "numFeatures for visible sublayer");
+                  matchingLegendItem.count += sublayerCount; // Increment count
+                  // Animate the count in the legend
+                  const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                  animateCount(countElement, matchingLegendItem.count);
+
+                } else {
+                  // Decrement the count for the corresponding feature
+                  matchingLegendItem.count -= sublayerCount; // Use the stored count
+
+                                              // Animate the count in the legend
+                                              const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                                              animateCount(countElement, matchingLegendItem.count);
+                }
+
+              }
+            });
+              
+
+
+          })
+        }
+
+
+        // });
+      })
+    // });
+  }
+})
+
+// Call the function to create the legend initially
+createLegend();
 
 
 
