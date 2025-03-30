@@ -167,6 +167,14 @@ async function displayLayers() {
       loadModule("esri/widgets/LayerList"),
     ]);
 
+    // Function to format the timestamp to a readable date
+    function formatDate(timestamp) {
+      const date = new Date(timestamp);
+      const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+      return date.toLocaleDateString(undefined, options);
+    }
+
+
     // Here I will start coding to display some layers and style them
 
     
@@ -267,8 +275,8 @@ async function displayLayers() {
           <p><strong>Top Water Level (m):</strong> ${attributes.twl}</p>
           <p><strong>Bottom Water Level (m):</strong> ${attributes.bwl}</p>
           <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
-          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model} ${attributes.sub_model}</p>
-          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} - ${attributes.model} - ${attributes.sub_model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${formatDate(attributes.last_loggedtime)}</p>
         `;
     
         const loggedDataTabContent = document.createElement("div");
@@ -368,9 +376,9 @@ async function displayLayers() {
           <p><strong>Address 3:</strong> ${attributes.addr3}</p>
           <p><strong>Post Code:</strong> ${attributes.poscod}</p>
           <p><strong>Property Type:</strong> ${attributes.proptytyp}</p>
-          <p><strong>Billing District:</strong> ${attributes.regioncode} ${attributes.regionname}</p>
-          <p><strong>Operational District:</strong> ${attributes.regioncode} ${attributes.regionname}</p>
-          <p><strong>DMA:</strong> ${attributes.sitecode} ${attributes.sitename}</p>
+          <p><strong>Billing District:</strong> ${attributes.regioncode} - ${attributes.regionname}</p>
+          <p><strong>Operational District:</strong> ${attributes.regioncode} - ${attributes.regionname}</p>
+          <p><strong>DMA:</strong> ${attributes.sitecode} - ${attributes.sitename}</p>
         `;
     
         const accountInfoTabContent = document.createElement("div");
@@ -379,10 +387,10 @@ async function displayLayers() {
           <p><strong>Account Number:</strong> ${attributes.accnum}</p>
           <p><strong>Start Date:</strong> ${attributes.supdat}</p>
           <p><strong>End Date:</strong> ${attributes.closeaccdat}</p>
-          <p><strong>Customer Status:</strong> ${attributes.consta} ${attributes.consta_descr}</p>
+          <p><strong>Customer Status:</strong> ${attributes.consta} - ${attributes.consta_descr}</p>
           <p><strong>Customer Group:</strong> ${attributes.congrp_descr}</p>
           <p><strong>Customer Type:</strong> ${attributes.contyp_descr}</p>
-          <p><strong>Meter Round:</strong> ${attributes.zonnum}-${attributes.blknum}-${attributes.rounum}</p>
+          <p><strong>Meter Round:</strong> ${attributes.zonnum} - ${attributes.blknum} - ${attributes.rounum}</p>
         `;
     
         const meterInfoTabContent = document.createElement("div");
@@ -390,10 +398,10 @@ async function displayLayers() {
         meterInfoTabContent.innerHTML = `
           <p><strong>Meter Number:</strong> ${attributes.mtrnum}</p>
           <p><strong>Meter Make:</strong> ${attributes.mtrmake_descr}</p>
-          <p><strong>Meter Size:</strong> ${attributes.mtrsiz} ${attributes.mtrsiz_descr}</p>
-          <p><strong>Meter Type:</strong> ${attributes.mtrtyp} ${attributes.mtrtyp_descr}</p>
-          <p><strong>Meter Status:</strong> ${attributes.mtrstat} ${attributes.mtrstat_descr}</p>
-          <p><strong>Master Meter Status:</strong> ${attributes.masmtrstat} ${attributes.masmtrstat_descr}</p>
+          <p><strong>Meter Size:</strong> ${attributes.mtrsiz} - ${attributes.mtrsiz_descr}</p>
+          <p><strong>Meter Type:</strong> ${attributes.mtrtyp} - ${attributes.mtrtyp_descr}</p>
+          <p><strong>Meter Status:</strong> ${attributes.mtrstat} - ${attributes.mtrstat_descr}</p>
+          <p><strong>Master Meter Status:</strong> ${attributes.masmtrstat} - ${attributes.masmtrstat_descr}</p>
         `;
     
         const bmacTabContent = document.createElement("div");
@@ -530,8 +538,8 @@ async function displayLayers() {
         info1TabContent.classList.add("tab-content");
         info1TabContent.innerHTML = `
           <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
-          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model}</p>
-          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} - ${attributes.model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${formatDate(attributes.last_loggedtime)}</p>
         `;
     
         const gisTabContent = document.createElement("div");
@@ -636,8 +644,8 @@ async function displayLayers() {
           <p><strong>Serial Number:</strong> ${attributes.serial_number}</p>
           <p><strong>Install Date:</strong> ${attributes.inst_date}</p>
           <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
-          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model}</p>
-          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} - ${attributes.model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${formatDate(attributes.last_loggedtime)}</p>
         `;
     
         const info2TabContent = document.createElement("div");
@@ -934,7 +942,7 @@ async function displayLayers() {
       outFields: ["*"],
       content: function (feature) {
         const attributes = feature.graphic.attributes;
-    
+
         // Create the main container
         const container = document.createElement("div");
         container.classList.add("custom-popup");
@@ -980,8 +988,8 @@ async function displayLayers() {
           <p><strong>Serial Number:</strong> ${attributes.serial_number}</p>
           <p><strong>Install Date:</strong> ${attributes.inst_date}</p>
           <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
-          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model}</p>
-          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} - ${attributes.model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${formatDate(attributes.last_loggedtime)}</p>
         `;
     
         const info2TabContent = document.createElement("div");
@@ -1140,8 +1148,8 @@ async function displayLayers() {
           <p><strong>Serial Number:</strong> ${attributes.serial_number}</p>
           <p><strong>Install Date:</strong> ${attributes.inst_date}</p>
           <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
-          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model}</p>
-          <p><strong>Last Received Date/Time:</strong> ${attributes.last_loggedtime}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} - ${attributes.model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${formatDate(attributes.last_loggedtime)}</p>
         `;
     
         const info2TabContent = document.createElement("div");
