@@ -187,18 +187,21 @@ h3 {
   gap: 10px;
 }
 
+
+
 #logoDiv {
   background-color: transparent;
   border-radius: 8px;
   padding: 4px; /* Reduce padding */
-  width: 70px; /* Reduce width */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  width: 150px; /* Reduce width */
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 #logoDiv img {
-  width: 100%;
+  width: 84%;
   height: auto;
+  margin-right: -110px;
+  margin-top: -41px;
 }

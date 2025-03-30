@@ -56,7 +56,9 @@ async function initializeMap() {
         zoom: 7,
       });
 
-
+      // await view.when(() => {
+      //   view.ui.add("logoDiv", "top-right");
+      // })
 
       view.constraints = {
         // geometry: { // Constrain lateral movement to Lower Manhattan
@@ -144,6 +146,7 @@ async function initializeMap() {
 // calling
 initializeMap()
   .then(() => {
+    view.ui.add("logoDiv", "top-right");
     console.log("Map Returned From Require Scope", displayMap);
     // You can work with the view object here
   })
@@ -2931,8 +2934,8 @@ async function displayLayers() {
       symbol: {
         type: "picture-marker",
         url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png",
-        width: "25px",
-        height: "25px"
+        width: "19px",
+        height: "19px"
       }
     };
     const ReservoirRenderer = {
@@ -3823,7 +3826,7 @@ async function addWidgets() {
       });
       legend.hideLayersNotInCurrentView = true;
 
-      view.ui.add("logoDiv", "top-right");
+
     
 
 
