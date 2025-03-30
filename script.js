@@ -2934,8 +2934,8 @@ async function displayLayers() {
       symbol: {
         type: "picture-marker",
         url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png",
-        width: "19px",
-        height: "19px"
+        width: "15px",
+        height: "15px"
       }
     };
     const ReservoirRenderer = {
