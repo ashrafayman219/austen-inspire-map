@@ -75,6 +75,18 @@ async function initializeMap() {
 
       await view.when();
 
+            //display geojsons
+            await displayLayers()
+            .then(([view, displayMap, gL]) => {
+              // console.log("gL Returned From Require Scope", gra);
+              // You can work with the view object here
+            })
+            .catch((error) => {
+              // Handle any errors here
+            });
+
+
+
       //add widgets
       addWidgets()
       .then(([view, displayMap]) => {
@@ -86,15 +98,7 @@ async function initializeMap() {
       });
 
 
-      //display geojsons
-      displayLayers()
-        .then(([view, displayMap, gL]) => {
-          // console.log("gL Returned From Require Scope", gra);
-          // You can work with the view object here
-        })
-        .catch((error) => {
-          // Handle any errors here
-        });
+
 
 
               // Add hitTest functionality
@@ -1392,8 +1396,8 @@ async function displayLayers() {
           <p><strong>Layer Name:</strong> Work Orders (New System)</p>
           <p><strong>ItemID:</strong> ${attributes.regionID}</p>
           <p><strong>ObjectID:</strong> ${attributes.OBJECTID}</p>
-          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
-          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.Longitude}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Latitude}</p>
         `;
     
         // Append elements
@@ -2955,6 +2959,15 @@ async function displayLayers() {
         height: "25px"
       }
     };
+    const WorkOrdersRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
 
     // // Consumer Meters || Customer Locations Layers
     // Create SubtypeGroupLayers for CustomerLocations
@@ -3324,7 +3337,7 @@ async function displayLayers() {
         layer.when(() => {
           layer.sublayers.forEach(sublayer => {
             sublayer.visible = false;
-            sublayer.renderer = staticrenderer;
+            sublayer.renderer = WorkOrdersRenderer;
             // sublayer.labelingInfo = [ labelClassWorkOrders ];
             sublayer.popupTemplate = popupTemplateWorkOrders ;
             // if (renderers[subGroup.title]) {
@@ -3348,10 +3361,10 @@ async function displayLayers() {
     });
 
     displayMap.add(WorkOrders);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(WaterMains);  // adds the layer to the map
     displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
     displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
+    // displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
     displayMap.add(Reservoirs);  // adds the layer to the map
     displayMap.add(KTM);
@@ -3646,66 +3659,6 @@ async function addWidgets() {
 
       };
 
-
-
-      // Function to turn on parent layers when a sublayer is activated
-      function activateParentLayers(layer) {
-        let parentLayer = layer.parent;
-        while (parentLayer) {
-            parentLayer.visible = true;
-            parentLayer = parentLayer.parent; // Move up the hierarchy
-        }
-      }
-
-      function activateChildLayers0(layer, visible) {
-        // console.log(layer, "HHHHH");
-        if (layer.sublayers) {
-            layer.sublayers.forEach((sublayer) => {
-                sublayer.visible = visible; // Turn on/off each child layer
-                // activateChildLayers0(sublayer, visible); // Recursively activate deeper sublayers
-            });
-        }
-
-        // if (layer.type === "group") {
-        //   layer.layers.forEach((s) => {
-        //     // console.log(s, "ssss")
-        //     if (s.sublayers) {
-        //       s.sublayers.forEach((sublayer1) => {
-        //         sublayer1.visible = visible; // Turn on/off each child layer
-        //         // activateChildLayers0(sublayer1, visible); // Recursively activate deeper sublayers
-        //       });
-        //     }
-        //   })
-        // }
-      }
-    
-
-
-      // // NEW: Function to ensure sublayer checkboxes are unchecked when a parent is turned off
-      // function deactivateChildLayers(layer) {
-      //   if (layer.sublayers) {
-      //       layer.sublayers.forEach((sublayer) => {
-      //           sublayer.visible = false;  // Turn off visibility
-      //           sublayer.listItem && (sublayer.listItem.visible = false); // Uncheck the checkbox in UI
-      //           deactivateChildLayers(sublayer); // Recursively deactivate deeper sublayers
-      //       });
-      //   }
-
-      //   // if (layer.type === "group") {
-      //   //   layer.layers.forEach((s) => {
-      //   //     if (s.sublayers) {
-      //   //       s.visible = false;  // Turn off visibility
-      //   //       s.listItem && (s.listItem.visible = false); // Uncheck the checkbox in UI
-      //   //       s.sublayers.forEach((sublayer1) => {
-      //   //         sublayer1.visible = false;  // Turn off visibility
-      //   //         sublayer1.listItem && (sublayer1.listItem.visible = false); // Uncheck the checkbox in UI
-      //   //         deactivateChildLayers(sublayer1); // Recursively deactivate deeper sublayers
-      //   //       });
-      //   //     }
-      //   //   })
-      //   // }
-      // }
-
       // Keep the event listener for action triggers
       layerList.on("trigger-action", (event) => {
           const id = event.action.id;
@@ -3838,15 +3791,15 @@ async function addWidgets() {
       // Sample data for the legend with image URLs
       const legendData = [
         { feature: "Customer Locations", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
-        // { feature: "DMZ Boundaries", count: 0, icon: "path/to/dmz-boundaries-icon.png" },
-        // { feature: "DMZ Critical Points", count: 0, icon: "path/to/dmz-critical-icon.png" },
-        // { feature: "DMZ Meter Points", count: 0, icon: "path/to/dmz-meter-icon.png" },
-        // { feature: "Reservoirs", count: 0, icon: "path/to/reservoirs-icon.png" },
+        // { feature: "DMZ Boundaries", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+        { feature: "Reservoirs", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
+        { feature: "DMZ Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
+        { feature: "DMZ Critical Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
         { feature: "Transmission Main Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
         { feature: "Trunk Main Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
         { feature: "Water Treatment Plant", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-        // { feature: "Water Mains", count: 0, icon: "path/to/water-mains-icon.png" },
-        // { feature: "Work Orders (New System)", count: 0, icon: "path/to/work-orders-icon.png" },
+        // { feature: "Water Mains", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+        { feature: "Work Orders (New System)", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
       ];
 
 // Function to create the legend
@@ -3859,7 +3812,7 @@ function createLegend() {
       row.className = 'legend-item';
       row.innerHTML = `
           <img src="${item.icon}" alt="${item.feature}">
-          ${item.feature} <span id="${item.feature.replace(/\s+/g, '')}Count">${item.count}</span>
+          ${item.feature} <span id="${item.feature.replace(/\s+/g, '')}Count" style="font-weight: bold;">${item.count}</span>
       `;
       legendContainer.appendChild(row);
   });
@@ -3874,7 +3827,7 @@ function updateFeatureCount(featureName, count) {
 }
 
 function animateCount(element, targetCount, duration = 1000) {
-  const startCount = parseInt(element.textContent) || 0; // Get the current count or start from 0
+  const startCount = parseInt(element.textContent.replace(/,/g, '')) || 0; // Get the current count or start from 0
   const increment = Math.ceil((targetCount - startCount) / (duration / 100)); // Calculate increment per interval
   let currentCount = startCount;
 
@@ -3891,52 +3844,62 @@ function animateCount(element, targetCount, duration = 1000) {
 
 view.map.layers.forEach((layer) => {
   if (layer.type === "group") {
+    console.log("11111111");
     // layer.watch('visible', (visible) => {
       // console.log(visible, "visible Event");
       // console.log(layer, "Layer changed");
       // Here is the title to check layer.title => title of the visible layer, and the same title in the legendData
-      layer.layers.forEach((subtypegrouplayer) => {
-        // subtypegrouplayer.queryFeatureCount().then(function(numFeatures){
-          // prints the total count to the console
-          // console.log(subtypegrouplayer, subtypegrouplayer.title, numFeatures);
-        if (subtypegrouplayer.sublayers) {
-          // each subtypegrouplayer have sublayers object, and this will loob through them and count all have visible true.
-          subtypegrouplayer.sublayers.forEach((sublayer) => {
-            let sublayerCount = 0; // Store the count for this sublayer
-            // console.log(sublayer, "sublayer");
-            sublayer.watch('visible', async () => {
-              const matchingLegendItem = legendData.find(item => item.feature === layer.title);
-              console.log(matchingLegendItem, "matchingLegendItem");
-              if (matchingLegendItem) {
-                if (sublayer.visible) { // =>>> then we have one count. and so on
-                  // Wait for the count to be retrieved
-                  sublayerCount = await sublayer.queryFeatureCount();
-                  console.log(sublayerCount, "numFeatures for visible sublayer");
-                  matchingLegendItem.count += sublayerCount; // Increment count
-                  // Animate the count in the legend
-                  const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
-                  animateCount(countElement, matchingLegendItem.count);
-
-                } else {
-                  // Decrement the count for the corresponding feature
-                  matchingLegendItem.count -= sublayerCount; // Use the stored count
-
-                                              // Animate the count in the legend
-                                              const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
-                                              animateCount(countElement, matchingLegendItem.count);
-                }
-
+      layer.loadAll().then(() => {
+        layer.layers.forEach((subtypegrouplayer) => {
+          console.log("22222");
+          // subtypegrouplayer.queryFeatureCount().then(function(numFeatures){
+            // prints the total count to the console
+            // console.log(subtypegrouplayer, subtypegrouplayer.title, numFeatures);
+            subtypegrouplayer.loadAll().then(() => {
+              console.log("All Loaded");
+              if (subtypegrouplayer.sublayers) {
+                console.log("33333");
+                // each subtypegrouplayer have sublayers object, and this will loob through them and count all have visible true.
+                subtypegrouplayer.sublayers.forEach((sublayer) => {
+                  let sublayerCount = 0; // Store the count for this sublayer
+                  // console.log(sublayer, "sublayer");
+                  sublayer.watch('visible', async () => {
+                    const matchingLegendItem = legendData.find(item => item.feature === layer.title);
+                    console.log(matchingLegendItem, "matchingLegendItem");
+                    if (matchingLegendItem) {
+                      if (sublayer.visible) { // =>>> then we have one count. and so on
+                        // Wait for the count to be retrieved
+                        sublayerCount = await sublayer.queryFeatureCount();
+                        console.log(sublayerCount, "numFeatures for visible sublayer");
+                        matchingLegendItem.count += sublayerCount; // Increment count
+                        // Animate the count in the legend
+                        const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                        animateCount(countElement, matchingLegendItem.count);
+      
+                      } else {
+                        // Decrement the count for the corresponding feature
+                        matchingLegendItem.count -= sublayerCount; // Use the stored count
+      
+                                                    // Animate the count in the legend
+                                                    const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                                                    animateCount(countElement, matchingLegendItem.count);
+                      }
+      
+                    }
+                  });
+                    
+      
+      
+                })
               }
-            });
-              
-
-
-          })
-        }
-
-
-        // });
+            })
+  
+  
+  
+          // });
+        })
       })
+
     // });
   }
 })
