@@ -3844,65 +3844,84 @@ function animateCount(element, targetCount, duration = 1000) {
 
 view.map.layers.forEach((layer) => {
   if (layer.type === "group") {
-    console.log("11111111");
-    // layer.watch('visible', (visible) => {
-      // console.log(visible, "visible Event");
-      // console.log(layer, "Layer changed");
-      // Here is the title to check layer.title => title of the visible layer, and the same title in the legendData
-      layer.loadAll().then(() => {
-        layer.layers.forEach((subtypegrouplayer) => {
-          console.log("22222");
-          // subtypegrouplayer.queryFeatureCount().then(function(numFeatures){
-            // prints the total count to the console
-            // console.log(subtypegrouplayer, subtypegrouplayer.title, numFeatures);
-            subtypegrouplayer.loadAll().then(() => {
-              console.log("All Loaded");
-              if (subtypegrouplayer.sublayers) {
-                console.log("33333");
-                // each subtypegrouplayer have sublayers object, and this will loob through them and count all have visible true.
-                subtypegrouplayer.sublayers.forEach((sublayer) => {
-                  let sublayerCount = 0; // Store the count for this sublayer
-                  // console.log(sublayer, "sublayer");
-                  sublayer.watch('visible', async () => {
-                    const matchingLegendItem = legendData.find(item => item.feature === layer.title);
-                    console.log(matchingLegendItem, "matchingLegendItem");
-                    if (matchingLegendItem) {
-                      if (sublayer.visible) { // =>>> then we have one count. and so on
-                        // Wait for the count to be retrieved
-                        sublayerCount = await sublayer.queryFeatureCount();
-                        console.log(sublayerCount, "numFeatures for visible sublayer");
-                        matchingLegendItem.count += sublayerCount; // Increment count
-                        // Animate the count in the legend
-                        const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
-                        animateCount(countElement, matchingLegendItem.count);
-      
-                      } else {
-                        // Decrement the count for the corresponding feature
-                        matchingLegendItem.count -= sublayerCount; // Use the stored count
-      
-                                                    // Animate the count in the legend
-                                                    const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
-                                                    animateCount(countElement, matchingLegendItem.count);
-                      }
-      
-                    }
-                  });
-                    
-      
-      
-                })
-              }
-            })
-  
-  
-  
-          // });
-        })
-      })
+    layer.loadAll().then(() => {
+      layer.layers.forEach((subtypegrouplayer) => {
+        if (subtypegrouplayer.type === "subtype-group") {
+          subtypegrouplayer.loadAll().then(() => {
+            console.log("All Loaded");
+            if (subtypegrouplayer.sublayers) {
+              // each subtypegrouplayer have sublayers object, and this will loob through them and count all have visible true.
+              subtypegrouplayer.sublayers.forEach((sublayer) => {
+                let sublayerCount = 0; // Store the count for this sublayer
+                sublayer.watch('visible', async () => {
+                  const matchingLegendItem = legendData.find(item => item.feature === layer.title);
+                  console.log(matchingLegendItem, "matchingLegendItem");
+                  if (matchingLegendItem) {
+                    if (sublayer.visible) { // =>>> then we have one count. and so on
+                      // Wait for the count to be retrieved
+                      sublayerCount = await sublayer.queryFeatureCount();
+                      console.log(sublayerCount, "numFeatures for visible sublayer");
+                      matchingLegendItem.count += sublayerCount; // Increment count
+                      // Animate the count in the legend
+                      const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                      animateCount(countElement, matchingLegendItem.count);
+                    } else {
+                      // Decrement the count for the corresponding feature
+                      matchingLegendItem.count -= sublayerCount; // Use the stored count
 
-    // });
+                      // Animate the count in the legend
+                      const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                      animateCount(countElement, matchingLegendItem.count);
+                    }
+                  }
+                });
+              })
+            }
+          })
+        } else {
+          // This means that this layer type is "group"
+          subtypegrouplayer.loadAll().then(() => {
+            // Loop through the nested subtype group layers
+            subtypegrouplayer.layers.forEach((nestedSubtypeGroup) => {
+              nestedSubtypeGroup.loadAll().then(() => {
+                if (nestedSubtypeGroup.sublayers) {
+                  // Loop through sublayers and watch for visibility changes
+                  nestedSubtypeGroup.sublayers.forEach((nestedSublayer) => {
+                    let nestedSublayerCount = 0; // Store the count for this nested sublayer
+                    nestedSublayer.watch('visible', async () => {
+                      const matchingLegendItem = legendData.find(item => item.feature === layer.title);
+                      if (matchingLegendItem) {
+                        if (nestedSublayer.visible) {
+                          // Wait for the count to be retrieved
+                          nestedSublayerCount = await nestedSublayer.queryFeatureCount();
+                          matchingLegendItem.count += nestedSublayerCount; // Increment count
+                          // Animate the count in the legend
+                          const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                          animateCount(countElement, matchingLegendItem.count);
+                        } else {
+                          // Decrement the count for the corresponding feature
+                          matchingLegendItem.count -= nestedSublayerCount; // Use the stored count
+                          // Animate the count in the legend
+                          const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                          animateCount(countElement, matchingLegendItem.count);
+                        }
+                      }
+                    });
+                  });
+                }
+              });
+            });
+          });
+        }
+      })
+    })
   }
 })
+
+
+
+// Call the function to create the legend initially
+createLegend();
 
 // Call the function to create the legend initially
 createLegend();
