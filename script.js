@@ -3318,7 +3318,7 @@ async function displayLayers() {
     });
     // Create the Main Water Main Group Layer
     const WaterMains = new GroupLayer({
-      title: "Water Main",
+      title: "Water Mains",
       layers: subtypeGroupLayersWaterMains,
       visible: false // Hide initially
     });
@@ -3361,10 +3361,10 @@ async function displayLayers() {
     });
 
     displayMap.add(WorkOrders);  // adds the layer to the map
-    // displayMap.add(WaterMains);  // adds the layer to the map
+    displayMap.add(WaterMains);  // adds the layer to the map
     displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
     displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    // displayMap.add(DMZBoundaries);  // adds the layer to the map
+    displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
     displayMap.add(Reservoirs);  // adds the layer to the map
     displayMap.add(KTM);
@@ -3791,14 +3791,14 @@ async function addWidgets() {
       // Sample data for the legend with image URLs
       const legendData = [
         { feature: "Customer Locations", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
-        // { feature: "DMZ Boundaries", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+        { feature: "DMZ Boundaries", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
         { feature: "Reservoirs", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
         { feature: "DMZ Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
         { feature: "DMZ Critical Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
         { feature: "Transmission Main Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
         { feature: "Trunk Main Meter Points", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
         { feature: "Water Treatment Plant", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-        // { feature: "Water Mains", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+        { feature: "Water Mains", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
         { feature: "Work Orders (New System)", count: 0, icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
       ];
 
