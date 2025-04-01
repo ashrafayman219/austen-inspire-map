@@ -1461,6 +1461,101 @@ async function displayLayers() {
     };
 
 
+    const popupTemplateDataLoggers = {
+      title: "DATA LOGGER <br> Serial Number: {serial_number}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const info1TabBtn = document.createElement("button");
+        info1TabBtn.innerText = "Info 1";
+        info1TabBtn.classList.add("active");
+    
+        const info2TabBtn = document.createElement("button");
+        info2TabBtn.innerText = "Logged Data";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        
+        // Create tab content containers
+        const info1TabContent = document.createElement("div");
+        info1TabContent.classList.add("tab-content", "active");
+        info1TabContent.innerHTML = `
+          <p><strong>Data Logger:</strong> ${attributes.careline_num}</p>
+          <p><strong>Reported By:</strong> ${attributes.reportedby_descr}</p>
+          <p><strong>Work Order Status:</strong> ${attributes.status_descr}</p>
+          <p><strong>Reinstatement Status:</strong> ${attributes["Reinstatement Type"]}</p>
+          <p><strong>Program:</strong> ${attributes.program_descr}</p>
+          <p><strong>Contract:</strong> ${attributes.contract_descr}</p>
+          <p><strong>Contractor:</strong> ${attributes.contractor_descr}</p>
+        `;
+
+        const loggedDataTabContent = document.createElement("div");
+        loggedDataTabContent.classList.add("tab-content");
+        loggedDataTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Work Orders (New System)</p>
+          <p><strong>ItemID:</strong> ${attributes.regionID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.OBJECTID}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.Longitude}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Latitude}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(info1TabBtn);
+        tabs.appendChild(info2TabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(info1TabContent);
+        container.appendChild(loggedDataTabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        info1TabBtn.addEventListener("click", () => {
+          info1TabBtn.classList.add("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info1TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info2TabBtn.addEventListener("click", () => {
+          info2TabBtn.classList.add("active");
+          info1TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          loggedDataTabContent.classList.add("active");
+          info1TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          info1TabContent.classList.remove("active");
+          loggedDataTabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
     // // Define a popup template for Customer Locations Layers
     // const popupTemplateCustomerLocations = {
     //   title: "CUSTOMER LOCATION <br> Premise Number: {premisenum}",
@@ -2874,6 +2969,89 @@ async function displayLayers() {
         ]
       },
     ];
+    const layersDataLoggers = [
+      {
+        title: "Kota Kinabalu",
+        subGroups: [
+          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaKinabalu_OvarroXiLog4G/FeatureServer/430" },
+          { title: "Primayer XiLog", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaKinabalu_PrimayerXiLog/FeatureServer/447" },
+          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaKinabalu_PrimayerXiLog1/FeatureServer/567" },
+        ]
+      },
+      {
+        title: "Kota Belud",
+        subGroups: [
+          { title: "i2OWater ALGA1161", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaBelud_i2OWaterALGA1161/FeatureServer/0" },
+          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaBelud_OvarroXiLog4G/FeatureServer/83" },
+        ]
+      },
+      {
+        title: "Kota Marudu",
+        subGroups: [
+          { title: "i2OWater ALGA1130", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaMarudu_i2OWaterALGA1130/FeatureServer/584" },
+          { title: "i2OWater ALGA3230", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaMarudu_i2OWaterALGA3230/FeatureServer/598" },
+          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaMarudu_PrimayerXiLog1/FeatureServer/612" },
+          { title: "Technolog Cello", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaMarudu_TechnologCello/FeatureServer/625" },
+        ]
+      },
+      {
+        title: "Kudat",
+        subGroups: [
+          { title: "i2OWater ALGA1161", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Kudat_i2OWaterALGA1161/FeatureServer/640" },
+          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Kudat_OvarroXiLog4G/FeatureServer/684" },
+          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Kudat_PrimayerXiLog1/FeatureServer/701" },
+        ]
+      },
+      {
+        title: "Papar",
+        subGroups: [
+          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Papar_OvarroXiLog4G/FeatureServer/721" },
+          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Papar_PrimayerXiLog1/FeatureServer/782" },
+        ]
+      },
+      {
+        title: "Ranau",
+        subGroups: [
+          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Ranau_OvarroXiLog4G/FeatureServer/808" },
+          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Ranau_PrimayerXiLog1/FeatureServer/842" },
+        ]
+      },
+      {
+        title: "Sandakan",
+        subGroups: [
+          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Sandakan_OvarroXiLog4G/FeatureServer/876" },
+          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Sandakan_PrimayerXiLog1/FeatureServer/972" },
+        ]
+      },
+      {
+        title: "Tambunan",
+        subGroups: [
+          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tambunan_PrimayerXiLog1/FeatureServer/1032" },
+        ]
+      },
+      {
+        title: "Tuaran",
+        subGroups: [
+          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tuaran_OvarroXiLog4G/FeatureServer/1086" },
+          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tuaran_PrimayerXiLog1/FeatureServer/1101" },
+        ]
+      },
+      {
+        title: "Tamparuli",
+        subGroups: [
+          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tamparuli_OvarroXiLog4G/FeatureServer/1055" },
+          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tamparuli_PrimayerXiLog1/FeatureServer/1070" },
+        ]
+      },
+      {
+        title: "Semporna",
+        subGroups: [
+          { title: "i2OWater ALGA1160", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Semporna_i2OWaterALGA1160/FeatureServer/989" },
+          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Semporna_OvarroXiLog4G/FeatureServer/1008" },
+        ]
+      },
+    ];
+
 
     const staticrenderer = {
       type: "simple",
@@ -2964,6 +3142,15 @@ async function displayLayers() {
       symbol: {
         type: "picture-marker",
         url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
+    const DataLoggersRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png",
         width: "25px",
         height: "25px"
       }
@@ -3360,16 +3547,54 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    displayMap.add(WorkOrders);  // adds the layer to the map
+    // // Data Loggers Layers
+    // // Create SubtypeGroupLayers for Data Loggers
+    const subtypeGroupLayersDataLoggers = layersDataLoggers.map(region => {
+      const subLayers = region.subGroups.map(subGroup => {
+        const layer = new SubtypeGroupLayer({
+          url: subGroup.url,
+          visible: false, // Hide all sublayers initially
+          title: subGroup.title,
+          outFields: ["*"], // Ensure all fields are available for future use
+        });
+        // Placeholder for renderer setup in the future
+        layer.when(() => {
+          layer.sublayers.forEach(sublayer => {
+            sublayer.visible = false;
+            sublayer.renderer = DataLoggersRenderer;
+            // sublayer.labelingInfo = [ labelClassWorkOrders ];
+            sublayer.popupTemplate = popupTemplateDataLoggers ;
+            // if (renderers[subGroup.title]) {
+            //   sublayer.renderer = renderers[subGroup.title];
+            // }
+          });
+        });
+        return layer;
+      });
+      return new GroupLayer({
+        title: region.title,
+        layers: subLayers,
+        visible: false // Hide all sublayers initially
+      });
+    });
+    // Create the Main Water Main Group Layer
+    const DataLoggers = new GroupLayer({
+      title: "Data Loggers",
+      layers: subtypeGroupLayersDataLoggers,
+      visible: false // Hide initially
+    });
+
+    // displayMap.add(WorkOrders);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
     displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
-    displayMap.add(Customer_Locations);
+    // displayMap.add(KTM);
+    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // displayMap.add(Reservoirs);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZCriticalPoints);
+    // displayMap.add(DMZBoundaries);  // adds the layer to the map
+    displayMap.add(DataLoggers);  // adds the layer to the map
+    // displayMap.add(Customer_Locations);
 
 
 
@@ -3788,19 +4013,20 @@ async function addWidgets() {
       // legend.hideLayersNotInCurrentView = true;
 
 
-      // Sample data for the legend with image URLs
-      const legendData = [
-        { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
-        { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
-        { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
-        { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
-        { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
-        { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
-        { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
-        { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
-        { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-        { feature: "Work Orders (New System)", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
-      ];
+// Sample data for the legend with image URLs
+const legendData = [
+  // { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+  { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
+  // { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
+  // { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
+  // { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
+  // { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
+  // { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
+  // { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
+  { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
+  { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
+  // { feature: "Work Orders (New System)", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
+];
 
 // Function to create the legend
 function createLegend(legendData) {
@@ -3827,18 +4053,34 @@ function updateFeatureCount(featureName, count) {
 }
 
 function animateCount(element, targetCount, unit, duration = 1000) {
-  const startCount = parseInt(element.textContent.replace(/,/g, '').replace('#', '0')) || 0; // Get the current count or start from 0
-  const increment = Math.ceil((targetCount - startCount) / (duration / 100)); // Calculate increment per interval
+  const startCount = parseFloat(element.textContent.replace(/,/g, '').replace('#', '0')) || 0;
+  const totalSteps = Math.max(duration / 100, 1); // Ensure at least one step
+  const increment = (targetCount - startCount) / totalSteps;
   let currentCount = startCount;
+  let step = 0;
 
   const interval = setInterval(() => {
+    step++;
     currentCount += increment;
-    if (currentCount >= targetCount) {
-      currentCount = targetCount; // Ensure it doesn't exceed the target
-      clearInterval(interval); // Stop the interval
+
+    // Clamp the current count to the target count
+    if ((increment > 0 && currentCount >= targetCount) || (increment < 0 && currentCount <= targetCount)) {
+      currentCount = targetCount;
+      clearInterval(interval);
     }
-    element.textContent = `${currentCount.toLocaleString()} ${unit}`; // Update the displayed count with formatting and unit
-  }, 100); // Update every 100ms
+
+    // Format the count for Water Mains to two decimal places
+    const formattedCount = (unit === "km") ? currentCount.toFixed(2) : Math.round(currentCount);
+
+    element.textContent = `${formattedCount.toLocaleString()} ${unit}`;
+
+    // If the step exceeds totalSteps, stop the animation
+    if (step >= totalSteps) {
+      clearInterval(interval);
+      const finalFormattedCount = (unit === "km") ? targetCount.toFixed(2) : targetCount;
+      element.textContent = `${finalFormattedCount.toLocaleString()} ${unit}`; // Ensure final value is exact
+    }
+  }, 100);
 }
 
 view.map.layers.forEach((layer) => {
@@ -3870,7 +4112,8 @@ view.map.layers.forEach((layer) => {
                         matchingLegendItem.count = '#';
                         countElement.textContent = matchingLegendItem.count; // Display '#' if count is zero
                       } else {
-                        countElement.textContent = `${matchingLegendItem.count.toLocaleString()} ${unit}`; // Display count with unit
+                        const formattedCount = (unit === "km") ? matchingLegendItem.count.toFixed(2) : matchingLegendItem.count;
+                        countElement.textContent = `${formattedCount.toLocaleString()} ${unit}`; // Display count with unit
                       }
                     }
                   }
@@ -3915,7 +4158,8 @@ view.map.layers.forEach((layer) => {
                               matchingLegendItem.count = '#';
                               countElement.textContent = matchingLegendItem.count;
                             } else {
-                              countElement.textContent = `${matchingLegendItem.count.toLocaleString()} ${unit}`;
+                              const formattedCount = matchingLegendItem.count.toFixed(2);
+                              countElement.textContent = `${formattedCount.toLocaleString()} ${unit}`;
                             }
                           }
                         }
