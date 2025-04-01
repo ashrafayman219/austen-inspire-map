@@ -171,11 +171,22 @@ async function displayLayers() {
       loadModule("esri/widgets/LayerList"),
     ]);
 
-    // Function to format the timestamp to a readable date
     function formatDate(timestamp) {
       const date = new Date(timestamp);
-      const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-      return date.toLocaleDateString(undefined, options);
+      
+      // Adjust for timezone offset (+8 hours)
+      date.setHours(date.getHours() + 8);
+    
+      const options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      };
+    
+      return date.toLocaleDateString('en-GB', options).replace(',', '');
     }
 
 
@@ -1461,6 +1472,11 @@ async function displayLayers() {
     };
 
 
+
+
+
+
+
     const popupTemplateDataLoggers = {
       title: "DATA LOGGER <br> Serial Number: {serial_number}",
       outFields: ["*"],
@@ -1490,13 +1506,13 @@ async function displayLayers() {
         const info1TabContent = document.createElement("div");
         info1TabContent.classList.add("tab-content", "active");
         info1TabContent.innerHTML = `
-          <p><strong>Data Logger:</strong> ${attributes.careline_num}</p>
-          <p><strong>Reported By:</strong> ${attributes.reportedby_descr}</p>
-          <p><strong>Work Order Status:</strong> ${attributes.status_descr}</p>
-          <p><strong>Reinstatement Status:</strong> ${attributes["Reinstatement Type"]}</p>
-          <p><strong>Program:</strong> ${attributes.program_descr}</p>
-          <p><strong>Contract:</strong> ${attributes.contract_descr}</p>
-          <p><strong>Contractor:</strong> ${attributes.contractor_descr}</p>
+          <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} ${attributes.model}</p>
+          <p><strong>Group Code:</strong> ${attributes.groupcode}</p>
+          <p><strong>Group Name:</strong> ${attributes.groupname}</p>
+          <p><strong>Site Code:</strong> ${attributes.sitecode}</p>
+          <p><strong>Site Name:</strong> ${attributes.sitename}</p>
+          <p><strong>Last Received Date/Time:</strong> ${formatDate(attributes.last_loggedtime)}</p>
         `;
 
         const loggedDataTabContent = document.createElement("div");
@@ -1508,11 +1524,11 @@ async function displayLayers() {
         const gisTabContent = document.createElement("div");
         gisTabContent.classList.add("tab-content");
         gisTabContent.innerHTML = `
-          <p><strong>Layer Name:</strong> Work Orders (New System)</p>
-          <p><strong>ItemID:</strong> ${attributes.regionID}</p>
+          <p><strong>Layer Name:</strong> Data Loggers</p>
+          <p><strong>ItemID:</strong> ${attributes.loggerID}</p>
           <p><strong>ObjectID:</strong> ${attributes.OBJECTID}</p>
-          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.Longitude}</p>
-          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Latitude}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
         `;
     
         // Append elements
@@ -1555,6 +1571,166 @@ async function displayLayers() {
         return container;
       }
     };
+
+    const popupTemplateSivMeters = {
+      title: "SYSTEM INPUT VOLUME METER POINT <br> Site: {site}",
+      outFields: ["*"],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const loggedDataTabBtn = document.createElement("button");
+        loggedDataTabBtn.innerText = "Logged Data";
+        loggedDataTabBtn.classList.add("active");
+    
+        const monthlyAverageTabBtn = document.createElement("button");
+        monthlyAverageTabBtn.innerText = "Monthly Average";
+    
+        const info1TabBtn = document.createElement("button");
+        info1TabBtn.innerText = "Info 1";
+    
+        const info2TabBtn = document.createElement("button");
+        info2TabBtn.innerText = "Info 2";
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const loggedDataTabContent = document.createElement("div");
+        loggedDataTabContent.classList.add("tab-content", "active");
+        loggedDataTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const monthlyAverageTabContent = document.createElement("div");
+        monthlyAverageTabContent.classList.add("tab-content");
+        monthlyAverageTabContent.innerHTML = `
+          <!-- Future chart will be added here -->
+        `;
+    
+        const info1TabContent = document.createElement("div");
+        info1TabContent.classList.add("tab-content");
+        info1TabContent.innerHTML = `
+          <p><strong>Meter Nom. Diam.:</strong> ${attributes.meter_dn}</p>
+          <p><strong>Meter Make:</strong> ${attributes.meter_make_descr}</p>
+          <p><strong>Meter Type:</strong> ${attributes.serial_number}</p>
+          <p><strong>Serial Number:</strong> ${attributes.serial_number}</p>
+          <p><strong>Install Date:</strong> ${attributes.inst_date}</p>
+          <p><strong>Data Logger:</strong> ${attributes.serial_number}</p>
+          <p><strong>Logger Type:</strong> ${attributes.make} - ${attributes.model}</p>
+          <p><strong>Last Received Date/Time:</strong> ${formatDate(attributes.last_loggedtime)}</p>
+        `;
+    
+        const info2TabContent = document.createElement("div");
+        info2TabContent.classList.add("tab-content");
+        info2TabContent.innerHTML = `
+          <p><strong>Meter Point Type:</strong> ${attributes.mp_type_descr}</p>
+          <p><strong>Main Pipe Nom Diam:</strong> ${attributes.main_pipe_dn}</p>
+          <p><strong>Bypass:</strong> ${attributes.bypass}</p>
+          <p><strong>Bypass Nom Diam:</strong> ${attributes.bypass_pipe_dn}</p>
+          <p><strong>Meter Location:</strong> ${attributes.meter_locn_descr}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Siv Meters Points</p>
+          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.OBJECTID}</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(loggedDataTabBtn);
+        tabs.appendChild(monthlyAverageTabBtn);
+        tabs.appendChild(info1TabBtn);
+        tabs.appendChild(info2TabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(loggedDataTabContent);
+        container.appendChild(monthlyAverageTabContent);
+        container.appendChild(info1TabContent);
+        container.appendChild(info2TabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        loggedDataTabBtn.addEventListener("click", () => {
+          loggedDataTabBtn.classList.add("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          loggedDataTabContent.classList.add("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        monthlyAverageTabBtn.addEventListener("click", () => {
+          monthlyAverageTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          monthlyAverageTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info1TabBtn.addEventListener("click", () => {
+          info1TabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info1TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        info2TabBtn.addEventListener("click", () => {
+          info2TabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          gisTabBtn.classList.remove("active");
+          info2TabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          gisTabContent.classList.remove("active");
+        });
+    
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          loggedDataTabBtn.classList.remove("active");
+          monthlyAverageTabBtn.classList.remove("active");
+          info1TabBtn.classList.remove("active");
+          info2TabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          loggedDataTabContent.classList.remove("active");
+          monthlyAverageTabContent.classList.remove("active");
+          info1TabContent.classList.remove("active");
+          info2TabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
 
     // // Define a popup template for Customer Locations Layers
     // const popupTemplateCustomerLocations = {
@@ -2658,8 +2834,49 @@ async function displayLayers() {
       // where: "Conference = 'AFC'"
     };
 
+    const labelClassDataLoggers= {  // autocasts as new LabelClass()
+      symbol: {
+        type: "text",  // autocasts as new TextSymbol()
+        color: "black",
+        haloColor: "white",
+        haloSize: 2,
+        font: {  // autocast as new Font()
+          family: "Noto Sans",
+          weight: "bold",
+          size: 7
+         }
+      },
+      labelPlacement: "above-center",
+      labelExpressionInfo: {
+        expression: "$feature.model + ' ' + $feature.serial_number"
+        // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
+      },
+      maxScale: 0,
+      minScale: 18055.9548215,
+      // where: "Conference = 'AFC'"
+    };
 
-
+    const labelClassSivMeters= {  // autocasts as new LabelClass()
+      symbol: {
+        type: "text",  // autocasts as new TextSymbol()
+        color: "black",
+        haloColor: "white",
+        haloSize: 2,
+        font: {  // autocast as new Font()
+          family: "Noto Sans",
+          weight: "bold",
+          size: 7
+         }
+      },
+      labelPlacement: "above-center",
+      labelExpressionInfo: {
+        expression: "$feature.sitename"
+        // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
+      },
+      maxScale: 0,
+      minScale: 18055.9548215,
+      // where: "Conference = 'AFC'"
+    };
 
 
     const layersDMZMeterPoints = [
@@ -3051,6 +3268,11 @@ async function displayLayers() {
         ]
       },
     ];
+    const layersSivMeters = [
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/SivMeters0/FeatureServer/0", title: "Kota Kinabalu" },
+    ];
+
+
 
 
     const staticrenderer = {
@@ -3151,6 +3373,15 @@ async function displayLayers() {
       symbol: {
         type: "picture-marker",
         url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
+    const SivMetersRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png",
         width: "25px",
         height: "25px"
       }
@@ -3562,7 +3793,7 @@ async function displayLayers() {
           layer.sublayers.forEach(sublayer => {
             sublayer.visible = false;
             sublayer.renderer = DataLoggersRenderer;
-            // sublayer.labelingInfo = [ labelClassWorkOrders ];
+            sublayer.labelingInfo = [ labelClassDataLoggers ];
             sublayer.popupTemplate = popupTemplateDataLoggers ;
             // if (renderers[subGroup.title]) {
             //   sublayer.renderer = renderers[subGroup.title];
@@ -3584,17 +3815,50 @@ async function displayLayers() {
       visible: false // Hide initially
     });
 
-    // displayMap.add(WorkOrders);  // adds the layer to the map
+    // Siv Meters Points Layers
+    // Create SubtypeGroupLayers for Siv Meters Points
+    const subtypeGroupLayersSivMeters = layersSivMeters.map(layerInfo => {
+      const layer = new SubtypeGroupLayer({
+        url: layerInfo.url,
+        visible: false, // Hide all sublayers initially
+        title: layerInfo.title,
+        outFields: ["*"], // Ensure all fields are available for the popup
+        // popupTemplate: popupTemplateCustomerLocations
+      });
+
+      // Apply the renderer to each sublayer
+      layer.when(() => {
+        layer.sublayers.forEach(sublayer => {
+          sublayer.visible = false;
+          sublayer.renderer = SivMetersRenderer;
+          sublayer.labelingInfo = [ labelClassSivMeters ];
+          sublayer.labelsVisible = false;
+          sublayer.popupTemplate = popupTemplateSivMeters;
+        });
+      });
+      return layer;
+    });
+    const SivMetersPoints = new GroupLayer({
+      title: "Siv Meters Points",
+      layers: subtypeGroupLayersSivMeters,
+      visible: false // Hide all sublayers initially
+    });
+
+
+
+
+    displayMap.add(WorkOrders);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
     displayMap.add(WaterMains);  // adds the layer to the map
-    // displayMap.add(KTM);
-    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    // displayMap.add(Reservoirs);  // adds the layer to the map
-    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    // displayMap.add(DMZCriticalPoints);
-    // displayMap.add(DMZBoundaries);  // adds the layer to the map
+    displayMap.add(KTM);
+    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    displayMap.add(SivMetersPoints);  // adds the layer to the map
+    displayMap.add(Reservoirs);  // adds the layer to the map
+    displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    displayMap.add(DMZCriticalPoints);
+    displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(DataLoggers);  // adds the layer to the map
-    // displayMap.add(Customer_Locations);
+    displayMap.add(Customer_Locations);
 
 
 
@@ -3630,8 +3894,6 @@ async function addWidgets() {
         loadModule("esri/widgets/Fullscreen"),
         loadModule("esri/widgets/Legend"),
       ]);
-
-
 
       var search = new Search({
         //Add Search widget
@@ -4015,17 +4277,18 @@ async function addWidgets() {
 
 // Sample data for the legend with image URLs
 const legendData = [
-  // { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+  { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
   { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
-  // { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
-  // { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
-  // { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
-  // { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
-  // { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
-  // { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
+  { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
+  { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
+  { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
+  { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
+  { feature: "Siv Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
+  { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
+  { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
   { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
   { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-  // { feature: "Work Orders (New System)", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
+  { feature: "Work Orders (New System)", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
 ];
 
 // Function to create the legend
