@@ -2840,6 +2840,8 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
@@ -2862,6 +2864,8 @@ async function displayLayers() {
         color: "black",
         haloColor: "white",
         haloSize: 2,
+        haloSize: 2,
+        yoffset: -6,
         font: {  // autocast as new Font()
           family: "Noto Sans",
           weight: "bold",
