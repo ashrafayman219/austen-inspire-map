@@ -35,7 +35,9 @@ html, body, #container {
   text-align: center; /* Centers text */
 }
 
-
+.content-wrapper {
+  background-color: #fff;
+}
 
 
 #title p {
@@ -86,8 +88,6 @@ h3 {
   height: 100%;
   background-color: rgb(192, 199, 199);
 }
-
-
 
 
 
