@@ -3843,7 +3843,7 @@ async function displayLayers() {
       return layer;
     });
     const SivMetersPoints = new GroupLayer({
-      title: "Siv Meters Points",
+      title: "SIV Meters Points",
       layers: subtypeGroupLayersSivMeters,
       visible: false // Hide all sublayers initially
     });
