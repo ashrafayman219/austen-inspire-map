@@ -3777,7 +3777,7 @@ async function displayLayers() {
     });
     // Create the Main Water Main Group Layer
     const WorkOrders = new GroupLayer({
-      title: "Work Orders (New System)",
+      title: "Maintenance Work Orders",
       layers: subtypeGroupLayersWorkOrders,
       visible: false // Hide initially
     });
@@ -3853,16 +3853,16 @@ async function displayLayers() {
 
     displayMap.add(WorkOrders);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(SivMetersPoints);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
+    // displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(KTM);
+    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // displayMap.add(SivMetersPoints);  // adds the layer to the map
+    // displayMap.add(Reservoirs);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZCriticalPoints);
+    // displayMap.add(DMZBoundaries);  // adds the layer to the map
     displayMap.add(DataLoggers);  // adds the layer to the map
-    displayMap.add(Customer_Locations);
+    // displayMap.add(Customer_Locations);
 
 
 
@@ -4062,8 +4062,6 @@ async function addWidgets() {
                   });
                 }
               }
-
-
             } else {
               // console.log("GGGGG")
               let parentLayer = item.layer.parent;
@@ -4075,6 +4073,29 @@ async function addWidgets() {
                 parentLayer = parentLayer.parent; // Move up the hierarchy
               }
             }
+
+
+            if (item.layer.type === "group" && item.layer.parent.title === "Data Loggers")  {
+              console.log("BBBBBBB")
+              if (item.layer.layers && item.layer.layers.some(layer => layer.visible)) {                
+                // item.layer.layers.forEach((layer) => {
+                //   layer.sublayers.some(sublayer => sublayer.visible)
+                // })
+                return;
+              } else {
+                console.log(item.layer, "Here is the group layer...");
+                item.layer.layers.forEach((subtypegrouplayers) => {
+                  subtypegrouplayers.visible = true;
+                  console.log("OOOOOOOO");
+                  // if (subtypegrouplayers.sublayers) {
+                  //   subtypegrouplayers.sublayers.forEach((sublayer) => {
+                  //     sublayer.visible = true;
+                  //   })
+                  // }
+                })
+              }
+            }
+
           }
           } else {
               if (item.layer.sublayers) {
@@ -4082,6 +4103,13 @@ async function addWidgets() {
                       sublayer.visible = false;  // Turn off visibility
                       sublayer.listItem && (sublayer.listItem.visible = false); // Uncheck the checkbox in UI
                   });
+              }
+
+              if (item.layer.type === "group") {
+                console.log(item.layer, "item.layeritem.layer");
+                item.layer.layers.forEach((layer) => {
+                  layer.visible = false;
+                })
               }
           }
         
@@ -4281,18 +4309,18 @@ async function addWidgets() {
 
 // Sample data for the legend with image URLs
 const legendData = [
-  { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+  // { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
   { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
-  { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
-  { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
-  { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
-  { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
-  { feature: "Siv Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
-  { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
-  { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
-  { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
+  // { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
+  // { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
+  // { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
+  // { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
+  // { feature: "Siv Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
+  // { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
+  // { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
+  // { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
   { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-  { feature: "Work Orders (New System)", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
+  { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
 ];
 
 // Function to create the legend
