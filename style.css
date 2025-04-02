@@ -225,3 +225,12 @@ h3 {
   margin-left: auto; /* Pushes the count to the right */
   margin-right: 10px; /* Space between the feature name and count */
 }
+
+
+calcite-action-group [layout="horizontal"] {
+  flex-direction: row-reverse !important;
+}
+
+calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
+  margin-right: 91px; /* Adjust the value as needed for the desired gap */
+}

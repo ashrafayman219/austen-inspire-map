@@ -769,6 +769,19 @@ async function displayLayers() {
     const popupTemplateWTP = {
       title: "WATER TREATMENT PLANT <br> Site: {site}",
       outFields: ["*"],
+      actions: [
+        {
+          id: "streetview",
+          icon: "360-view",
+          title: "Street View"
+        },
+        {
+          id: "sharelocation",
+          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          icon: "pin-tear",
+          title: "Share Location"
+        },
+      ],
       content: function (feature) {
         const attributes = feature.graphic.attributes;
     
@@ -3851,20 +3864,90 @@ async function displayLayers() {
 
 
 
-    displayMap.add(WorkOrders);  // adds the layer to the map
+    // displayMap.add(WorkOrders);  // adds the layer to the map
     displayMap.add(WTP);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(SivMetersPoints);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
-    displayMap.add(DataLoggers);  // adds the layer to the map
-    displayMap.add(Customer_Locations);
+    // displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(KTM);
+    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // displayMap.add(SivMetersPoints);  // adds the layer to the map
+    // displayMap.add(Reservoirs);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZCriticalPoints);
+    // displayMap.add(DMZBoundaries);  // adds the layer to the map
+    // displayMap.add(DataLoggers);  // adds the layer to the map
+    // displayMap.add(Customer_Locations);
+
+  // Watch for when the popup becomes visible
+  reactiveUtils.watch(
+    () => view.popup.visible,
+    (isVisible) => {
+      if (isVisible) {
+        // Wait for the popup to be fully rendered
+        setTimeout(() => {
+          // Access the popup's DOM
+          const popupContainer = view.popup.container;
+          if (popupContainer) {
+            // Find the calcite-action-group within the popup
+            const actionGroups = popupContainer.querySelectorAll('calcite-action-group[layout="horizontal"]');
+            actionGroups.forEach(actionGroup => {
+              const shadowRoot = actionGroup.shadowRoot;
+              if (shadowRoot) {
+                const container = shadowRoot.querySelector('.container');
+                if (container) {
+                  container.style.display = 'flex';
+                  container.style.flexDirection = 'row-reverse';
+                }
+              }
+            });
+          }
+        }, 100); // Adjust the timeout as needed to ensure the popup is fully rendered
+      }
+    }
+  );
 
 
+    view.when(() => {
+      // // Watch for when features are selected
+      // reactiveUtils.watch(
+      //   () => view.popup.selectedFeature,
+      //   (graphic) => {
+      //     if (graphic) {
+      //       // Set the action's visible property to true if the 'website' field value is not null, otherwise set it to false
+      //       const graphicTemplate = graphic.getEffectivePopupTemplate();
+      //       graphicTemplate.actions.items[0].visible = graphic.attributes.website ? true : false;
+      //     }
+      //   }
+      // );
+      // Watch for the trigger-action event on the popup
+      reactiveUtils.on(
+        () => view.popup,
+        "trigger-action",
+        (event) => {
+          if (event.action.id === "sharelocation") {
+            const attributes = view.popup.selectedFeature.attributes;
+            // console.log(attributes, "attributes");
+            // Get the 'website' field attribute
+            const info = `https://www.google.com/maps/place/${attributes.Y},${attributes.X}`;
+            // Make sure the 'website' field value is not null
+            if (info) {
+              // Open up a new browser using the URL value in the 'website' field
+              window.open(info.trim());
+            }
+          }
+          
+          if (event.action.id === "streetview") {
+            const attributes = view.popup.selectedFeature.attributes;
+            // console.log(attributes, "attributes");
+            const info = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${attributes.Y},${attributes.X}&heading=-45&pitch=0&fov=80`;
+            // Make sure the 'website' field value is not null
+            if (info) {
+              // Open up a new browser using the URL value in the 'website' field
+              window.open(info.trim());
+            }
+          }
+        }
+      );
+    });
 
     await view.when();
     // return gra; // You can return the view object
@@ -4309,18 +4392,18 @@ async function addWidgets() {
 
 // Sample data for the legend with image URLs
 const legendData = [
-  { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
-  { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
-  { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
-  { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
-  { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
-  { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
-  { feature: "Siv Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
-  { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
-  { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
-  { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
+  // { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+  // { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
+  // { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
+  // { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
+  // { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
+  // { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
+  // { feature: "SIV Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
+  // { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
+  // { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
+  // { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
   { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-  { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
+  // { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
 ];
 
 // Function to create the legend
