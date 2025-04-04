@@ -311,6 +311,7 @@ async function displayLayers() {
         loggedDataTabContent.classList.add("tab-content");
         loggedDataTabContent.innerHTML = `
           <!-- Future chart will be added here -->
+          <canvas id="reservoirsChart" width="400" height="200"></canvas>
         `;
     
         const gisTabContent = document.createElement("div");
@@ -349,7 +350,40 @@ async function displayLayers() {
           loggedDataTabContent.classList.add("active");
           infoTabContent.classList.remove("active");
           gisTabContent.classList.remove("active");
+          
+          // Initialize the chart
+          const ctx = document.getElementById('reservoirsChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: ['12:00 AM', '12:00 PM', '12:00 AM'],
+              datasets: [{
+                label: 'Reservoirs Level',
+                data: [-2, 0, 1, 0, -1, -2],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  title: {
+                    display: true,
+                    text: 'Level (m)'
+                  }
+                },
+                x: {
+                  title: {
+                    display: true,
+                    text: 'Time'
+                  }
+                }
+              }
+            }
+          });
         });
+        
     
         gisTabBtn.addEventListener("click", () => {
           gisTabBtn.classList.add("active");
@@ -1600,12 +1634,6 @@ async function displayLayers() {
         return container;
       }
     };
-
-
-
-
-
-
 
     const popupTemplateDataLoggers = {
       title: "DATA LOGGER <br> Serial Number: {serial_number}",
@@ -3954,6 +3982,7 @@ async function displayLayers() {
             sublayer.visible = false;
             sublayer.renderer = DataLoggersRenderer;
             sublayer.labelingInfo = [ labelClassDataLoggers ];
+            sublayer.labelsVisible = false;
             sublayer.popupTemplate = popupTemplateDataLoggers ;
             // if (renderers[subGroup.title]) {
             //   sublayer.renderer = renderers[subGroup.title];
@@ -4226,34 +4255,6 @@ async function addWidgets() {
             ]);
         }
 
-
-
-        // // Add logic to ensure parent layers are turned on when a sublayer is toggled
-        // item.watch("visible", (visible) => {
-        //   if (visible) {
-        //       // console.log(item, "item");
-        //         let parentLayer = item.layer.parent;
-        //         while (parentLayer) {
-        //             parentLayer.visible = true;
-        //             parentLayer = parentLayer.parent; // Move up the hierarchy
-        //         }
-        //     }
-        // });
-        
-        
-        // // Watch for visibility changes
-        // item.watch("visible", (visible) => {
-        //   console.log(visible, "visible");
-        //   if (visible) {
-        //       activateParentLayers(item.layer); // Turn on parent layers
-        //       activateChildLayers0(item.layer, visible); // Turn on all child sublayers if it's a subtype-group
-        //   } else {
-        //       deactivateChildLayers(item.layer); // Turn off child sublayers when a layer is disabled
-        //   }
-        // });
-
-
-        // let isUpdatingVisibility = false;
 
         item.watch("visible", (visible) => {
           // if (isUpdatingVisibility) return; // Exit if already updating visibility
@@ -4766,367 +4767,8 @@ createLegend(legendData);
 
 
 
-      
-      // legend.when(() => {
-      //   legend.activeLayerInfos.forEach((layerInfo) => {
-      //     console.log(layerInfo, "layerInfo");
-      //     if (layerInfo.layer.type === "feature") {
-      //       updateFeatureCount(layerInfo);
-      //     }
-      //   });
-      // });
-      
-      // // Function to update the feature count beside each legend item
-      // function updateFeatureCount(layerInfo) {
-      //   view.whenLayerView(layerInfo.layer).then((layerView) => {
-      //     function refreshCount() {
-      //       if (!view.updating) {
-      //         layerView.queryFeatureCount().then((count) => {
-      //           layerInfo.title = `${layerInfo.layer.title} (${count})`;
-      //           legend.renderNow(); // Force update
-      //         });
-      //       }
-      //     }
-      
-      //     // Run once and also update on extent changes
-      //     refreshCount();
-      //     view.watch("stationary", refreshCount);
-      //   });
-      // }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // // List of GeoJSON URLs with Titles
-    // const geojsonData = [
-    //   { title: "Reservoirs", url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/Reservoirs.geojson" },
-    //   { title: "DMZCriticalPoint", url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/DMZCriticalPoint.geojson" },
-    //   { title: "KTM", url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/KTM.geojson" },
-    //   { title: "TMM", url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/TMM.geojson" },
-    //   { title: "WTP", url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/WTP.geojson" },
-    // ];
-
-    // // Object to store feature layers for future edits
-    // const featureLayersMap = {};
-
-    // for (const { title, url } of geojsonData) {
-    //   const geojsonLayer = new GeoJSONLayer({ url });
-
-    //   await geojsonLayer.load();
-      
-    //   const results = await geojsonLayer.queryFeatures();
-    //   const features = results.features;
-    //   if (!features.length) {
-    //     console.warn(`No features found in ${title}`);
-    //     continue;
-    //   }
-
-    //   // Create a FeatureLayer for the entire GeoJSON
-    //   const featureLayer = new FeatureLayer({
-    //     source: features,
-    //     outFields: ["*"],
-    //     fields: results.fields,
-    //     objectIdField: results.fields[0].name,
-    //     geometryType: results.geometryType,
-    //     title: title, // Assigning the title from geojsonData,
-    //     // renderer: layersRenderer,
-    //     visible: false // Ensure main layer is hidden initially
-    //   });
-
-    //   // Store the feature layer for future use
-    //   featureLayersMap[url] = featureLayer;
-
-    //   await featureLayer.load();
-
-
-    //   // Create sublayers grouped by 'regionID'
-    //   const regionAttribute = "regionID";
-    //   const siteAttribute = "sitecode";
-
-    //   const regionValues = [...new Set(features.map(f => f.attributes[regionAttribute]))];
-
-    //   // Store sublayers for future use
-    //   const regionSublayersMap = {};
-
-    //   const regionSublayers = regionValues.map(regionValue => {
-    //     const regionFeatures = features.filter(f => f.attributes[regionAttribute] === regionValue);
-
-    //     // Further classify by 'sitecode'
-    //     const siteValues = [...new Set(regionFeatures.map(f => f.attributes[siteAttribute]))];
-
-    //     const siteSublayers = siteValues.map(siteValue => {
-    //       const siteFilteredFeatures = regionFeatures.filter(f => f.attributes[siteAttribute] === siteValue);
-    //       const siteLayer = new FeatureLayer({
-    //         source: siteFilteredFeatures,
-    //         objectIdField: results.fields[0].name,
-    //         title: `Region ${regionValue} - Site ${siteValue}`,
-    //         outFields: ["*"],
-    //         visible: false // Hide site-level layers initially
-    //       });
-
-    //       return siteLayer;
-    //     });
-
-    //     // Store region sublayers
-    //     regionSublayersMap[regionValue] = siteSublayers;
-
-    //     return new GroupLayer({
-    //       title: `Region ${regionValue}`,
-    //       layers: siteSublayers, // Add only site-level sublayers
-    //       visible: false // Hide region-level layers initially
-    //     });
-    //   });
-
-    //   // Create a GroupLayer containing region-level sublayers
-    //   const groupLayer = new GroupLayer({
-    //     title: `${title} (Grouped)`,
-    //     layers: regionSublayers,
-    //     visible: false // Hide all sublayers initially
-    //   });
-
-    //   displayMap.add(groupLayer);
-
-    //   // Store the sublayers for future reference
-    //   featureLayersMap[title] = {
-    //     featureLayer,
-    //     regionSublayersMap
-    //   };
-    // }
-
-    // // Store the feature layers globally for easy reference
-    // window.featureLayersMap = featureLayersMap;
-    // console.log(featureLayersMap, "featureLayersMap");
-
-
-
-    // view.on("click", function (event) {
-    //   view.hitTest(event).then(function (response) {
-    //     if (response.results.length) {
-    //       let graphic = response.results.filter(function (result) {
-    //         return (
-    //           result.graphic.layer === groupLayer
-    //         );
-    //       })[0].graphic;
-    //       view.goTo(
-    //         {
-    //           target: graphic,
-    //         },
-    //         {
-    //           duration: 2000,
-    //         }
-    //       );
-    //     }
-    //   });
-    // });
-
-
-    
-    // await reservoirsGeojsonlayer.queryFeatures().then(function (results) {
-    //   console.log(results, "results");
-    //   const featureLayer = new FeatureLayer({
-    //     source: results.features,
-    //     outFields: ["*"],
-    //     fields: results.fields,
-    //     objectIdField: results.fields[0].name,
-    //     geometryType: results.geometryType,
-    //     title: reservoirsGeojsonlayer.title,
-    //   });
-
-    //   // Ensure the layer is loaded
-    //   // featureLayer.when(() => {
-    //     // Step 2: Query features to get the data
-    //     featureLayer.queryFeatures().then((featureSet) => {
-    //       console.log(featureSet, "featureSet");
-    //       const features = featureSet.features;
-    //       const attributeName = "regionID"; // Replace with your attribute name
-    //       const uniqueValues = [...new Set(features.map(feature => feature.attributes[attributeName]))];
-
-    //       const subLayers = uniqueValues.map(value => {
-    //         const filteredFeatures = features.filter(feature => feature.attributes[attributeName] === value);
-    //         return new FeatureLayer({
-    //           source: filteredFeatures,
-    //           objectIdField: results.fields[0].name,
-    //           title: value
-    //         });
-    //       });
-
-    //       // Step 3: Create a GroupLayer
-    //       const groupLayer = new GroupLayer({
-    //         title: reservoirsGeojsonlayer.title,
-    //         layers: subLayers
-    //       });
-    //       displayMap.add(groupLayer);
-    //     });
-    //   // }).catch((error) => {
-    //   //   console.error("Error loading GeoJSONLayer: ", error);
-    //   // });
-
-
-
-
-    //   // // Typical usage for the FeatureTable widget. This will recognize all fields in the layer if none are set.
-    //   // const featureTable = new FeatureTable({
-    //   //   view: view, // The view property must be set for the select/highlight to work
-    //   //   layer: featureLayer,
-    //   //   visibleElements: {
-    //   //     header: true,
-    //   //     menu: true,
-    //   //     // Autocast to VisibleElements
-    //   //     menuItems: {
-    //   //       clearSelection: true,
-    //   //       refreshData: true,
-    //   //       toggleColumns: true,
-    //   //       selectedRecordsShowAllToggle: true,
-    //   //       selectedRecordsShowSelectedToggle: true,
-    //   //       zoomToSelection: true
-    //   //     },
-    //   //     selectionColumn: true,
-    //   //     columnMenus: true
-    //   //   },
-    //   //   container: document.getElementById("tableDiv")
-    //   // });
-
-    //   // displayMap.add(featureLayer);  // adds the layer to the map
-    //   // arrayFeatures.push(featureLayer);
-    // });
-    // // featureLayers = arrayFeatures;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const colors = ["#d92b30", "#3cccb4", "#ffdf3c", "#c27c30", "#f260a1"];
-
-// const commonProperties = {
-//   type: "simple-marker",
-//   size: "8px",
-//   style: "square",
-//   outline: {  // autocasts as new SimpleLineSymbol()
-//     color: [ 255, 255, 0 ],
-//     width: 3  // points
-//   }
-// };
-
-// // Symbol for Interstate highways
-// const fwySym = {
-//   ...commonProperties,
-//   color: colors[0]
-// };
-
-// // Symbol for U.S. Highways
-// const hwySym = {
-//   ...commonProperties,
-//   color: colors[1]
-// };
-
-// // Symbol for state highways
-// const stateSym = {
-//   ...commonProperties,
-//   color: colors[2]
-// };
-
-// // Symbol for other major highways
-// const majorSym = {
-//   ...commonProperties,
-//   color: colors[3]
-// };
-
-// // Symbol for other major highways
-// const otherSym = {
-//   ...commonProperties,
-//   color: colors[4]
-// };
-
-// // const layersRenderer = {
-// //   type: "unique-value", // autocasts as new UniqueValueRenderer()
-// //   legendOptions: {
-// //     title: "Regions"
-// //   },
-// //   defaultSymbol: otherSym,
-// //   defaultLabel: "Other",
-// //   field: "regionID",
-
-// //   uniqueValueInfos: [
-// //     {
-// //       value: "I", // code for interstates/freeways
-// //       symbol: fwySym,
-// //       label: "Interstate"
-// //     },
-// //     {
-// //       value: "U", // code for U.S. highways
-// //       symbol: hwySym,
-// //       label: "US Highway"
-// //     },
-// //     {
-// //       value: "S", // code for U.S. highways
-// //       symbol: stateSym,
-// //       label: "State Highway"
-// //     },
-// //     {
-// //       value: "M", // code for U.S. highways
-// //       symbol: majorSym,
-// //       label: "Major road"
-// //     }
-// //   ]
-// // };
-
-// const layersRenderer = {
-//   type: "simple", // autocasts as new SimpleRenderer(),
-//   style: "circle",
-//   symbol: {
-//     type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-//     size: 8,
-//     color: "#0290e3",
-//     // outline: null
-//     outline: {  // autocasts as new SimpleLineSymbol()
-//       color: [ 0, 0, 0 ],
-//       width: 0.5  // points
-//     }
-//   },
-//   label: "LL" // this will appear next to the symbol in the legend
-// };
 
 
 
