@@ -450,7 +450,7 @@ async function displayLayers() {
           <p><strong>Address 2:</strong> ${attributes.addr2}</p>
           <p><strong>Address 3:</strong> ${attributes.addr3}</p>
           <p><strong>Post Code:</strong> ${attributes.poscod}</p>
-          <p><strong>Property Type:</strong> ${attributes.proptytyp}</p>
+          <p><strong>Property Type:</strong> ${attributes.proptytyp} - ${attributes.proptytyp_descr}</p>
           <p><strong>Billing District:</strong> ${attributes.regioncode} - ${attributes.regionname}</p>
           <p><strong>Operational District:</strong> ${attributes.regioncode} - ${attributes.regionname}</p>
           <p><strong>DMA:</strong> ${attributes.sitecode} - ${attributes.sitename}</p>
