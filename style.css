@@ -234,3 +234,54 @@ calcite-action-group [layout="horizontal"] {
 calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
   margin-right: 91px; /* Adjust the value as needed for the desired gap */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#thematicsSection {
+  margin-top: 20px;
+}
+
+.thematics-control {
+  margin: 10px 0;
+  background-color: #fff;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.thematics-control label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #4a4a4a;
+}
+
+.thematics-control select {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.thematics-control select:focus {
+  outline: none;
+  border-color: #0078d4;
+}
+

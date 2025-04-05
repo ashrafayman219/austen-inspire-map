@@ -2,6 +2,103 @@
 var displayMap;
 var view;
 
+// // Reservoirs Charts...
+// {
+//   "features": [
+//     {
+//       "siteID": "123",
+//       "reservoirName": "Reservoir A",
+//       "data": [
+//         {
+//           "timestamp": "2025-03-20T00:00:00Z",
+//           "level": -2
+//         },
+//         {
+//           "timestamp": "2025-03-20T12:00:00Z",
+//           "level": 0
+//         },
+//         {
+//           "timestamp": "2025-03-21T00:00:00Z",
+//           "level": 1
+//         }
+//       ]
+//     },
+//     {
+//       "siteID": "456",
+//       "reservoirName": "Reservoir B",
+//       "data": [
+//         {
+//           "timestamp": "2025-03-20T00:00:00Z",
+//           "level": -1
+//         },
+//         {
+//           "timestamp": "2025-03-20T12:00:00Z",
+//           "level": 1
+//         },
+//         {
+//           "timestamp": "2025-03-21T00:00:00Z",
+//           "level": 0
+//         }
+//       ]
+//     }
+//   ]
+// }
+
+// // DMZ Boundaries Charts...
+// {
+//   "dmzBoundaries": [
+//     {
+//       "siteID": "123",
+//       "data": [
+//         {
+//           "month": "Apr-24",
+//           "inflow": 20,
+//           "bmac": -15,
+//           "nrw": 10
+//         },
+//         {
+//           "month": "May-24",
+//           "inflow": 30,
+//           "bmac": 25,
+//           "nrw": -20
+//         },
+//         {
+//           "month": "Jun-24",
+//           "inflow": -10,
+//           "bmac": -5,
+//           "nrw": 15
+//         }
+//         // Add more months as needed
+//       ]
+//     },
+//     {
+//       "siteID": "456",
+//       "data": [
+//         {
+//           "month": "Apr-24",
+//           "inflow": 25,
+//           "bmac": -10,
+//           "nrw": 5
+//         },
+//         {
+//           "month": "May-24",
+//           "inflow": 35,
+//           "bmac": 20,
+//           "nrw": -15
+//         },
+//         {
+//           "month": "Jun-24",
+//           "inflow": -5,
+//           "bmac": 0,
+//           "nrw": 10
+//         }
+//         // Add more months as needed
+//       ]
+//     }
+//   ]
+// }
+
+
 function loadModule(moduleName) {
   return new Promise((resolve, reject) => {
     require([moduleName], (module) => {
@@ -146,12 +243,12 @@ async function initializeMap() {
   }
 }
 
-
 // calling
 initializeMap()
   .then(() => {
     view.ui.add("logoDiv", "top-right");
     console.log("Map Returned From Require Scope", displayMap);
+
     // You can work with the view object here
   })
   .catch((error) => {
@@ -973,7 +1070,7 @@ async function displayLayers() {
         const nrwReportTabContent = document.createElement("div");
         nrwReportTabContent.classList.add("tab-content", "active");
         nrwReportTabContent.innerHTML = `
-          <!-- Future chart will be added here -->
+          <canvas id="nrwChart" width="400" height="200"></canvas>
         `;
     
         const loggedDataTabContent = document.createElement("div");
@@ -1025,6 +1122,51 @@ async function displayLayers() {
           loggedDataTabContent.classList.remove("active");
           info1TabContent.classList.remove("active");
           gisTabContent.classList.remove("active");
+
+          // Initialize the chart
+          const ctx = document.getElementById('nrwChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: ['Apr-24', 'May-24', 'Jun-24', 'Jul-24', 'Aug-24', 'Sep-24', 'Oct-24', 'Nov-24', 'Dec-24', 'Jan-25', 'Feb-25', 'Mar-25'],
+              datasets: [
+                {
+                  label: 'Inflow',
+                  data: [20, 30, -10, 40, -20, 30, 10, -30, 20, 10, -10, 30],
+                  backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                },
+                {
+                  label: 'BMAC',
+                  data: [-15, 25, -5, 35, -25, 20, 5, -20, 15, 5, -5, 25],
+                  backgroundColor: 'rgba(255, 159, 64, 0.6)'
+                },
+                {
+                  label: 'NRW',
+                  data: [10, -20, 15, -30, 20, -10, 25, -15, 10, -5, 20, -25],
+                  backgroundColor: 'rgba(153, 102, 255, 0.6)'
+                }
+              ]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: 'Value'
+                  }
+                },
+                x: {
+                  title: {
+                    display: true,
+                    text: 'Month-Year'
+                  }
+                }
+              }
+            }
+          });
+
+
         });
     
         loggedDataTabBtn.addEventListener("click", () => {
@@ -4257,16 +4399,70 @@ async function addWidgets() {
 
 
         item.watch("visible", (visible) => {
-          // if (isUpdatingVisibility) return; // Exit if already updating visibility
-        
-          // isUpdatingVisibility = true; // Set flag to true
-        
-          // console.log(item.layer, "item.layer");
-        
           if (visible) {
-            // console.log("NNNN");
+
+            if (item.layer.type === "group") {
+              // Here we will start create the layer option in the drop down list
+            }
+
+            if (item.layer.type === "group") {
+              // Get the layer select dropdown
+              const layerSelect = document.getElementById('layerSelect');
+              
+              // Function to update or add layer option
+              function updateLayerOption(layer) {
+                // Check if option already exists
+                let existingOption = Array.from(layerSelect.options).find(opt => opt.value === layer.id);
+                
+                if (!existingOption) {
+                  const option = document.createElement('option');
+                  option.value = layer.id;
+                  option.text = layer.title;
+                  layerSelect.add(option);
+                }
+              }
+        
+              // Function to remove layer option
+              function removeLayerOption(layer) {
+                Array.from(layerSelect.options).forEach(opt => {
+                  if (opt.value === layer.id) {
+                    layerSelect.remove(opt.index);
+                  }
+                });
+              }
+        
+              // Update options based on visibility
+              if (visible) {
+                updateLayerOption(item.layer);
+              } else {
+                removeLayerOption(item.layer);
+              }
+        
+              // // Watch sublayers visibility changes
+              // if (item.layer.layers) {
+              //   item.layer.layers.forEach(sublayer => {
+              //     if (sublayer.type === "subtype-group" && sublayer.sublayers) {
+              //       sublayer.sublayers.forEach(subsublayer => {
+              //         subsublayer.watch("visible", (isVisible) => {
+              //           if (isVisible) {
+              //             updateLayerOption(sublayer);
+              //           } else {
+              //             // Only remove if no other sublayers are visible
+              //             if (!sublayer.sublayers.some(sl => sl.visible)) {
+              //               removeLayerOption(sublayer);
+              //             }
+              //           }
+              //         });
+              //       });
+              //     }
+              //   });
+              // }
+            }
+
+
+
+
             if ( item.layer.type === "subtype-sublayer") {
-              // console.log("GGGGG")
               let parentLayer = item.layer.parent;
               while (parentLayer) {
                 if (parentLayer.visible === false) {
@@ -4277,76 +4473,72 @@ async function addWidgets() {
               }
               // return;
             } else {
-            if (item.layer.type === "subtype-group" && item.layer.parent.type === "group") { // &&
-              // console.log(item.layer, "subtype-group groupgroupgroupgroupgroupgroup");
-              if (item.layer.sublayers && item.layer.sublayers.some(sublayer => sublayer.visible)) {
-                return;
-              } else {
-                let parentLayer = item.layer.parent;
-                while (parentLayer) {
-                  if (parentLayer.visible === false) {
-                    parentLayer.visible = true;
-                    console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
-                  }
-                  parentLayer = parentLayer.parent; // Move up the hierarchy
-                }
-          
-                // Remove or modify this block to prevent all sublayers from being turned on
-                if (item.layer.sublayers && item.layer.type === "subtype-group") { // Ensure sublayers exist
-                  // console.log("CCCCCC")
-                  item.layer.sublayers.forEach((sublayer) => {
-                    if (!sublayer.visible) { // Only change if not already visible
-                      sublayer.visible = true;
-                      console.log("Sublayer Made Visible:", sublayer.title);
+                if (item.layer.type === "subtype-group" && item.layer.parent.type === "group") { // &&
+                  if (item.layer.sublayers && item.layer.sublayers.some(sublayer => sublayer.visible)) {
+                    return;
+                  } else {
+                    let parentLayer = item.layer.parent;
+                    while (parentLayer) {
+                      if (parentLayer.visible === false) {
+                        parentLayer.visible = true;
+                        console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
+                      }
+                      parentLayer = parentLayer.parent; // Move up the hierarchy
                     }
-                  });
+              
+                    // Remove or modify this block to prevent all sublayers from being turned on
+                    if (item.layer.sublayers && item.layer.type === "subtype-group") { // Ensure sublayers exist
+                      item.layer.sublayers.forEach((sublayer) => {
+                        if (!sublayer.visible) { // Only change if not already visible
+                          sublayer.visible = true;
+                          console.log("Sublayer Made Visible:", sublayer.title);
+                        }
+                      });
+                    }
+                  }
+                } else {
+                  let parentLayer = item.layer.parent;
+                  while (parentLayer) {
+                    if (parentLayer.visible === false) {
+                      parentLayer.visible = true;
+                      console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
+                    }
+                    parentLayer = parentLayer.parent; // Move up the hierarchy
+                  }
                 }
-              }
-            } else {
-              // console.log("GGGGG")
-              let parentLayer = item.layer.parent;
-              while (parentLayer) {
-                if (parentLayer.visible === false) {
-                  parentLayer.visible = true;
-                  console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
+
+
+                if (item.layer.type === "group" && item.layer.parent.title === "Data Loggers")  {
+                  if (item.layer.layers && item.layer.layers.some(layer => layer.visible)) {
+                    return;
+                  } else {
+                    console.log(item.layer, "Here is the group layer...");
+                    item.layer.layers.forEach((subtypegrouplayers) => {
+                      subtypegrouplayers.visible = true;
+
+                    })
+                  }
                 }
-                parentLayer = parentLayer.parent; // Move up the hierarchy
-              }
+
             }
-
-
-            if (item.layer.type === "group" && item.layer.parent.title === "Data Loggers")  {
-              console.log("BBBBBBB")
-              if (item.layer.layers && item.layer.layers.some(layer => layer.visible)) {                
-                // item.layer.layers.forEach((layer) => {
-                //   layer.sublayers.some(sublayer => sublayer.visible)
-                // })
-                return;
-              } else {
-                console.log(item.layer, "Here is the group layer...");
-                item.layer.layers.forEach((subtypegrouplayers) => {
-                  subtypegrouplayers.visible = true;
-                  console.log("OOOOOOOO");
-                  // if (subtypegrouplayers.sublayers) {
-                  //   subtypegrouplayers.sublayers.forEach((sublayer) => {
-                  //     sublayer.visible = true;
-                  //   })
-                  // }
-                })
-              }
-            }
-
-          }
           } else {
+
+                // When layer becomes invisible, remove from dropdown
+    if (item.layer.type === "group") {
+      const layerSelect = document.getElementById('layerSelect');
+      Array.from(layerSelect.options).forEach(opt => {
+        if (opt.value === item.layer.id) {
+          layerSelect.remove(opt.index);
+        }
+      });
+    }
               if (item.layer.sublayers) {
                 item.layer.sublayers.forEach((sublayer) => {
                       sublayer.visible = false;  // Turn off visibility
                       sublayer.listItem && (sublayer.listItem.visible = false); // Uncheck the checkbox in UI
                   });
               }
-
               if (item.layer.type === "group") {
-                console.log(item.layer, "item.layeritem.layer");
                 item.layer.layers.forEach((layer) => {
                   layer.visible = false;
                 })
@@ -4354,68 +4546,14 @@ async function addWidgets() {
           }
         
           if (item.layer.type === "subtype-sublayer") {
-            // console.log("LLLLL");
             // Apply to all children, outside the condition
             item.children.forEach(child => {
-              // console.log(item, "itemitemitemitemitem")
               child.watch("visible", (childVisible) => {
                 console.log("Child Layer Visibility Changed:", child.layer.title, childVisible);
               });
             });
           }
-        
-          // isUpdatingVisibility = false; // Reset flag after updating
         });
-      
-
-
-
-
-      //   item.watch("visible", (visible) => {
-      //     console.log(item.layer, "item.layer");
-      
-      //     if (visible) {
-      //       console.log("NNNN")
-      //         if (item.layer.type === "subtype-group") {
-      //             console.log(item.layer, "subtype-group");
-      
-      //             let parentLayer = item.layer.parent;
-      //             while (parentLayer) {
-      //                 if (parentLayer.visible === false) {
-      //                     parentLayer.visible = true;
-      //                     console.log("Parent Layer Made Visible:", parentLayer.title);
-      //                 }
-      //                 parentLayer = parentLayer.parent; // Move up the hierarchy
-      //             }
-      
-      //             if (item.layer.sublayers) { // Ensure sublayers exist
-      //                 item.layer.sublayers.forEach((sublayer) => {
-      //                     sublayer.visible = true;
-      //                     console.log("Sublayer Made Visible:", sublayer.title);
-      //                 });
-      //             }
-      //         } else {
-      //           let parentLayer = item.layer.parent;
-      //           while (parentLayer) {
-      //               if (parentLayer.visible === false) {
-      //                   parentLayer.visible = true;
-      //                   console.log("Parent Layer Made Visible:", parentLayer.title);
-      //               }
-      //               parentLayer = parentLayer.parent; // Move up the hierarchy
-      //           }
-      //         }
-      //     }
-      
-      //     // Apply to all children, outside the condition
-      //     item.children.forEach(child => {
-      //         child.watch("visible", (childVisible) => {
-      //             console.log("Child Layer Visibility Changed:", child.layer.title, childVisible);
-      //         });
-      //     });
-      // });
-
-      
-
       };
 
       // Keep the event listener for action triggers
