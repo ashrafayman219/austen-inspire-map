@@ -1087,10 +1087,10 @@ async function displayLayers() {
           <p><strong>DMZ Name:</strong> ${attributes.sitename}</p>
           <p><strong>NRW Status:</strong> ${attributes.status_descr}</p>
           <p><strong>Operational Status:</strong> ${attributes.category_name}</p>
-          <p><strong>Main Length (m):</strong> ${attributes.mLength}</p>
-          <p><strong>Premises:</strong> ${attributes.premises}</p>
-          <p><strong>Accounts:</strong> ${attributes.accounts}</p>
-          <p><strong>Meters:</strong> ${attributes.meters}</p>
+          <p><strong>Main Length (m):</strong> </p>
+          <p><strong>Premises:</strong> </p>
+          <p><strong>Accounts:</strong> </p>
+          <p><strong>Meters:</strong> </p>
         `;
     
         const gisTabContent = document.createElement("div");
@@ -4406,12 +4406,12 @@ async function addWidgets() {
             }
 
             if (item.layer.type === "group") {
-              // Get the layer select dropdown
-              const layerSelect = document.getElementById('layerSelect');
+              // Get both dropdowns
+              const layerSelect = document.getElementById('thematicLayerSelect');
+              const themeSelect = document.getElementById('thematicThemeSelect');
               
               // Function to update or add layer option
               function updateLayerOption(layer) {
-                // Check if option already exists
                 let existingOption = Array.from(layerSelect.options).find(opt => opt.value === layer.id);
                 
                 if (!existingOption) {
@@ -4421,7 +4421,7 @@ async function addWidgets() {
                   layerSelect.add(option);
                 }
               }
-        
+            
               // Function to remove layer option
               function removeLayerOption(layer) {
                 Array.from(layerSelect.options).forEach(opt => {
@@ -4430,33 +4430,116 @@ async function addWidgets() {
                   }
                 });
               }
-        
+            
               // Update options based on visibility
               if (visible) {
                 updateLayerOption(item.layer);
               } else {
                 removeLayerOption(item.layer);
               }
-        
-              // // Watch sublayers visibility changes
-              // if (item.layer.layers) {
-              //   item.layer.layers.forEach(sublayer => {
-              //     if (sublayer.type === "subtype-group" && sublayer.sublayers) {
-              //       sublayer.sublayers.forEach(subsublayer => {
-              //         subsublayer.watch("visible", (isVisible) => {
-              //           if (isVisible) {
-              //             updateLayerOption(sublayer);
-              //           } else {
-              //             // Only remove if no other sublayers are visible
-              //             if (!sublayer.sublayers.some(sl => sl.visible)) {
-              //               removeLayerOption(sublayer);
-              //             }
-              //           }
-              //         });
-              //       });
-              //     }
-              //   });
-              // }
+            
+              // Function to update theme options based on selected layer
+              function updateThemeOptions(layerTitle) {
+                // Clear existing theme options except Default
+                while (themeSelect.options.length > 1) {
+                  themeSelect.remove(1);
+                }
+            
+                // Enable/disable theme select based on layer selection
+                if (layerTitle === "none") {
+                  themeSelect.disabled = true;
+                  return;
+                }
+            
+                themeSelect.disabled = false;
+            
+                // Add theme options based on layer
+                if (layerTitle === "DMZ Boundaries") {
+                  const themes = [
+                    { value: 'nrw-percentage', text: 'DMA NRW Percentage' },
+                    { value: 'nrw-status', text: 'DMA NRW Status' },
+                    { value: 'operational-status', text: 'DMA Operational Status' }
+                  ];
+            
+                  themes.forEach(theme => {
+                    const option = document.createElement('option');
+                    option.value = theme.value;
+                    option.text = theme.text;
+                    themeSelect.add(option);
+                  });
+                }
+                // Add more conditions for other layers if needed
+                // else if (layerTitle === "Another Layer") { ... }
+              }
+            
+              // Add event listener for layer selection
+              layerSelect.addEventListener('change', (e) => {
+                const selectedOption = layerSelect.options[layerSelect.selectedIndex];
+                updateThemeOptions(selectedOption.text);
+              });
+            
+              // Add event listener for theme selection
+              themeSelect.addEventListener('change', (e) => {
+                const selectedLayer = layerSelect.options[layerSelect.selectedIndex].text;
+                const selectedTheme = e.target.value;
+            
+                if (selectedTheme !== 'default') {
+                  applyThematicRenderer(selectedLayer, selectedTheme);
+                } else {
+                  resetRenderer(selectedLayer);
+                }
+              });
+            }
+            
+            // Function to apply thematic renderer
+            function applyThematicRenderer(layerTitle, theme) {
+              // Find the layer
+              const layer = findLayerByTitle(layerTitle);
+              
+              if (!layer) return;
+            
+              switch (theme) {
+                case 'nrw-percentage':
+                  // Apply NRW Percentage renderer
+                  console.log('Applying NRW Percentage renderer');
+                  // Add your renderer logic here
+                  break;
+            
+                case 'nrw-status':
+                  // Apply NRW Status renderer
+                  console.log('Applying NRW Status renderer');
+                  // Add your renderer logic here
+                  break;
+            
+                case 'operational-status':
+                  // Apply Operational Status renderer
+                  console.log('Applying Operational Status renderer');
+                  // Add your renderer logic here
+                  break;
+              }
+            }
+            
+            // Function to reset renderer to default
+            function resetRenderer(layerTitle) {
+              const layer = findLayerByTitle(layerTitle);
+              
+              if (!layer) return;
+              
+              console.log('Resetting renderer for', layerTitle);
+              // Add your reset renderer logic here
+            }
+            
+            // Helper function to find layer by title
+            function findLayerByTitle(title) {
+              let targetLayer = null;
+              
+              displayMap.layers.forEach(layer => {
+                if (layer.title === title) {
+                  targetLayer = layer;
+                }
+              });
+              
+              return targetLayer;
             }
 
 
@@ -4660,13 +4743,16 @@ async function addWidgets() {
       }
 
 
-      const thematicExpand = new Expand({
-        expandIcon: "classify-pixels",
-        view: view,
-        content: document.getElementById("thematicsSection")
-      });
-      view.ui.add(thematicExpand, { position: "bottom-right", index: 0 });
+      // const thematicExpand = new Expand({
+      //   expandIcon: "classify-pixels",
+      //   view: view,
+      //   // content: document.getElementById("thematicsSection")
+      // });
+      // // view.ui.add(thematicExpand, { position: "bottom-right", index: 0 });
+     
 
+
+      view.ui.add(document.getElementById("thematicButton"), { position: "bottom-right", index: 0 });
       
       let basemapGallery = new BasemapGallery({
         view: view
@@ -4687,7 +4773,40 @@ async function addWidgets() {
       view.ui.add(fullscreen, { position: "bottom-right", index: 2 });
     
 
-      
+// Show popup
+document.getElementById("thematicButton").addEventListener("click", () => {
+  const popup = document.getElementById("thematicPopup");
+  popup.style.display = "block"; // Make it visible first
+  // Force a reflow
+  popup.offsetHeight;
+  popup.classList.add("show");
+});
+
+// Hide popup
+document.getElementById("closeThematicPopup").addEventListener("click", (e) => {
+  e.stopPropagation();
+  const popup = document.getElementById("thematicPopup");
+  
+  popup.classList.remove("show");
+  popup.classList.add("hiding");
+  
+  // Wait for animation to complete before hiding
+  popup.addEventListener("animationend", function hidePopup() {
+    popup.style.display = "none";
+    popup.classList.remove("hiding");
+    popup.removeEventListener("animationend", hidePopup);
+  });
+});
+
+// Close popup when clicking outside
+document.addEventListener("click", (e) => {
+  const popup = document.getElementById("thematicPopup");
+  const thematicButton = document.getElementById("thematicButton");
+  
+  if (!popup.contains(e.target) && !thematicButton.contains(e.target)) {
+    popup.classList.remove("show");
+  }
+});
 
 
 

@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
+  <!-- <script type="module" src="https://js.arcgis.com/calcite-components/3.1.0/calcite.esm.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
   <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css" />
   <link rel="stylesheet" href="style.css" />
@@ -38,27 +39,30 @@
       </div>
       <!-- Add more sections as needed -->
 
-
-<!-- Add the new Thematics section -->
-<div id="thematicsSection">
-  <h3>Thematics</h3>
-  <div id="thematicsContainer">
-    <div class="thematics-control">
-      <label for="layerSelect">Layer:</label>
-      <select id="layerSelect">
-        <option value="none">None</option>
-        <!-- Other options will be populated dynamically -->
-      </select>
-    </div>
-    <div class="thematics-control">
-      <label for="themeSelect">Theme:</label>
-      <select id="themeSelect">
-        <option value="default">Default</option>
-        <!-- Other options will be populated dynamically -->
-      </select>
-    </div>
-  </div>
-</div>
+      <calcite-button id="thematicButton" icon-start="classify-pixels" label="Add new folder" split-child="primary"></calcite-button>
+  
+      <div id="thematicPopup" class="thematic-popup">
+        <div class="thematic-popup-header">
+          <h3>Thematic Analysis</h3>
+          <button class="close-button" id="closeThematicPopup">×</button>
+        </div>
+        <div class="thematic-popup-content">
+          <div class="thematic-section">
+            <label for="thematicLayerSelect">Select a Layer</label>
+            <select id="thematicLayerSelect" class="thematic-select">
+              <option value="none">None</option>
+              <!-- Layers will be added dynamically -->
+            </select>
+          </div>
+          <div class="thematic-section">
+            <label for="thematicThemeSelect">Select a Theme</label>
+            <select id="thematicThemeSelect" class="thematic-select" disabled>
+              <option value="default">Default</option>
+              <!-- Themes will be added dynamically -->
+            </select>
+          </div>
+        </div>
+      </div>
 
 
 

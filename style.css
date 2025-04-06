@@ -251,38 +251,130 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 
 
-
-
-
-#thematicsSection {
-  margin: 8px;
-  width: 400px;
+/* Add this with your other keyframes */
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
 }
 
-.thematics-control {
-  margin: 10px 0;
-  background-color: #fff;
-  padding: 8px;
-  border: 1px solid #ccc;
+.thematic-popup {
+  display: none;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 280px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  font-family: 'Avenir Next', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  transform-origin: top right;
+  transition: all 0.3s ease-out;
+  opacity: 0; /* Start with 0 opacity */
 }
 
-.thematics-control label {
+.thematic-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: #f8f8f8;
+  border-bottom: 1px solid #eee;
+  border-radius: 8px 8px 0 0;
+}
+
+.thematic-popup-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #323232;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: all 0.2s ease;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  color: #323232;
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: rotate(90deg);
+}
+
+.thematic-popup-content {
+  padding: 15px;
+}
+
+.thematic-section {
+  margin-bottom: 15px;
+}
+
+.thematic-section:last-child {
+  margin-bottom: 0;
+}
+
+.thematic-section label {
   display: block;
   margin-bottom: 5px;
-  font-weight: bold;
-  color: #4a4a4a;
+  font-size: 14px;
+  color: #323232;
 }
 
-.thematics-control select {
+.thematic-select {
   width: 100%;
-  padding: 6px;
+  padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  background-color: #fff;
+  font-size: 14px;
+  color: #323232;
+  background-color: white;
 }
 
-.thematics-control select:focus {
+.thematic-select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.thematic-select:focus {
   outline: none;
-  border-color: #0078d4;
+  border-color: #0079c1;
 }
 
+/* Animation for popup */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.thematic-popup.show {
+  display: block;
+  opacity: 1; /* Fade in */
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Add new hiding class */
+.thematic-popup.hiding {
+  animation: slideOut 0.3s ease-out forwards;
+}
