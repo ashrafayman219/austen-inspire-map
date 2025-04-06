@@ -394,8 +394,7 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 
 
-
-/* Add these styles to your existing CSS */
+/* Theme Legend Button Styles */
 .theme-legend-button {
   width: 100%;
   padding: 8px;
@@ -406,6 +405,7 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
   cursor: pointer;
   font-size: 14px;
   margin-top: 10px;
+  transition: background-color 0.2s ease;
 }
 
 .theme-legend-button:hover {
@@ -417,24 +417,40 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
   cursor: not-allowed;
 }
 
+/* Theme Legend Popup Styles */
 .theme-legend-popup {
   display: none;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 300px;
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   z-index: 1001;
 }
 
+.theme-legend-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
 .theme-legend-header {
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
+  padding: 15px;
   background: #f8f8f8;
   border-bottom: 1px solid #eee;
   border-radius: 8px 8px 0 0;
@@ -450,6 +466,9 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 .legend-header {
   margin-bottom: 15px;
+  padding: 10px;
+  background: #f8f8f8;
+  border-radius: 4px;
 }
 
 .legend-table {
@@ -459,7 +478,7 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 .legend-table th,
 .legend-table td {
-  padding: 8px;
+  padding: 10px;
   text-align: left;
   border-bottom: 1px solid #eee;
 }
@@ -470,7 +489,28 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 }
 
 .color-box {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#legendTableBody td {
+  padding: 8px;
+  vertical-align: middle;
+}
+
+/* Close button styles */
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #333;
 }
