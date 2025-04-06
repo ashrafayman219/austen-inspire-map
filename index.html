@@ -61,13 +61,48 @@
               <!-- Themes will be added dynamically -->
             </select>
           </div>
+
+  <!-- Add the theme legend button -->
+  <div class="thematic-section">
+    <button id="themeLegendBtn" class="theme-legend-button" disabled>
+      Theme Legend
+    </button>
+  </div>
         </div>
+
+        <!-- Add the theme legend popup -->
+<div id="themeLegendPopup" class="theme-legend-popup">
+  <div class="theme-legend-header">
+    <h3>Theme Legend</h3>
+    <button class="close-button" id="closeLegendPopup">×</button>
+  </div>
+  <div class="theme-legend-content">
+    <div class="legend-info">
+      <div class="legend-header">
+        <span>Layer: </span><span id="legendLayerName"></span>
+        <br>
+        <span>Theme: </span><span id="legendThemeName"></span>
       </div>
-
-
-
-
+      <table class="legend-table">
+        <thead>
+          <tr>
+            <th>Colour</th>
+            <th>Description</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody id="legendTableBody">
+          <!-- Legend items will be added here dynamically -->
+        </tbody>
+      </table>
     </div>
+  </div>
+</div>
+      </div>
+    </div>
+
+
+
 
 
     <div id="displayMap"></div>

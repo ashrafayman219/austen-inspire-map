@@ -4178,18 +4178,18 @@ async function displayLayers() {
 
 
 
-    displayMap.add(WorkOrders);  // adds the layer to the map
-    displayMap.add(WTP);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(SivMetersPoints);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZCriticalPoints);
+    // displayMap.add(WorkOrders);  // adds the layer to the map
+    // displayMap.add(WTP);  // adds the layer to the map
+    // displayMap.add(WaterMains);  // adds the layer to the map
+    // displayMap.add(KTM);
+    // displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // displayMap.add(SivMetersPoints);  // adds the layer to the map
+    // displayMap.add(Reservoirs);  // adds the layer to the map
+    // displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // displayMap.add(DMZCriticalPoints);
     displayMap.add(DMZBoundaries);  // adds the layer to the map
-    displayMap.add(DataLoggers);  // adds the layer to the map
-    displayMap.add(Customer_Locations);
+    // displayMap.add(DataLoggers);  // adds the layer to the map
+    // displayMap.add(Customer_Locations);
 
   // Watch for when the popup becomes visible
   reactiveUtils.watch(
@@ -4402,10 +4402,6 @@ async function addWidgets() {
           if (visible) {
 
             if (item.layer.type === "group") {
-              // Here we will start create the layer option in the drop down list
-            }
-
-            if (item.layer.type === "group") {
               // Get both dropdowns
               const layerSelect = document.getElementById('thematicLayerSelect');
               const themeSelect = document.getElementById('thematicThemeSelect');
@@ -4491,42 +4487,274 @@ async function addWidgets() {
               });
             }
             
-            // Function to apply thematic renderer
             function applyThematicRenderer(layerTitle, theme) {
-              // Find the layer
               const layer = findLayerByTitle(layerTitle);
-              
               if (!layer) return;
             
-              switch (theme) {
-                case 'nrw-percentage':
-                  // Apply NRW Percentage renderer
-                  console.log('Applying NRW Percentage renderer');
-                  // Add your renderer logic here
-                  break;
+              // Create the renderer configuration
+                // Define renderers for each theme
+  const renderers = {
+    'nrw-percentage': {
+      type: "unique-value",
+      field: "ranking_descr",
+      defaultSymbol: {
+        type: "simple-fill",
+        color: [200, 200, 200, 0.6],
+        outline: {
+          color: [128, 128, 128, 0.8],
+          width: 0.5
+        }
+      },
+      uniqueValueInfos: [
+        {
+          value: "Not specified",
+          symbol: {
+            type: "simple-fill",
+            color: [189, 189, 189, 0.6],
+            outline: {
+              color: [128, 128, 128, 0.8],
+              width: 0.5
+            }
+          },
+          label: "Not specified"
+        },
+        {
+          value: "Negative NRW",
+          symbol: {
+            type: "simple-fill",
+            color: [26, 152, 80, 0.6],
+            outline: {
+              color: [128, 128, 128, 0.8],
+              width: 0.5
+            }
+          },
+          label: "Negative NRW"
+        },
+        {
+          value: "Less than 25%",
+          symbol: {
+            type: "simple-fill",
+            color: [145, 207, 96, 0.6],
+            outline: {
+              color: [128, 128, 128, 0.8],
+              width: 0.5
+            }
+          },
+          label: "Less than 25%"
+        },
+        {
+          value: "25% to 35%",
+          symbol: {
+            type: "simple-fill",
+            color: [254, 224, 139, 0.6],
+            outline: {
+              color: [128, 128, 128, 0.8],
+              width: 0.5
+            }
+          },
+          label: "25% to 35%"
+        },
+        {
+          value: "35% to 45%",
+          symbol: {
+            type: "simple-fill",
+            color: [252, 141, 89, 0.6],
+            outline: {
+              color: [128, 128, 128, 0.8],
+              width: 0.5
+            }
+          },
+          label: "35% to 45%"
+        },
+        {
+          value: "More than 45%",
+          symbol: {
+            type: "simple-fill",
+            color: [215, 48, 39, 0.6],
+            outline: {
+              color: [128, 128, 128, 0.8],
+              width: 0.5
+            }
+          },
+          label: "More than 45%"
+        }
+      ]
+    },
+
+        // New NRW Status renderer
+        'nrw-status': {
+          type: "unique-value",
+          field: "status_descr",
+          defaultSymbol: {
+            type: "simple-fill",
+            color: [200, 200, 200, 0.6],
+            outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+          },
+          uniqueValueInfos: [
+            {
+              value: "Not specified",
+              symbol: {
+                type: "simple-fill",
+                color: [189, 189, 189, 0.6], // Gray
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "Not specified"
+            },
+            {
+              value: "No inflow",
+              symbol: {
+                type: "simple-fill",
+                color: [253, 174, 97, 0.6], // Orange
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "No inflow"
+            },
+            {
+              value: "Zero inflow",
+              symbol: {
+                type: "simple-fill",
+                color: [255, 255, 191, 0.6], // Light yellow
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "Zero inflow"
+            },
+            {
+              value: "No BMAC data",
+              symbol: {
+                type: "simple-fill",
+                color: [166, 217, 106, 0.6], // Light green
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "No BMAC data"
+            },
+            {
+              value: "Negative NRW",
+              symbol: {
+                type: "simple-fill",
+                color: [26, 150, 65, 0.6], // Dark green
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "Negative NRW"
+            },
+            {
+              value: "Positive NRW",
+              symbol: {
+                type: "simple-fill",
+                color: [215, 48, 39, 0.6], // Red
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "Positive NRW"
+            }
+          ]
+        },
+    
+        // New Operational Status renderer
+        'operational-status': {
+          type: "unique-value",
+          field: "category_name",
+          defaultSymbol: {
+            type: "simple-fill",
+            color: [200, 200, 200, 0.6],
+            outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+          },
+          uniqueValueInfos: [
+            {
+              value: "Not specified",
+              symbol: {
+                type: "simple-fill",
+                color: [189, 189, 189, 0.6], // Gray
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "Not specified"
+            },
+            {
+              value: "Active - hydraulically isolated",
+              symbol: {
+                type: "simple-fill",
+                color: [44, 123, 182, 0.6], // Blue
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "Active - hydraulically isolated"
+            },
+            {
+              value: "Active - open boundary",
+              symbol: {
+                type: "simple-fill",
+                color: [171, 217, 233, 0.6], // Light blue
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "Active - open boundary"
+            },
+            {
+              value: "Active - bypassed mp",
+              symbol: {
+                type: "simple-fill",
+                color: [253, 174, 97, 0.6], // Orange
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "Active - bypassed mp"
+            },
+            {
+              value: "Active - pending zpt",
+              symbol: {
+                type: "simple-fill",
+                color: [215, 48, 39, 0.6], // Red
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+              },
+              label: "Active - pending zpt"
+            }
+          ]
+        }
+      
+  };
+
             
-                case 'nrw-status':
-                  // Apply NRW Status renderer
-                  console.log('Applying NRW Status renderer');
-                  // Add your renderer logic here
-                  break;
-            
-                case 'operational-status':
-                  // Apply Operational Status renderer
-                  console.log('Applying Operational Status renderer');
-                  // Add your renderer logic here
-                  break;
-              }
+  // Apply the selected renderer to all sublayers
+  if (layer.layers) {  // Check if it's a GroupLayer
+    layer.layers.forEach(subtypeGroupLayer => {
+      if (subtypeGroupLayer.type === "subtype-group") {
+        subtypeGroupLayer.when(() => {
+          subtypeGroupLayer.sublayers.forEach(sublayer => {
+            sublayer.renderer = renderers[theme];
+            // Preserve other sublayer properties
+            sublayer.labelingInfo = sublayer.labelingInfo;
+            sublayer.popupTemplate = sublayer.popupTemplate;
+          });
+        });
+      }
+    });
+  }
             }
             
             // Function to reset renderer to default
             function resetRenderer(layerTitle) {
               const layer = findLayerByTitle(layerTitle);
-              
               if (!layer) return;
-              
-              console.log('Resetting renderer for', layerTitle);
-              // Add your reset renderer logic here
+            
+              if (layer.layers) {  // Check if it's a GroupLayer
+                layer.layers.forEach(subtypeGroupLayer => {
+                  if (subtypeGroupLayer.type === "subtype-group") {
+                    subtypeGroupLayer.when(() => {
+                      subtypeGroupLayer.sublayers.forEach(sublayer => {
+                        // Reset to default renderer
+                        sublayer.renderer = {
+                          type: "simple-fill",
+                          symbol: {
+                            color: { r: 70, g: 130, b: 180, a: 0.3 },
+                            outline: {
+                              color: [128, 128, 128, 0.8],
+                              width: 1
+                            }
+                          }
+                        };
+                        // Preserve other sublayer properties
+                        sublayer.labelingInfo = sublayer.labelingInfo;
+                        sublayer.popupTemplate = sublayer.popupTemplate;
+                      });
+                    });
+                  }
+                });
+              }
             }
             
             // Helper function to find layer by title
@@ -4541,6 +4769,101 @@ async function addWidgets() {
               
               return targetLayer;
             }
+            
+            // Add this to your existing JavaScript
+function initializeThemeLegend() {
+  const themeLegendBtn = document.getElementById('themeLegendBtn');
+  const legendPopup = document.getElementById('themeLegendPopup');
+  const closeLegendBtn = document.getElementById('closeLegendPopup');
+  
+  // Enable/disable theme legend button based on selections
+  document.getElementById('thematicThemeSelect').addEventListener('change', (e) => {
+    themeLegendBtn.disabled = e.target.value === 'default';
+  });
+
+  // Show legend popup
+  themeLegendBtn.addEventListener('click', () => {
+    updateThemeLegend();
+    legendPopup.style.display = 'block';
+  });
+
+  // Close legend popup
+  closeLegendBtn.addEventListener('click', () => {
+    legendPopup.style.display = 'none';
+  });
+
+  // Close on outside click
+  window.addEventListener('click', (e) => {
+    if (!legendPopup.contains(e.target) && 
+        !themeLegendBtn.contains(e.target)) {
+      legendPopup.style.display = 'none';
+    }
+  });
+}
+
+async function updateThemeLegend() {
+  const layerSelect = document.getElementById('thematicLayerSelect');
+  const themeSelect = document.getElementById('thematicThemeSelect');
+  const selectedLayer = layerSelect.options[layerSelect.selectedIndex].text;
+  const selectedTheme = themeSelect.options[themeSelect.selectedIndex].text;
+
+  // Update legend header
+  document.getElementById('legendLayerName').textContent = selectedLayer;
+  document.getElementById('legendThemeName').textContent = selectedTheme;
+
+  // Get the layer and count features for each category
+  const layer = findLayerByTitle(selectedLayer);
+  if (!layer) return;
+
+  const legendTableBody = document.getElementById('legendTableBody');
+  legendTableBody.innerHTML = ''; // Clear existing content
+
+  if (selectedTheme === 'DMA NRW Percentage') {
+    const categories = [
+      { value: "Not specified", color: [189, 189, 189, 0.6] },
+      { value: "Negative NRW", color: [26, 152, 80, 0.6] },
+      { value: "Less than 25%", color: [145, 207, 96, 0.6] },
+      { value: "25% to 35%", color: [254, 224, 139, 0.6] },
+      { value: "35% to 45%", color: [252, 141, 89, 0.6] },
+      { value: "More than 45%", color: [215, 48, 39, 0.6] }
+    ];
+
+    // Count features for each category
+    for (const category of categories) {
+      let count = 0;
+      
+      // Count features in all visible sublayers
+      if (layer.layers) {
+        for (const subtypeGroupLayer of layer.layers) {
+          if (subtypeGroupLayer.visible) {
+            for (const sublayer of subtypeGroupLayer.sublayers) {
+              if (sublayer.visible) {
+                const query = sublayer.createQuery();
+                query.where = `ranking_descr = '${category.value}'`;
+                const result = await sublayer.queryFeatureCount(query);
+                count += result;
+              }
+            }
+          }
+        }
+      }
+
+      // Add row to legend table
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>
+          <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
+        </td>
+        <td>${category.value}</td>
+        <td>${count}</td>
+      `;
+      legendTableBody.appendChild(row);
+    }
+  }
+}
+
+// Call this after your map is initialized
+initializeThemeLegend();
 
 
 
@@ -4820,18 +5143,18 @@ document.addEventListener("click", (e) => {
 
       // Sample data for the legend with image URLs
       const legendData = [
-        { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
-        { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
+        // { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+        // { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
         { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
-        { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
-        { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
-        { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
-        { feature: "SIV Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
-        { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
-        { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
-        { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
-        { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-        { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
+        // { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
+        // { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
+        // { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
+        // { feature: "SIV Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
+        // { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
+        // { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
+        // { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
+        // { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
+        // { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
       ];
 
       // Function to create the legend
