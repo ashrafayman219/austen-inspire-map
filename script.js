@@ -3225,62 +3225,62 @@ async function displayLayers() {
       // { url: "", title: "" },
     ];
     const layersCustomerLocations = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Kota_Marudu/FeatureServer/0", title: "Kota Marudu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tambunan/FeatureServer/48", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Ranau/FeatureServer/49", title: "Ranau" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tamparuli/FeatureServer/72", title: "Tamparuli" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Papar/FeatureServer/129", title: "Papar" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Tuaran/FeatureServer/166", title: "Tuaran" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KotaBelud/FeatureServer/196", title: "Kota Belud" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Kudat/FeatureServer/233", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Sandakan/FeatureServer/296", title: "Sandakan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Kota_Marudu/FeatureServer/50", title: "Kota Marudu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Tambunan/FeatureServer/262", title: "Tambunan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Ranau/FeatureServer/155", title: "Ranau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Tamparuli/FeatureServer/274", title: "Tamparuli" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Papar/FeatureServer/106", title: "Papar" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Tuaran/FeatureServer/303", title: "Tuaran" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Kudat/FeatureServer/74", title: "Kudat" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Sandakan/FeatureServer/213", title: "Sandakan" },
       { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/customers_locationsLargeOne_Layer01/FeatureServer/0", title: "Kota Kinabalu" }
     ];
     const layersDMZCriticalPoints = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaKinabalu/FeatureServer/132", title: "Kota Kinabalu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Semporna/FeatureServer/72", title: "Semporna" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Tambunan/FeatureServer/12", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Sandakan/FeatureServer/47", title: "Sandakan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Kudat/FeatureServer/15", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaBelud/FeatureServer/45", title: "Kota Belud" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Papar/FeatureServer/12", title: "Papar" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_Ranau/FeatureServer/20", title: "Ranau" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/DMZCriticalPoint_KotaMarudu/FeatureServer/19", title: "Kota Marudu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_KotaKinabalu/FeatureServer/132", title: "Kota Kinabalu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Semporna/FeatureServer/308", title: "Semporna" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Tambunan/FeatureServer/355", title: "Tambunan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Sandakan/FeatureServer/236", title: "Sandakan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Kudat/FeatureServer/198", title: "Kudat" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Papar/FeatureServer/213", title: "Papar" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Ranau/FeatureServer/216", title: "Ranau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_KotaMarudu/FeatureServer/179", title: "Kota Marudu" },
       // { url: "", title: "" },
     ];
     const layersKTM = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_KotaKinabalu/FeatureServer/54", title: "Kota Kinabalu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Tambunan/FeatureServer/8", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Kudat/FeatureServer/8", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/KTM_Papar/FeatureServer/0", title: "Papar" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KTM_KotaKinabalu/FeatureServer/0", title: "Kota Kinabalu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KTM_Tambunan/FeatureServer/69", title: "Tambunan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KTM_Kudat/FeatureServer/59", title: "Kudat" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KTM_Papar/FeatureServer/60", title: "Papar" },
       // { url: "", title: "" },
     ];
     const layersWTP = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaKinabalu/FeatureServer/15", title: "Kota Kinabalu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Semporna/FeatureServer/12", title: "Semporna" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tambunan/FeatureServer/12", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Sandakan/FeatureServer/15", title: "Sandakan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Kudat/FeatureServer/12", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaBelud/FeatureServer/12", title: "Kota Belud" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tuaran/FeatureServer/12", title: "Tuaran" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Papar/FeatureServer/12", title: "Papar" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Tamparuli/FeatureServer/12", title: "Tamparuli" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_Ranau/FeatureServer/12", title: "Ranau" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/WTP_KotaMarudu/FeatureServer/12", title: "Kota Marudu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_KotaKinabalu/FeatureServer/5", title: "Kota Kinabalu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Semporna/FeatureServer/28", title: "Semporna" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Tambunan/FeatureServer/31", title: "Tambunan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Sandakan/FeatureServer/24", title: "Sandakan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Kudat/FeatureServer/13", title: "Kudat" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Tuaran/FeatureServer/38", title: "Tuaran" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Papar/FeatureServer/16", title: "Papar" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Tamparuli/FeatureServer/33", title: "Tamparuli" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Ranau/FeatureServer/20", title: "Ranau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_KotaMarudu/FeatureServer/9", title: "Kota Marudu" },
       // { url: "", title: "" },
     ];
     const layersReservoirs = [
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaKinabalu/FeatureServer/32", title: "Kota Kinabalu" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Semporna/FeatureServer/15", title: "Semporna" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tambunan/FeatureServer/12", title: "Tambunan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Sandakan/FeatureServer/15", title: "Sandakan" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Kudat/FeatureServer/21", title: "Kudat" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaBelud/FeatureServer/15", title: "Kota Belud" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tuaran/FeatureServer/12", title: "Tuaran" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Papar/FeatureServer/16", title: "Papar" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Tamparuli/FeatureServer/12", title: "Tamparuli" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_Ranau/FeatureServer/24", title: "Ranau" },
-      { url: "https://services5.arcgis.com/b8igmkKBLRIL94jA/arcgis/rest/services/Reservoirs_KotaMarudu/FeatureServer/0", title: "Kota Marudu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_KotaKinabalu/FeatureServer/32", title: "Kota Kinabalu" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Semporna/FeatureServer/128", title: "Semporna" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Tambunan/FeatureServer/143", title: "Tambunan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Sandakan/FeatureServer/113", title: "Sandakan" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Kudat/FeatureServer/66", title: "Kudat" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Tuaran/FeatureServer/152", title: "Tuaran" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Papar/FeatureServer/81", title: "Papar" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Tamparuli/FeatureServer/149", title: "Tamparuli" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Ranau/FeatureServer/98", title: "Ranau" },
+      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_KotaMarudu/FeatureServer/49", title: "Kota Marudu" },
       // { url: "", title: "" },
     ];
     const layersDMZBoundaries = [
@@ -4660,12 +4660,14 @@ async function addWidgets() {
       }
 
 
-      // view.ui.add([Expand5], { position: "top-left", index: 6 });
-      var fullscreen = new Fullscreen({
-        view: view
+      const thematicExpand = new Expand({
+        expandIcon: "classify-pixels",
+        view: view,
+        content: document.getElementById("thematicsSection")
       });
-      view.ui.add(fullscreen, { position: "bottom-right", index: 1 });
-    
+      view.ui.add(thematicExpand, { position: "bottom-right", index: 0 });
+
+      
       let basemapGallery = new BasemapGallery({
         view: view
       });
@@ -4675,8 +4677,20 @@ async function addWidgets() {
         view: view,
         content: basemapGallery
       });
-      view.ui.add(basemapGalleryExpand, { position: "bottom-right", index: 0 });
+      view.ui.add(basemapGalleryExpand, { position: "bottom-right", index: 1 });
+
+
+      // view.ui.add([Expand5], { position: "top-left", index: 6 });
+      var fullscreen = new Fullscreen({
+        view: view
+      });
+      view.ui.add(fullscreen, { position: "bottom-right", index: 2 });
+    
+
       
+
+
+
     
       // let legend = new Legend({
       //   view: view,
@@ -4685,210 +4699,210 @@ async function addWidgets() {
       // legend.hideLayersNotInCurrentView = true;
 
 
-// Sample data for the legend with image URLs
-const legendData = [
-  { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
-  { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
-  { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
-  { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
-  { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
-  { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
-  { feature: "SIV Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
-  { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
-  { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
-  { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
-  { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-  { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
-];
+      // Sample data for the legend with image URLs
+      const legendData = [
+        { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+        { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
+        { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
+        { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
+        { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
+        { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
+        { feature: "SIV Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
+        { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
+        { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
+        { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
+        { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
+        { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
+      ];
 
-// Function to create the legend
-function createLegend(legendData) {
-  const legendContainer = document.getElementById('legendContainer');
-  legendContainer.innerHTML = ''; // Clear existing content
+      // Function to create the legend
+      function createLegend(legendData) {
+        const legendContainer = document.getElementById('legendContainer');
+        legendContainer.innerHTML = ''; // Clear existing content
 
-  legendData.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'legend-item';
-      row.innerHTML = `
-          <img src="${item.icon}" alt="${item.feature}">
-          ${item.feature} <span id="${item.feature.replace(/\s+/g, '')}Count" style="font-weight: bold;">${item.count}</span>
-      `;
-      legendContainer.appendChild(row);
-  });
-}
+        legendData.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'legend-item';
+            row.innerHTML = `
+                <img src="${item.icon}" alt="${item.feature}">
+                ${item.feature} <span id="${item.feature.replace(/\s+/g, '')}Count" style="font-weight: bold;">${item.count}</span>
+            `;
+            legendContainer.appendChild(row);
+        });
+      }
 
-// Function to update the count of displayed features
-function updateFeatureCount(featureName, count) {
-  const featureCountElement = document.getElementById(featureName.replace(/\s+/g, '') + 'Count');
-  if (featureCountElement) {
-      featureCountElement.textContent = count;
-  }
-}
+      // Function to update the count of displayed features
+      function updateFeatureCount(featureName, count) {
+        const featureCountElement = document.getElementById(featureName.replace(/\s+/g, '') + 'Count');
+        if (featureCountElement) {
+            featureCountElement.textContent = count;
+        }
+      }
 
-function animateCount(element, targetCount, unit, duration = 1000) {
-  const startCount = parseFloat(element.textContent.replace(/,/g, '').replace('#', '0')) || 0;
-  const totalSteps = Math.max(duration / 100, 1); // Ensure at least one step
-  const increment = (targetCount - startCount) / totalSteps;
-  let currentCount = startCount;
-  let step = 0;
+      function animateCount(element, targetCount, unit, duration = 1000) {
+        const startCount = parseFloat(element.textContent.replace(/,/g, '').replace('#', '0')) || 0;
+        const totalSteps = Math.max(duration / 100, 1); // Ensure at least one step
+        const increment = (targetCount - startCount) / totalSteps;
+        let currentCount = startCount;
+        let step = 0;
 
-  const interval = setInterval(() => {
-    step++;
-    currentCount += increment;
+        const interval = setInterval(() => {
+          step++;
+          currentCount += increment;
 
-    // Clamp the current count to the target count
-    if ((increment > 0 && currentCount >= targetCount) || (increment < 0 && currentCount <= targetCount)) {
-      currentCount = targetCount;
-      clearInterval(interval);
-    }
-
-    // Format the count for Water Mains to two decimal places
-    const formattedCount = (unit === "km") ? currentCount.toFixed(2) : Math.round(currentCount);
-
-    element.textContent = `${formattedCount.toLocaleString()} ${unit}`;
-
-    // If the step exceeds totalSteps, stop the animation
-    if (step >= totalSteps) {
-      clearInterval(interval);
-      const finalFormattedCount = (unit === "km") ? targetCount.toFixed(2) : targetCount;
-      element.textContent = `${finalFormattedCount.toLocaleString()} ${unit}`; // Ensure final value is exact
-    }
-  }, 100);
-}
-
-view.map.layers.forEach((layer) => {
-  if (layer.type === "group") {
-    layer.loadAll().then(() => {
-      layer.layers.forEach((subtypegrouplayer) => {
-        if (subtypegrouplayer.type === "subtype-group") {
-          subtypegrouplayer.loadAll().then(() => {
-            if (subtypegrouplayer.sublayers) {
-              subtypegrouplayer.sublayers.forEach((sublayer) => {
-                let sublayerCount = 0; // Store the count for this sublayer
-                sublayer.watch('visible', async () => {
-                  const matchingLegendItem = legendData.find(item => item.feature === layer.title);
-                  if (matchingLegendItem) {
-                    const unit = (layer.title === "Water Mains") ? "km" : "nos.";
-                    const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
-                    
-                    if (sublayer.visible) {
-                      sublayerCount = await sublayer.queryFeatureCount();
-                      matchingLegendItem.count = (matchingLegendItem.count === '#') ? 0 : matchingLegendItem.count;
-                      matchingLegendItem.count += sublayerCount;
-                      animateCount(countElement, matchingLegendItem.count, unit);
-                    } else {
-                      matchingLegendItem.count -= sublayerCount;
-                      if (matchingLegendItem.count < 0) {
-                        matchingLegendItem.count = 0;
-                      }
-                      if (matchingLegendItem.count === 0) {
-                        matchingLegendItem.count = '#';
-                        countElement.textContent = matchingLegendItem.count; // Display '#' if count is zero
-                      } else {
-                        const formattedCount = (unit === "km") ? matchingLegendItem.count.toFixed(2) : matchingLegendItem.count;
-                        countElement.textContent = `${formattedCount.toLocaleString()} ${unit}`; // Display count with unit
-                      }
-                    }
-                  }
-                });
-              });
-            }
-          });
-        } else {
-          if (layer.title === "Water Mains") {
-            subtypegrouplayer.loadAll().then(() => {
-              subtypegrouplayer.layers.forEach((nestedSubtypeGroup) => {
-                nestedSubtypeGroup.loadAll().then(() => {
-                  if (nestedSubtypeGroup.sublayers) {
-                    nestedSubtypeGroup.sublayers.forEach((nestedSublayer) => {
-                      let nestedSublayerCount = 0; // Store the count for this nested sublayer
-                      nestedSublayer.watch('visible', async () => {
-                        const matchingLegendItem = legendData.find(item => item.feature === layer.title);
-                        if (matchingLegendItem) {
-                          const unit = "km";
-                          const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
-                          
-                          if (nestedSublayer.visible) {
-                            const query = {
-                              where: "1=1",
-                              returnGeometry: false,
-                              outFields: ["mLength"]
-                            };
-                            const results = await nestedSublayer.queryFeatures(query);
-                            nestedSublayerCount = results.features.reduce((total, feature) => {
-                              return total + (feature.attributes.mLength || 0);
-                            }, 0) / 1000; // Convert meters to kilometers
-
-                            matchingLegendItem.count = (matchingLegendItem.count === '#') ? 0 : matchingLegendItem.count;
-                            matchingLegendItem.count += nestedSublayerCount;
-                            animateCount(countElement, matchingLegendItem.count, unit);
-                          } else {
-                            matchingLegendItem.count -= nestedSublayerCount;
-                            if (matchingLegendItem.count < 0) {
-                              matchingLegendItem.count = 0;
-                            }
-                            if (matchingLegendItem.count === 0) {
-                              matchingLegendItem.count = '#';
-                              countElement.textContent = matchingLegendItem.count;
-                            } else {
-                              const formattedCount = matchingLegendItem.count.toFixed(2);
-                              countElement.textContent = `${formattedCount.toLocaleString()} ${unit}`;
-                            }
-                          }
-                        }
-                      });
-                    });
-                  }
-                });
-              });
-            });
-          } else {
-            subtypegrouplayer.loadAll().then(() => {
-              subtypegrouplayer.layers.forEach((nestedSubtypeGroup) => {
-                nestedSubtypeGroup.loadAll().then(() => {
-                  if (nestedSubtypeGroup.sublayers) {
-                    nestedSubtypeGroup.sublayers.forEach((nestedSublayer) => {
-                      let nestedSublayerCount = 0; // Store the count for this nested sublayer
-                      nestedSublayer.watch('visible', async () => {
-                        const matchingLegendItem = legendData.find(item => item.feature === layer.title);
-                        if (matchingLegendItem) {
-                          const unit = "nos.";
-                          const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
-                          
-                          if (nestedSublayer.visible) {
-                            nestedSublayerCount = await nestedSublayer.queryFeatureCount();
-                            matchingLegendItem.count = (matchingLegendItem.count === '#') ? 0 : matchingLegendItem.count;
-                            matchingLegendItem.count += nestedSublayerCount;
-                            animateCount(countElement, matchingLegendItem.count, unit);
-                          } else {
-                            matchingLegendItem.count -= nestedSublayerCount;
-                            if (matchingLegendItem.count < 0) {
-                              matchingLegendItem.count = 0;
-                            }
-                            if (matchingLegendItem.count === 0) {
-                              matchingLegendItem.count = '#';
-                              countElement.textContent = matchingLegendItem.count;
-                            } else {
-                              countElement.textContent = `${matchingLegendItem.count.toLocaleString()} ${unit}`;
-                            }
-                          }
-                        }
-                      });
-                    });
-                  }
-                });
-              });
-            });
+          // Clamp the current count to the target count
+          if ((increment > 0 && currentCount >= targetCount) || (increment < 0 && currentCount <= targetCount)) {
+            currentCount = targetCount;
+            clearInterval(interval);
           }
+
+          // Format the count for Water Mains to two decimal places
+          const formattedCount = (unit === "km") ? currentCount.toFixed(2) : Math.round(currentCount);
+
+          element.textContent = `${formattedCount.toLocaleString()} ${unit}`;
+
+          // If the step exceeds totalSteps, stop the animation
+          if (step >= totalSteps) {
+            clearInterval(interval);
+            const finalFormattedCount = (unit === "km") ? targetCount.toFixed(2) : targetCount;
+            element.textContent = `${finalFormattedCount.toLocaleString()} ${unit}`; // Ensure final value is exact
+          }
+        }, 100);
+      }
+
+      view.map.layers.forEach((layer) => {
+        if (layer.type === "group") {
+          layer.loadAll().then(() => {
+            layer.layers.forEach((subtypegrouplayer) => {
+              if (subtypegrouplayer.type === "subtype-group") {
+                subtypegrouplayer.loadAll().then(() => {
+                  if (subtypegrouplayer.sublayers) {
+                    subtypegrouplayer.sublayers.forEach((sublayer) => {
+                      let sublayerCount = 0; // Store the count for this sublayer
+                      sublayer.watch('visible', async () => {
+                        const matchingLegendItem = legendData.find(item => item.feature === layer.title);
+                        if (matchingLegendItem) {
+                          const unit = (layer.title === "Water Mains") ? "km" : "nos.";
+                          const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                          
+                          if (sublayer.visible) {
+                            sublayerCount = await sublayer.queryFeatureCount();
+                            matchingLegendItem.count = (matchingLegendItem.count === '#') ? 0 : matchingLegendItem.count;
+                            matchingLegendItem.count += sublayerCount;
+                            animateCount(countElement, matchingLegendItem.count, unit);
+                          } else {
+                            matchingLegendItem.count -= sublayerCount;
+                            if (matchingLegendItem.count < 0) {
+                              matchingLegendItem.count = 0;
+                            }
+                            if (matchingLegendItem.count === 0) {
+                              matchingLegendItem.count = '#';
+                              countElement.textContent = matchingLegendItem.count; // Display '#' if count is zero
+                            } else {
+                              const formattedCount = (unit === "km") ? matchingLegendItem.count.toFixed(2) : matchingLegendItem.count;
+                              countElement.textContent = `${formattedCount.toLocaleString()} ${unit}`; // Display count with unit
+                            }
+                          }
+                        }
+                      });
+                    });
+                  }
+                });
+              } else {
+                if (layer.title === "Water Mains") {
+                  subtypegrouplayer.loadAll().then(() => {
+                    subtypegrouplayer.layers.forEach((nestedSubtypeGroup) => {
+                      nestedSubtypeGroup.loadAll().then(() => {
+                        if (nestedSubtypeGroup.sublayers) {
+                          nestedSubtypeGroup.sublayers.forEach((nestedSublayer) => {
+                            let nestedSublayerCount = 0; // Store the count for this nested sublayer
+                            nestedSublayer.watch('visible', async () => {
+                              const matchingLegendItem = legendData.find(item => item.feature === layer.title);
+                              if (matchingLegendItem) {
+                                const unit = "km";
+                                const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                                
+                                if (nestedSublayer.visible) {
+                                  const query = {
+                                    where: "1=1",
+                                    returnGeometry: false,
+                                    outFields: ["mLength"]
+                                  };
+                                  const results = await nestedSublayer.queryFeatures(query);
+                                  nestedSublayerCount = results.features.reduce((total, feature) => {
+                                    return total + (feature.attributes.mLength || 0);
+                                  }, 0) / 1000; // Convert meters to kilometers
+
+                                  matchingLegendItem.count = (matchingLegendItem.count === '#') ? 0 : matchingLegendItem.count;
+                                  matchingLegendItem.count += nestedSublayerCount;
+                                  animateCount(countElement, matchingLegendItem.count, unit);
+                                } else {
+                                  matchingLegendItem.count -= nestedSublayerCount;
+                                  if (matchingLegendItem.count < 0) {
+                                    matchingLegendItem.count = 0;
+                                  }
+                                  if (matchingLegendItem.count === 0) {
+                                    matchingLegendItem.count = '#';
+                                    countElement.textContent = matchingLegendItem.count;
+                                  } else {
+                                    const formattedCount = matchingLegendItem.count.toFixed(2);
+                                    countElement.textContent = `${formattedCount.toLocaleString()} ${unit}`;
+                                  }
+                                }
+                              }
+                            });
+                          });
+                        }
+                      });
+                    });
+                  });
+                } else {
+                  subtypegrouplayer.loadAll().then(() => {
+                    subtypegrouplayer.layers.forEach((nestedSubtypeGroup) => {
+                      nestedSubtypeGroup.loadAll().then(() => {
+                        if (nestedSubtypeGroup.sublayers) {
+                          nestedSubtypeGroup.sublayers.forEach((nestedSublayer) => {
+                            let nestedSublayerCount = 0; // Store the count for this nested sublayer
+                            nestedSublayer.watch('visible', async () => {
+                              const matchingLegendItem = legendData.find(item => item.feature === layer.title);
+                              if (matchingLegendItem) {
+                                const unit = "nos.";
+                                const countElement = document.getElementById(matchingLegendItem.feature.replace(/\s+/g, '') + 'Count');
+                                
+                                if (nestedSublayer.visible) {
+                                  nestedSublayerCount = await nestedSublayer.queryFeatureCount();
+                                  matchingLegendItem.count = (matchingLegendItem.count === '#') ? 0 : matchingLegendItem.count;
+                                  matchingLegendItem.count += nestedSublayerCount;
+                                  animateCount(countElement, matchingLegendItem.count, unit);
+                                } else {
+                                  matchingLegendItem.count -= nestedSublayerCount;
+                                  if (matchingLegendItem.count < 0) {
+                                    matchingLegendItem.count = 0;
+                                  }
+                                  if (matchingLegendItem.count === 0) {
+                                    matchingLegendItem.count = '#';
+                                    countElement.textContent = matchingLegendItem.count;
+                                  } else {
+                                    countElement.textContent = `${matchingLegendItem.count.toLocaleString()} ${unit}`;
+                                  }
+                                }
+                              }
+                            });
+                          });
+                        }
+                      });
+                    });
+                  });
+                }
+              }
+            });
+          });
         }
       });
-    });
-  }
-});
 
 
-// Call the function to create the legend initially
-createLegend(legendData);
+      // Call the function to create the legend initially
+      createLegend(legendData);
 
 
 

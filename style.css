@@ -255,7 +255,8 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 
 #thematicsSection {
-  margin-top: 20px;
+  margin: 8px;
+  width: 400px;
 }
 
 .thematics-control {
