@@ -3,6 +3,83 @@ var displayMap;
 var view;
 // First, create a global variable for tracking initialization
 let isThematicInitialized = false;
+// Add this at the beginning of your script
+const originalRenderers = new Map();
+
+
+const labelClassDMZBoundaries = {
+  symbol: {
+    type: "text",
+    color: "black",
+    haloColor: "white",
+    haloSize: 2,
+    font: {
+      family: "Noto Sans",
+      weight: "bold",
+      size: 8,
+      decoration: "none"  // Can be "underline", "line-through", etc.
+    },
+    lineHeight: 1.2  // Adjust space between lines
+  },
+  labelPlacement: "always-horizontal",
+  labelExpressionInfo: {
+    expression: `
+      var siteName = $feature.sitename;
+      var nrwVol = $feature.current_nrw_vol;
+      var nrwPcnt = $feature.current_nrw_pcnt;
+      
+      // Format NRW Volume
+      var volText = When(
+        IsEmpty(nrwVol) || nrwVol == null,
+        "-",
+        Text(Round(nrwVol, 2), "#,##0.00") + " m³/day"  // Add thousands separator
+      );
+      
+      // Format NRW Percentage
+      var pcntText = When(
+        IsEmpty(nrwPcnt) || nrwPcnt == null,
+        "-",
+        Text(Round(nrwPcnt, 1), "#,##0.0") + "%"  // Add thousands separator
+      );
+      
+      // Combine all lines
+      var labels = [
+        DefaultValue(siteName, "-"),  // Show "-" if siteName is null
+        volText,
+        pcntText
+      ];
+      
+      // Return concatenated labels with line breaks
+      return Concatenate(labels, TextFormatting.NewLine);
+    `
+  },
+  maxScale: 0,
+  minScale: 18055.9548215,
+  where: "sitename IS NOT NULL"  // Only label features with names
+};
+
+const labelClassDMZBoundariesNamesOnly = {  // autocasts as new LabelClass()
+  symbol: {
+    type: "text",  // autocasts as new TextSymbol()
+    color: "black",
+    haloColor: "white",
+    haloSize: 2,
+    font: {  // autocast as new Font()
+      family: "Noto Sans",
+      weight: "bold",
+      size: 8
+     }
+  },
+  labelPlacement: "always-horizontal",
+  labelExpressionInfo: {
+    expression: "$feature.sitename"
+  },
+  maxScale: 0,
+  minScale: 18055.9548215,
+  // where: "Conference = 'AFC'"
+};
+
+
 
 
 // // Reservoirs Charts...
@@ -2676,35 +2753,9 @@ async function displayLayers() {
     //     },
     //   ]
     // };
-    const labelClassDMZBoundaries = {  // autocasts as new LabelClass()
-      symbol: {
-        type: "text",  // autocasts as new TextSymbol()
-        color: "black",
-        haloColor: "white",
-        haloSize: 2,
-        font: {  // autocast as new Font()
-          family: "Noto Sans",
-          weight: "bold",
-          size: 8
-         }
-      },
-      labelPlacement: "always-horizontal",
-      labelExpressionInfo: {
-        expression: `
-          var nrwPcnt = $feature.current_nrw_pcnt;
-          
-          if (IsEmpty(nrwPcnt) || nrwPcnt == null) {
-            return "-";
-          } else {
-            return nrwPcnt + "%";
-          }
-        `
-        // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
-      },
-      maxScale: 0,
-      minScale: 18055.9548215,
-      // where: "Conference = 'AFC'"
-    };
+
+
+
 
     // // Define a popup template for DMZ Meter Points Layers
     // const popupTemplateDMZMeterPoints = {
@@ -4337,34 +4388,24 @@ const THEME_CONFIG = {
     field: 'ranking_descr',
     categories: [
       { 
-        value: "Not specified",
-        label: "Not specified",
-        color: [189, 189, 189, 0.6] 
+        values: ["Not specified", "Negative NRW"],  // Array of values to match
+        label: "Non Specified and Negative NRW",
+        color: [128, 128, 128, 0.6] // Dark Grey
       },
       { 
-        value: "Negative NRW",
-        label: "Negative NRW",
-        color: [26, 152, 80, 0.6] 
-      },
-      { 
-        value: "< 25%",
+        values: ["< 25%"],
         label: "Less than 25%",
-        color: [145, 207, 96, 0.6] 
+        color: [44, 123, 182, 0.6] // Blue
       },
       { 
-        value: "25 to 35%",
-        label: "25% to 35%",
-        color: [254, 224, 139, 0.6] 
+        values: ["25 to 35%", "35 to 45%"],  // Combined class
+        label: "26% to 45%",
+        color: [253, 174, 97, 0.6] // Orange
       },
       { 
-        value: "35 to 45%",
-        label: "35% to 45%",
-        color: [252, 141, 89, 0.6] 
-      },
-      { 
-        value: "> 45%",
-        label: "More than 45%",
-        color: [215, 48, 39, 0.6] 
+        values: ["> 45%"],
+        label: "45% above",
+        color: [215, 48, 39, 0.6] // Red
       }
     ]
   },
@@ -4486,23 +4527,49 @@ function applyThematicRenderer(layerTitle, theme) {
   // Create renderer based on theme configuration
   const createRenderer = (themeKey) => {
     const themeConfig = THEME_CONFIG[themeKey];
-    return {
-      type: "unique-value",
-      field: themeConfig.field,
-      defaultSymbol: {
-        type: "simple-fill",
-        color: [200, 200, 200, 0.6],
-        outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-      },
-      uniqueValueInfos: themeConfig.categories.map(category => ({
-        value: category.value,
-        symbol: {
+    
+    if (themeKey === 'nrw-percentage') {
+      // Special handling for nrw-percentage with combined classes
+      return {
+        type: "unique-value",
+        field: themeConfig.field,
+        defaultSymbol: {
           type: "simple-fill",
-          color: category.color,
+          color: [200, 200, 200, 0.6],
           outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-        }
-      }))
-    };
+        },
+        uniqueValueInfos: themeConfig.categories.flatMap(category => 
+          category.values.map(value => ({
+            value: value,
+            symbol: {
+              type: "simple-fill",
+              color: category.color,
+              outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+            },
+            label: category.label
+          }))
+        )
+      };
+    } else {
+      // Regular handling for other themes
+      return {
+        type: "unique-value",
+        field: themeConfig.field,
+        defaultSymbol: {
+          type: "simple-fill",
+          color: [200, 200, 200, 0.6],
+          outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+        },
+        uniqueValueInfos: themeConfig.categories.map(category => ({
+          value: category.value,
+          symbol: {
+            type: "simple-fill",
+            color: category.color,
+            outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+          }
+        }))
+      };
+    }
   };
 
   // Apply renderer to layers
@@ -4511,38 +4578,27 @@ function applyThematicRenderer(layerTitle, theme) {
       if (subtypeGroupLayer.type === "subtype-group") {
         subtypeGroupLayer.when(() => {
           subtypeGroupLayer.sublayers.forEach(sublayer => {
-            sublayer.renderer = createRenderer(theme);
-            sublayer.labelingInfo = sublayer.labelingInfo;
-            sublayer.popupTemplate = sublayer.popupTemplate;
-          });
-        });
-      }
-    });
-  }
-}
+            // Store original renderer if not already stored
+            if (!originalRenderers.has(sublayer.id)) {
+              originalRenderers.set(sublayer.id, sublayer.renderer);
+            }
 
-function resetRenderer(layerTitle) {
-  const layer = findLayerByTitle(layerTitle);
-  if (!layer) return;
-
-  const defaultRenderer = {
-    type: "simple-fill",
-    symbol: {
-      color: { r: 70, g: 130, b: 180, a: 0.3 },
-      outline: {
-        color: [128, 128, 128, 0.8],
-        width: 1
-      }
-    }
-  };
-
-  if (layer.layers) {
-    layer.layers.forEach(subtypeGroupLayer => {
-      if (subtypeGroupLayer.type === "subtype-group") {
-        subtypeGroupLayer.when(() => {
-          subtypeGroupLayer.sublayers.forEach(sublayer => {
-            sublayer.renderer = defaultRenderer;
-            sublayer.labelingInfo = sublayer.labelingInfo;
+            if (theme === 'default') {
+              // Restore original renderer
+              sublayer.renderer = originalRenderers.get(sublayer.id);
+              sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
+            } else {
+              // Apply thematic renderer and appropriate labels
+              sublayer.renderer = createRenderer(theme);
+              
+              // Apply appropriate labels based on theme
+              if (theme === 'nrw-percentage') {
+                sublayer.labelingInfo = [labelClassDMZBoundaries];
+              } else {
+                sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
+              }
+            }
+            
             sublayer.popupTemplate = sublayer.popupTemplate;
           });
         });
@@ -4561,10 +4617,41 @@ function initializeThematic() {
   const legendPopup = document.getElementById('themeLegendPopup');
   const closeLegendBtn = document.getElementById('closeLegendPopup');
 
+
   // Layer selection change
   layerSelect.addEventListener('change', (e) => {
     const selectedOption = layerSelect.options[layerSelect.selectedIndex];
-    updateThemeOptions(selectedOption.text);
+    
+    if (selectedOption.value === 'none') {
+      // Reset everything when 'none' is selected
+      themeSelect.disabled = true;
+      themeLegendBtn.disabled = true;
+      
+      // Clear theme options
+      while (themeSelect.options.length > 1) {
+        themeSelect.remove(1);
+      }
+      
+      // Reset all layers to their original renderers
+      displayMap.layers.forEach(layer => {
+        if (layer.layers) {
+          layer.layers.forEach(subtypeGroupLayer => {
+            if (subtypeGroupLayer.type === "subtype-group") {
+              subtypeGroupLayer.when(() => {
+                subtypeGroupLayer.sublayers.forEach(sublayer => {
+                  if (originalRenderers.has(sublayer.id)) {
+                    sublayer.renderer = originalRenderers.get(sublayer.id);
+                    sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
+                  }
+                });
+              });
+            }
+          });
+        }
+      });
+    } else {
+      updateThemeOptions(selectedOption.text);
+    }
   });
 
   // Theme selection change
@@ -4573,10 +4660,26 @@ function initializeThematic() {
     const selectedTheme = e.target.value;
     themeLegendBtn.disabled = selectedTheme === 'default';
 
-    if (selectedTheme !== 'default') {
-      applyThematicRenderer(selectedLayer, selectedTheme);
+    const layer = findLayerByTitle(selectedLayer);
+    if (!layer) return;
+
+    if (selectedTheme === 'default') {
+      // Reset to original renderers for the selected layer only
+      if (layer.layers) {
+        layer.layers.forEach(subtypeGroupLayer => {
+          if (subtypeGroupLayer.type === "subtype-group") {
+            subtypeGroupLayer.when(() => {
+              subtypeGroupLayer.sublayers.forEach(sublayer => {
+                if (originalRenderers.has(sublayer.id)) {
+                  sublayer.renderer = originalRenderers.get(sublayer.id);
+                }
+              });
+            });
+          }
+        });
+      }
     } else {
-      resetRenderer(selectedLayer);
+      applyThematicRenderer(selectedLayer, selectedTheme);
     }
   });
 
@@ -4604,7 +4707,6 @@ function initializeThematic() {
 
 async function updateThemeLegend() {
   try {
-    // Show loading indicator
     const legendTableBody = document.getElementById('legendTableBody');
     legendTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Loading...</td></tr>';
 
@@ -4613,7 +4715,6 @@ async function updateThemeLegend() {
     const selectedLayer = layerSelect.options[layerSelect.selectedIndex].text;
     const selectedTheme = themeSelect.value;
 
-    // Update legend header
     document.getElementById('legendLayerName').textContent = selectedLayer;
     document.getElementById('legendThemeName').textContent = themeSelect.options[themeSelect.selectedIndex].text;
 
@@ -4623,17 +4724,23 @@ async function updateThemeLegend() {
     const themeConfig = THEME_CONFIG[selectedTheme];
     if (!themeConfig) return;
 
-    // Initialize counts
+    // Initialize counts object differently for nrw-percentage
     const categoryCounts = {};
-    themeConfig.categories.forEach(cat => {
-      categoryCounts[cat.value] = 0;
-    });
+    if (selectedTheme === 'nrw-percentage') {
+      themeConfig.categories.forEach(cat => {
+        cat.values.forEach(value => {
+          categoryCounts[value] = 0;
+        });
+      });
+    } else {
+      themeConfig.categories.forEach(cat => {
+        categoryCounts[cat.value] = 0;
+      });
+    }
 
     if (layer.layers) {
-      // Create a single optimized query
       const visibleSublayers = [];
       
-      // Collect all visible sublayers first
       layer.layers.forEach(subtypeGroupLayer => {
         if (subtypeGroupLayer.visible && subtypeGroupLayer.type === "subtype-group") {
           subtypeGroupLayer.sublayers.forEach(sublayer => {
@@ -4644,7 +4751,6 @@ async function updateThemeLegend() {
         }
       });
 
-      // If there are visible sublayers, query them
       if (visibleSublayers.length > 0) {
         const promises = visibleSublayers.map(sublayer => {
           const query = sublayer.createQuery();
@@ -4674,30 +4780,40 @@ async function updateThemeLegend() {
             });
         });
 
-        // Wait for all queries with timeout
-        await Promise.race([
-          Promise.all(promises),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Query timeout')), 10000)
-          )
-        ]);
+        await Promise.all(promises);
       }
 
-      // Clear loading indicator and update table
       legendTableBody.innerHTML = '';
       
-// In updateThemeLegend function, update the table row creation:
-themeConfig.categories.forEach(category => {
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td>
-      <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
-    </td>
-    <td>${category.label}</td>
-    <td>${categoryCounts[category.value]}</td>
-  `;
-  legendTableBody.appendChild(row);
-});
+      if (selectedTheme === 'nrw-percentage') {
+        themeConfig.categories.forEach(category => {
+          const totalCount = category.values.reduce((sum, value) => {
+            return sum + (categoryCounts[value] || 0);
+          }, 0);
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>
+              <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
+            </td>
+            <td>${category.label}</td>
+            <td>${totalCount}</td>
+          `;
+          legendTableBody.appendChild(row);
+        });
+      } else {
+        themeConfig.categories.forEach(category => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>
+              <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
+            </td>
+            <td>${category.label}</td>
+            <td>${categoryCounts[category.value] || 0}</td>
+          `;
+          legendTableBody.appendChild(row);
+        });
+      }
     }
   } catch (error) {
     console.error('Error updating legend:', error);
@@ -4786,469 +4902,7 @@ themeConfig.categories.forEach(category => {
         item.watch("visible", (visible) => {
           if (visible) {
 
-//             if (item.layer.type === "group") {
-//               // Get both dropdowns
-//               const layerSelect = document.getElementById('thematicLayerSelect');
-//               const themeSelect = document.getElementById('thematicThemeSelect');
-              
-//               // Function to update or add layer option
-//               function updateLayerOption(layer) {
-//                 let existingOption = Array.from(layerSelect.options).find(opt => opt.value === layer.id);
-                
-//                 if (!existingOption) {
-//                   const option = document.createElement('option');
-//                   option.value = layer.id;
-//                   option.text = layer.title;
-//                   layerSelect.add(option);
-//                 }
-//               }
-            
-//               // Function to remove layer option
-//               function removeLayerOption(layer) {
-//                 Array.from(layerSelect.options).forEach(opt => {
-//                   if (opt.value === layer.id) {
-//                     layerSelect.remove(opt.index);
-//                   }
-//                 });
-//               }
-            
-//               // Update options based on visibility
-//               if (visible) {
-//                 updateLayerOption(item.layer);
-//               } else {
-//                 removeLayerOption(item.layer);
-//               }
-            
-//               // Function to update theme options based on selected layer
-//               function updateThemeOptions(layerTitle) {
-//                 // Clear existing theme options except Default
-//                 while (themeSelect.options.length > 1) {
-//                   themeSelect.remove(1);
-//                 }
-            
-//                 // Enable/disable theme select based on layer selection
-//                 if (layerTitle === "none") {
-//                   themeSelect.disabled = true;
-//                   return;
-//                 }
-            
-//                 themeSelect.disabled = false;
-            
-//                 // Add theme options based on layer
-//                 if (layerTitle === "DMZ Boundaries") {
-//                   const themes = [
-//                     { value: 'nrw-percentage', text: 'DMA NRW Percentage' },
-//                     { value: 'nrw-status', text: 'DMA NRW Status' },
-//                     { value: 'operational-status', text: 'DMA Operational Status' }
-//                   ];
-            
-//                   themes.forEach(theme => {
-//                     const option = document.createElement('option');
-//                     option.value = theme.value;
-//                     option.text = theme.text;
-//                     themeSelect.add(option);
-//                   });
-//                 }
-//                 // Add more conditions for other layers if needed
-//                 // else if (layerTitle === "Another Layer") { ... }
-//               }
-            
-//               // Add event listener for layer selection
-//               layerSelect.addEventListener('change', (e) => {
-//                 const selectedOption = layerSelect.options[layerSelect.selectedIndex];
-//                 updateThemeOptions(selectedOption.text);
-//               });
-            
-//               // Add event listener for theme selection
-//               themeSelect.addEventListener('change', (e) => {
-//                 const selectedLayer = layerSelect.options[layerSelect.selectedIndex].text;
-//                 const selectedTheme = e.target.value;
-            
-//                 if (selectedTheme !== 'default') {
-//                   applyThematicRenderer(selectedLayer, selectedTheme);
-//                 } else {
-//                   resetRenderer(selectedLayer);
-//                 }
-//               });
-//             }
-            
-//             function applyThematicRenderer(layerTitle, theme) {
-//               const layer = findLayerByTitle(layerTitle);
-//               if (!layer) return;
-            
-//               // Create the renderer configuration
-//                 // Define renderers for each theme
-//   const renderers = {
-//     'nrw-percentage': {
-//       type: "unique-value",
-//       field: "ranking_descr",
-//       defaultSymbol: {
-//         type: "simple-fill",
-//         color: [200, 200, 200, 0.6],
-//         outline: {
-//           color: [128, 128, 128, 0.8],
-//           width: 0.5
-//         }
-//       },
-//       uniqueValueInfos: [
-//         {
-//           value: "Not specified",
-//           symbol: {
-//             type: "simple-fill",
-//             color: [189, 189, 189, 0.6],
-//             outline: {
-//               color: [128, 128, 128, 0.8],
-//               width: 0.5
-//             }
-//           },
-//           label: "Not specified"
-//         },
-//         {
-//           value: "Negative NRW",
-//           symbol: {
-//             type: "simple-fill",
-//             color: [26, 152, 80, 0.6],
-//             outline: {
-//               color: [128, 128, 128, 0.8],
-//               width: 0.5
-//             }
-//           },
-//           label: "Negative NRW"
-//         },
-//         {
-//           value: "Less than 25%",
-//           symbol: {
-//             type: "simple-fill",
-//             color: [145, 207, 96, 0.6],
-//             outline: {
-//               color: [128, 128, 128, 0.8],
-//               width: 0.5
-//             }
-//           },
-//           label: "Less than 25%"
-//         },
-//         {
-//           value: "25% to 35%",
-//           symbol: {
-//             type: "simple-fill",
-//             color: [254, 224, 139, 0.6],
-//             outline: {
-//               color: [128, 128, 128, 0.8],
-//               width: 0.5
-//             }
-//           },
-//           label: "25% to 35%"
-//         },
-//         {
-//           value: "35% to 45%",
-//           symbol: {
-//             type: "simple-fill",
-//             color: [252, 141, 89, 0.6],
-//             outline: {
-//               color: [128, 128, 128, 0.8],
-//               width: 0.5
-//             }
-//           },
-//           label: "35% to 45%"
-//         },
-//         {
-//           value: "More than 45%",
-//           symbol: {
-//             type: "simple-fill",
-//             color: [215, 48, 39, 0.6],
-//             outline: {
-//               color: [128, 128, 128, 0.8],
-//               width: 0.5
-//             }
-//           },
-//           label: "More than 45%"
-//         }
-//       ]
-//     },
 
-//         // New NRW Status renderer
-//         'nrw-status': {
-//           type: "unique-value",
-//           field: "status_descr",
-//           defaultSymbol: {
-//             type: "simple-fill",
-//             color: [200, 200, 200, 0.6],
-//             outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//           },
-//           uniqueValueInfos: [
-//             {
-//               value: "Not specified",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [189, 189, 189, 0.6], // Gray
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "Not specified"
-//             },
-//             {
-//               value: "No inflow",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [253, 174, 97, 0.6], // Orange
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "No inflow"
-//             },
-//             {
-//               value: "Zero inflow",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [255, 255, 191, 0.6], // Light yellow
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "Zero inflow"
-//             },
-//             {
-//               value: "No BMAC data",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [166, 217, 106, 0.6], // Light green
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "No BMAC data"
-//             },
-//             {
-//               value: "Negative NRW",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [26, 150, 65, 0.6], // Dark green
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "Negative NRW"
-//             },
-//             {
-//               value: "Positive NRW",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [215, 48, 39, 0.6], // Red
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "Positive NRW"
-//             }
-//           ]
-//         },
-    
-//         // New Operational Status renderer
-//         'operational-status': {
-//           type: "unique-value",
-//           field: "category_name",
-//           defaultSymbol: {
-//             type: "simple-fill",
-//             color: [200, 200, 200, 0.6],
-//             outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//           },
-//           uniqueValueInfos: [
-//             {
-//               value: "Not specified",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [189, 189, 189, 0.6], // Gray
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "Not specified"
-//             },
-//             {
-//               value: "Active - hydraulically isolated",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [44, 123, 182, 0.6], // Blue
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "Active - hydraulically isolated"
-//             },
-//             {
-//               value: "Active - open boundary",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [171, 217, 233, 0.6], // Light blue
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "Active - open boundary"
-//             },
-//             {
-//               value: "Active - bypassed mp",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [253, 174, 97, 0.6], // Orange
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "Active - bypassed mp"
-//             },
-//             {
-//               value: "Active - pending zpt",
-//               symbol: {
-//                 type: "simple-fill",
-//                 color: [215, 48, 39, 0.6], // Red
-//                 outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-//               },
-//               label: "Active - pending zpt"
-//             }
-//           ]
-//         }
-      
-//   };
-
-            
-//   // Apply the selected renderer to all sublayers
-//   if (layer.layers) {  // Check if it's a GroupLayer
-//     layer.layers.forEach(subtypeGroupLayer => {
-//       if (subtypeGroupLayer.type === "subtype-group") {
-//         subtypeGroupLayer.when(() => {
-//           subtypeGroupLayer.sublayers.forEach(sublayer => {
-//             sublayer.renderer = renderers[theme];
-//             // Preserve other sublayer properties
-//             sublayer.labelingInfo = sublayer.labelingInfo;
-//             sublayer.popupTemplate = sublayer.popupTemplate;
-//           });
-//         });
-//       }
-//     });
-//   }
-//             }
-            
-//             // Function to reset renderer to default
-//             function resetRenderer(layerTitle) {
-//               const layer = findLayerByTitle(layerTitle);
-//               if (!layer) return;
-            
-//               if (layer.layers) {  // Check if it's a GroupLayer
-//                 layer.layers.forEach(subtypeGroupLayer => {
-//                   if (subtypeGroupLayer.type === "subtype-group") {
-//                     subtypeGroupLayer.when(() => {
-//                       subtypeGroupLayer.sublayers.forEach(sublayer => {
-//                         // Reset to default renderer
-//                         sublayer.renderer = {
-//                           type: "simple-fill",
-//                           symbol: {
-//                             color: { r: 70, g: 130, b: 180, a: 0.3 },
-//                             outline: {
-//                               color: [128, 128, 128, 0.8],
-//                               width: 1
-//                             }
-//                           }
-//                         };
-//                         // Preserve other sublayer properties
-//                         sublayer.labelingInfo = sublayer.labelingInfo;
-//                         sublayer.popupTemplate = sublayer.popupTemplate;
-//                       });
-//                     });
-//                   }
-//                 });
-//               }
-//             }
-            
-//             // Helper function to find layer by title
-//             function findLayerByTitle(title) {
-//               let targetLayer = null;
-              
-//               displayMap.layers.forEach(layer => {
-//                 if (layer.title === title) {
-//                   targetLayer = layer;
-//                 }
-//               });
-              
-//               return targetLayer;
-//             }
-            
-//             // Add this to your existing JavaScript
-// function initializeThemeLegend() {
-//   const themeLegendBtn = document.getElementById('themeLegendBtn');
-//   const legendPopup = document.getElementById('themeLegendPopup');
-//   const closeLegendBtn = document.getElementById('closeLegendPopup');
-  
-//   // Enable/disable theme legend button based on selections
-//   document.getElementById('thematicThemeSelect').addEventListener('change', (e) => {
-//     themeLegendBtn.disabled = e.target.value === 'default';
-//   });
-
-//   // Show legend popup
-//   themeLegendBtn.addEventListener('click', () => {
-//     updateThemeLegend();
-//     legendPopup.style.display = 'block';
-//   });
-
-//   // Close legend popup
-//   closeLegendBtn.addEventListener('click', () => {
-//     legendPopup.style.display = 'none';
-//   });
-
-//   // Close on outside click
-//   window.addEventListener('click', (e) => {
-//     if (!legendPopup.contains(e.target) && 
-//         !themeLegendBtn.contains(e.target)) {
-//       legendPopup.style.display = 'none';
-//     }
-//   });
-// }
-
-// async function updateThemeLegend() {
-//   const layerSelect = document.getElementById('thematicLayerSelect');
-//   const themeSelect = document.getElementById('thematicThemeSelect');
-//   const selectedLayer = layerSelect.options[layerSelect.selectedIndex].text;
-//   const selectedTheme = themeSelect.options[themeSelect.selectedIndex].text;
-
-//   // Update legend header
-//   document.getElementById('legendLayerName').textContent = selectedLayer;
-//   document.getElementById('legendThemeName').textContent = selectedTheme;
-
-//   // Get the layer and count features for each category
-//   const layer = findLayerByTitle(selectedLayer);
-//   if (!layer) return;
-
-//   const legendTableBody = document.getElementById('legendTableBody');
-//   legendTableBody.innerHTML = ''; // Clear existing content
-
-//   if (selectedTheme === 'DMA NRW Percentage') {
-//     const categories = [
-//       { value: "Not specified", color: [189, 189, 189, 0.6] },
-//       { value: "Negative NRW", color: [26, 152, 80, 0.6] },
-//       { value: "Less than 25%", color: [145, 207, 96, 0.6] },
-//       { value: "25% to 35%", color: [254, 224, 139, 0.6] },
-//       { value: "35% to 45%", color: [252, 141, 89, 0.6] },
-//       { value: "More than 45%", color: [215, 48, 39, 0.6] }
-//     ];
-
-//     // Count features for each category
-//     for (const category of categories) {
-//       let count = 0;
-      
-//       // Count features in all visible sublayers
-//       if (layer.layers) {
-//         for (const subtypeGroupLayer of layer.layers) {
-//           if (subtypeGroupLayer.visible) {
-//             for (const sublayer of subtypeGroupLayer.sublayers) {
-//               if (sublayer.visible) {
-//                 const query = sublayer.createQuery();
-//                 query.where = `ranking_descr = '${category.value}'`;
-//                 const result = await sublayer.queryFeatureCount(query);
-//                 count += result;
-//               }
-//             }
-//           }
-//         }
-//       }
-
-//       // Add row to legend table
-//       const row = document.createElement('tr');
-//       row.innerHTML = `
-//         <td>
-//           <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
-//         </td>
-//         <td>${category.value}</td>
-//         <td>${count}</td>
-//       `;
-//       legendTableBody.appendChild(row);
-//     }
-//   }
-// }
-
-// // Call this after your map is initialized
-// initializeThemeLegend();
 
 
 if (item.layer.type === "group") {
