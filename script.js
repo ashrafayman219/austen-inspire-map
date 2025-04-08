@@ -2526,7 +2526,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 18055.9548215,
+      minScale: 36111.909643,
       // where: "Conference = 'AFC'"
     };
 
@@ -2681,7 +2681,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 18055.9548215,
+      minScale: 36111.909643,
       // where: "Conference = 'AFC'"
     };
 
@@ -2993,7 +2993,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 18055.9548215,
+      minScale: 36111.909643,
       // where: "Conference = 'AFC'"
     };
 
@@ -3266,7 +3266,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 18055.9548215,
+      minScale: 36111.909643,
       // where: "Conference = 'AFC'"
     };
 
