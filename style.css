@@ -523,3 +523,35 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 
 
+
+
+
+
+
+
+
+/* For a slower blink */
+.alarm-icon {
+  animation: blink 2s ease-in infinite;
+}
+
+/* For a fade effect */
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+/* Or for a more complex animation */
+@keyframes blink {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Apply the more complex animation */
+.alarm-icon {
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+
