@@ -3769,6 +3769,15 @@ async function displayLayers() {
         height: "25px"
       }
     };
+    const DataLoggersRendererWithColor = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggersWithColor.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
     const SivMetersRenderer = {
       type: "simple",
       symbol: {
@@ -4240,40 +4249,40 @@ async function displayLayers() {
 
 
 
-    await displayMap.add(WorkOrders);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(WTP);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(WaterMains);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(KTM);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(SivMetersPoints);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(Reservoirs);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(DMZCriticalPoints);
+    // await displayMap.add(WorkOrders);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(WTP);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(WaterMains);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(KTM);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(SivMetersPoints);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(Reservoirs);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(DMZCriticalPoints);
     await displayMap.add(DMZBoundaries);  // adds the layer to the map
     // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
     await displayMap.add(DataLoggers);  // adds the layer to the map
     // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(Customer_Locations);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(Customer_Locations);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
 
 
     // Watch for when the popup becomes visible
@@ -4414,6 +4423,23 @@ async function addWidgets() {
       });
       view.ui.add(homeWidget, "top-left");
 
+
+
+const titlesData = [
+  "Customer Locations",
+  "Data Loggers",
+  "DMZ Boundaries",
+  "DMZ Critical Points",
+  "DMZ Meter Points",
+  "Reservoirs",
+  "SIV Meters Points",
+  "Transmission Main Meter Points",
+  "Trunk Main Meter Points",
+  "Water Mains",
+  "Water Treatment Plant",
+  "Maintenance Work Orders"
+];
+
 // At the top of your script, add this configuration object
 const THEME_CONFIG = {
   'nrw-percentage': {
@@ -4505,10 +4531,35 @@ const THEME_CONFIG = {
         color: [215, 48, 39, 0.6]
       }
     ]
+  },
+  'hardware-alarm': {
+    field: 'Missing_Transmission',
+    categories: [
+      {
+        value: "5",  // Changed from ">3" to "5"
+        label: "Alarm Triggered",
+        symbol: {
+          type: "picture-marker",
+          url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggersWithColor.png",
+          width: "25px",
+          height: "25px"
+        }
+      },
+      {
+        value: "no_alarm",
+        label: "No Alarm",
+        symbol: {
+          type: "picture-marker",
+          url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png",
+          width: "25px",
+          height: "25px"
+        }
+      }
+    ]
   }
 };
 
-      // 2. Add all these utility functions together
+// 2. Add all these utility functions together
 function findLayerByTitle(title) {
   let targetLayer = null;
   displayMap.layers.forEach(layer => {
@@ -4549,6 +4600,17 @@ function updateThemeOptions(layerTitle) {
       option.text = theme.text;
       themeSelect.add(option);
     });
+  } else if (layerTitle === "Data Loggers") {
+    const themes = [
+      { value: 'hardware-alarm', text: 'Hardware Alarm' },
+    ];
+
+    themes.forEach(theme => {
+      const option = document.createElement('option');
+      option.value = theme.value;
+      option.text = theme.text;
+      themeSelect.add(option);
+    });
   }
 }
 
@@ -4557,10 +4619,24 @@ function applyThematicRenderer(layerTitle, theme) {
   if (!layer) return;
 
   // Create renderer based on theme configuration
-  const createRenderer = (themeKey) => {
+  const createRenderer = (themeKey, layerType) => {
     const themeConfig = THEME_CONFIG[themeKey];
     
-    if (themeKey === 'nrw-percentage') {
+    if (layerType === "Data Loggers" && themeKey === "hardware-alarm") {
+      // Special handling for Data Loggers hardware alarm
+      return {
+        type: "unique-value",
+        field: "Missing_Transmission",
+        defaultSymbol: THEME_CONFIG['hardware-alarm'].categories[1].symbol, // No Alarm symbol for empty values
+        uniqueValueInfos: [
+          {
+            value: "5",  // Exact value of 5
+            symbol: THEME_CONFIG['hardware-alarm'].categories[0].symbol, // Alarm Triggered symbol
+            label: "Alarm Triggered"
+          }
+        ]
+      };
+    } else if (themeKey === 'nrw-percentage') {
       // Special handling for nrw-percentage with combined classes
       return {
         type: "unique-value",
@@ -4606,36 +4682,61 @@ function applyThematicRenderer(layerTitle, theme) {
 
   // Apply renderer to layers
   if (layer.layers) {
-    layer.layers.forEach(subtypeGroupLayer => {
-      if (subtypeGroupLayer.type === "subtype-group") {
-        subtypeGroupLayer.when(() => {
-          subtypeGroupLayer.sublayers.forEach(sublayer => {
-            // Store original renderer if not already stored
-            if (!originalRenderers.has(sublayer.id)) {
-              originalRenderers.set(sublayer.id, sublayer.renderer);
-            }
-
-            if (theme === 'default') {
-              // Restore original renderer
-              sublayer.renderer = originalRenderers.get(sublayer.id);
-              sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
-            } else {
-              // Apply thematic renderer and appropriate labels
-              sublayer.renderer = createRenderer(theme);
-              
-              // Apply appropriate labels based on theme
-              if (theme === 'nrw-percentage') {
-                sublayer.labelingInfo = [labelClassDMZBoundaries];
-              } else {
-                sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
+    if (layerTitle === "Data Loggers") {
+      // Handle Data Loggers layer structure (nested group layers)
+      layer.layers.forEach(regionGroup => {
+        regionGroup.layers.forEach(subtypeGroupLayer => {
+          subtypeGroupLayer.when(() => {
+            subtypeGroupLayer.sublayers.forEach(sublayer => {
+              // Store original renderer if not already stored
+              if (!originalRenderers.has(sublayer.id)) {
+                originalRenderers.set(sublayer.id, sublayer.renderer);
               }
-            }
-            
-            sublayer.popupTemplate = sublayer.popupTemplate;
+
+              if (theme === 'default') {
+                // Restore original renderer
+                sublayer.renderer = originalRenderers.get(sublayer.id);
+              } else {
+                // Apply thematic renderer
+                sublayer.renderer = createRenderer(theme, layerTitle);
+              }
+            });
           });
         });
-      }
-    });
+      });
+    } else {
+      // Handle DMZ Boundaries and other layers
+      layer.layers.forEach(subtypeGroupLayer => {
+        if (subtypeGroupLayer.type === "subtype-group") {
+          subtypeGroupLayer.when(() => {
+            subtypeGroupLayer.sublayers.forEach(sublayer => {
+              // Store original renderer if not already stored
+              if (!originalRenderers.has(sublayer.id)) {
+                originalRenderers.set(sublayer.id, sublayer.renderer);
+              }
+
+              if (theme === 'default') {
+                // Restore original renderer
+                sublayer.renderer = originalRenderers.get(sublayer.id);
+                sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
+              } else {
+                // Apply thematic renderer and appropriate labels
+                sublayer.renderer = createRenderer(theme, layerTitle);
+                
+                // Apply appropriate labels based on theme
+                if (theme === 'nrw-percentage') {
+                  sublayer.labelingInfo = [labelClassDMZBoundaries];
+                } else {
+                  sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
+                }
+              }
+              
+              sublayer.popupTemplate = sublayer.popupTemplate;
+            });
+          });
+        }
+      });
+    }
   }
 }
 
@@ -4648,6 +4749,40 @@ function initializeThematic() {
   const themeLegendBtn = document.getElementById('themeLegendBtn');
   const legendPopup = document.getElementById('themeLegendPopup');
   const closeLegendBtn = document.getElementById('closeLegendPopup');
+
+
+
+  // Function to reset layer renderers
+  const resetLayerRenderers = (layer) => {
+    if (layer.title === "Data Loggers") {
+      // Handle nested structure of Data Loggers
+      layer.layers.forEach(regionGroup => {
+        regionGroup.layers.forEach(subtypeGroupLayer => {
+          subtypeGroupLayer.when(() => {
+            subtypeGroupLayer.sublayers.forEach(sublayer => {
+              if (originalRenderers.has(sublayer.id)) {
+                sublayer.renderer = originalRenderers.get(sublayer.id);
+              }
+            });
+          });
+        });
+      });
+    } else {
+      // Handle other layers (like DMZ Boundaries)
+      layer.layers.forEach(subtypeGroupLayer => {
+        if (subtypeGroupLayer.type === "subtype-group") {
+          subtypeGroupLayer.when(() => {
+            subtypeGroupLayer.sublayers.forEach(sublayer => {
+              if (originalRenderers.has(sublayer.id)) {
+                sublayer.renderer = originalRenderers.get(sublayer.id);
+                sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
+              }
+            });
+          });
+        }
+      });
+    }
+  };
 
 
   // Layer selection change
@@ -4667,20 +4802,10 @@ function initializeThematic() {
       // Reset all layers to their original renderers
       displayMap.layers.forEach(layer => {
         if (layer.layers) {
-          layer.layers.forEach(subtypeGroupLayer => {
-            if (subtypeGroupLayer.type === "subtype-group") {
-              subtypeGroupLayer.when(() => {
-                subtypeGroupLayer.sublayers.forEach(sublayer => {
-                  if (originalRenderers.has(sublayer.id)) {
-                    sublayer.renderer = originalRenderers.get(sublayer.id);
-                    sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
-                  }
-                });
-              });
-            }
-          });
+          resetLayerRenderers(layer);
         }
       });
+
     } else {
       updateThemeOptions(selectedOption.text);
     }
@@ -4697,19 +4822,7 @@ function initializeThematic() {
 
     if (selectedTheme === 'default') {
       // Reset to original renderers for the selected layer only
-      if (layer.layers) {
-        layer.layers.forEach(subtypeGroupLayer => {
-          if (subtypeGroupLayer.type === "subtype-group") {
-            subtypeGroupLayer.when(() => {
-              subtypeGroupLayer.sublayers.forEach(sublayer => {
-                if (originalRenderers.has(sublayer.id)) {
-                  sublayer.renderer = originalRenderers.get(sublayer.id);
-                }
-              });
-            });
-          }
-        });
-      }
+      resetLayerRenderers(layer);
     } else {
       applyThematicRenderer(selectedLayer, selectedTheme);
     }
@@ -4756,95 +4869,157 @@ async function updateThemeLegend() {
     const themeConfig = THEME_CONFIG[selectedTheme];
     if (!themeConfig) return;
 
-    // Initialize counts object differently for nrw-percentage
-    const categoryCounts = {};
-    if (selectedTheme === 'nrw-percentage') {
-      themeConfig.categories.forEach(cat => {
-        cat.values.forEach(value => {
-          categoryCounts[value] = 0;
-        });
-      });
-    } else {
-      themeConfig.categories.forEach(cat => {
-        categoryCounts[cat.value] = 0;
-      });
-    }
+    if (selectedLayer === "Data Loggers" && selectedTheme === "hardware-alarm") {
+      const categoryCounts = {
+        alarm: 0,
+        no_alarm: 0
+      };
 
-    if (layer.layers) {
       const visibleSublayers = [];
       
-      layer.layers.forEach(subtypeGroupLayer => {
-        if (subtypeGroupLayer.visible && subtypeGroupLayer.type === "subtype-group") {
-          subtypeGroupLayer.sublayers.forEach(sublayer => {
-            if (sublayer.visible) {
-              visibleSublayers.push(sublayer);
-            }
-          });
-        }
+      // Handle nested structure of Data Loggers layer
+      layer.layers.forEach(regionGroup => {
+        regionGroup.layers.forEach(subtypeGroupLayer => {
+          if (subtypeGroupLayer.visible) {
+            subtypeGroupLayer.sublayers.forEach(sublayer => {
+              if (sublayer.visible) {
+                visibleSublayers.push(sublayer);
+              }
+            });
+          }
+        });
       });
 
       if (visibleSublayers.length > 0) {
         const promises = visibleSublayers.map(sublayer => {
-          const query = sublayer.createQuery();
-          query.where = "1=1";
-          query.outFields = [themeConfig.field];
-          query.returnGeometry = false;
-          query.returnDistinctValues = true;
-          query.groupByFieldsForStatistics = [themeConfig.field];
-          query.outStatistics = [{
-            statisticType: "count",
-            onStatisticField: themeConfig.field,
-            outStatisticFieldName: "count"
-          }];
-
-          return sublayer.queryFeatures(query)
-            .then(result => {
-              result.features.forEach(feature => {
-                const value = feature.attributes[themeConfig.field];
-                const count = feature.attributes.count;
-                if (value in categoryCounts) {
-                  categoryCounts[value] += count;
-                }
-              });
-            })
-            .catch(error => {
-              console.error(`Error querying sublayer: ${error}`);
+          // Query for alarm count
+          const queryAlarm = sublayer.createQuery();
+          queryAlarm.where = "Missing_Transmission = 5";
+          const alarmPromise = sublayer.queryFeatureCount(queryAlarm)
+            .then(count => {
+              categoryCounts.alarm += count;
             });
+
+          // Query for no alarm count
+          const queryNoAlarm = sublayer.createQuery();
+          queryNoAlarm.where = "Missing_Transmission IS NULL OR Missing_Transmission <> 5";
+          const noAlarmPromise = sublayer.queryFeatureCount(queryNoAlarm)
+            .then(count => {
+              categoryCounts.no_alarm += count;
+            });
+
+          return Promise.all([alarmPromise, noAlarmPromise]);
         });
 
-        await Promise.all(promises);
+        await Promise.all(promises.flat());
       }
 
+      // Update legend table for Data Loggers
       legendTableBody.innerHTML = '';
-      
-      if (selectedTheme === 'nrw-percentage') {
-        themeConfig.categories.forEach(category => {
-          const totalCount = category.values.reduce((sum, value) => {
-            return sum + (categoryCounts[value] || 0);
-          }, 0);
+      themeConfig.categories.forEach(category => {
+        const count = category.value === "5" ? categoryCounts.alarm : categoryCounts.no_alarm;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+            <img src="${category.symbol.url}" width="25" height="25" alt="${category.label}" />
+          </td>
+          <td>${category.label}</td>
+          <td>${count}</td>
+        `;
+        legendTableBody.appendChild(row);
+      });
 
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>
-              <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
-            </td>
-            <td>${category.label}</td>
-            <td>${totalCount}</td>
-          `;
-          legendTableBody.appendChild(row);
+    } else {
+      // Existing code for other layers
+      const categoryCounts = {};
+      if (selectedTheme === 'nrw-percentage') {
+        themeConfig.categories.forEach(cat => {
+          cat.values.forEach(value => {
+            categoryCounts[value] = 0;
+          });
         });
       } else {
-        themeConfig.categories.forEach(category => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>
-              <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
-            </td>
-            <td>${category.label}</td>
-            <td>${categoryCounts[category.value] || 0}</td>
-          `;
-          legendTableBody.appendChild(row);
+        themeConfig.categories.forEach(cat => {
+          categoryCounts[cat.value] = 0;
         });
+      }
+
+      if (layer.layers) {
+        const visibleSublayers = [];
+        
+        layer.layers.forEach(subtypeGroupLayer => {
+          if (subtypeGroupLayer.visible && subtypeGroupLayer.type === "subtype-group") {
+            subtypeGroupLayer.sublayers.forEach(sublayer => {
+              if (sublayer.visible) {
+                visibleSublayers.push(sublayer);
+              }
+            });
+          }
+        });
+
+        if (visibleSublayers.length > 0) {
+          const promises = visibleSublayers.map(sublayer => {
+            const query = sublayer.createQuery();
+            query.where = "1=1";
+            query.outFields = [themeConfig.field];
+            query.returnGeometry = false;
+            query.returnDistinctValues = true;
+            query.groupByFieldsForStatistics = [themeConfig.field];
+            query.outStatistics = [{
+              statisticType: "count",
+              onStatisticField: themeConfig.field,
+              outStatisticFieldName: "count"
+            }];
+
+            return sublayer.queryFeatures(query)
+              .then(result => {
+                result.features.forEach(feature => {
+                  const value = feature.attributes[themeConfig.field];
+                  const count = feature.attributes.count;
+                  if (value in categoryCounts) {
+                    categoryCounts[value] += count;
+                  }
+                });
+              })
+              .catch(error => {
+                console.error(`Error querying sublayer: ${error}`);
+              });
+          });
+
+          await Promise.all(promises);
+        }
+
+        legendTableBody.innerHTML = '';
+        
+        if (selectedTheme === 'nrw-percentage') {
+          themeConfig.categories.forEach(category => {
+            const totalCount = category.values.reduce((sum, value) => {
+              return sum + (categoryCounts[value] || 0);
+            }, 0);
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>
+                <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
+              </td>
+              <td>${category.label}</td>
+              <td>${totalCount}</td>
+            `;
+            legendTableBody.appendChild(row);
+          });
+        } else {
+          themeConfig.categories.forEach(category => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>
+                <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
+              </td>
+              <td>${category.label}</td>
+              <td>${categoryCounts[category.value] || 0}</td>
+            `;
+            legendTableBody.appendChild(row);
+          });
+        }
       }
     }
   } catch (error) {
@@ -4938,19 +5113,23 @@ async function updateThemeLegend() {
 
 
 if (item.layer.type === "group") {
-  const layerSelect = document.getElementById('thematicLayerSelect');
-  
-  // Update layer options
-  let existingOption = Array.from(layerSelect.options).find(opt => opt.value === item.layer.id);
-  if (!existingOption) {
-    const option = document.createElement('option');
-    option.value = item.layer.id;
-    option.text = item.layer.title;
-    layerSelect.add(option);
-  }
-
-  // Initialize thematic functionality if not already done
-  initializeThematic();
+  titlesData.forEach(titleGroup => {
+    if (item.layer.title === titleGroup) {
+      const layerSelect = document.getElementById('thematicLayerSelect');
+      
+      // Update layer options
+      let existingOption = Array.from(layerSelect.options).find(opt => opt.value === item.layer.id);
+      if (!existingOption) {
+        const option = document.createElement('option');
+        option.value = item.layer.id;
+        option.text = item.layer.title;
+        layerSelect.add(option);
+      }
+    
+      // Initialize thematic functionality if not already done
+      initializeThematic();
+    }
+  })
 }
 
 
@@ -5175,6 +5354,15 @@ if (item.layer.type === "group") {
       });
       view.ui.add(basemapGalleryExpand, { position: "bottom-right", index: 1 });
 
+      basemapGallery.when(function(){
+        // This function will execute once the promise is resolved
+        console.log("Basemap Grallery...");
+      }, function(error){
+        // This function will execute if the promise is rejected due to an error
+      });
+
+
+
 
       // view.ui.add([Expand5], { position: "top-left", index: 6 });
       var fullscreen = new Fullscreen({
@@ -5245,18 +5433,18 @@ document.getElementById("closeThematicPopup").addEventListener("click", (e) => {
 
       // Sample data for the legend with image URLs
       const legendData = [
-        { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
+        // { feature: "Customer Locations", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png" },
         { feature: "Data Loggers", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png" },
         { feature: "DMZ Boundaries", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png" },
-        { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
-        { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
-        { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
-        { feature: "SIV Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
-        { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
-        { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
-        { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
-        { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
-        { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
+        // { feature: "DMZ Critical Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png" },
+        // { feature: "DMZ Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png" },
+        // { feature: "Reservoirs", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png" },
+        // { feature: "SIV Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
+        // { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
+        // { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
+        // { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
+        // { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
+        // { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
       ];
 
       // Function to create the legend
