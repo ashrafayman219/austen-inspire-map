@@ -215,7 +215,7 @@ async function initializeMap() {
         "AAPK756f006de03e44d28710cb446c8dedb4rkQyhmzX6upFiYPzQT0HNQNMJ5qPyO1TnPDSPXT4EAM_DlQSj20ShRD7vyKa7a1H";
 
       displayMap = new Map({
-        // basemap: "topo-vector",
+        basemap: "topo-vector",
       });
 
       // create a new instance of VectorTileLayer from the vector tiles style endpoint
@@ -3356,7 +3356,7 @@ async function displayLayers() {
       { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Sandakan/FeatureServer/494", title: "Sandakan" },
       { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Semporna/FeatureServer/542", title: "Semporna" },
       { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Tawau/FeatureServer/631", title: "Tawau" },
-      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu/FeatureServer/293", title: "Kota Kinabalu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu/FeatureServer/0", title: "Kota Kinabalu" },
       // { url: "", title: "" },
     ];
     const layersTransmissionMainMeterPoints = [
