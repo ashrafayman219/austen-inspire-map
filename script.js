@@ -32,14 +32,14 @@ const labelClassDMZBoundaries = {
       var volText = When(
         IsEmpty(nrwVol) || nrwVol == null,
         "-",
-        Text(Round(nrwVol, 2), "#,##0.00") + " m³/day"  // Add thousands separator
+        Text(Round(nrwVol, 0), "#,##0") + " m³/day"  // Add thousands separator
       );
       
       // Format NRW Percentage
       var pcntText = When(
         IsEmpty(nrwPcnt) || nrwPcnt == null,
         "-",
-        Text(Round(nrwPcnt, 1), "#,##0.0") + "%"  // Add thousands separator
+        Text(Round(nrwPcnt, 0), "#,##0") + "%"  // Add thousands separator
       );
       
       // Combine all lines
@@ -3272,176 +3272,176 @@ async function displayLayers() {
 
 
     const layersDMZMeterPoints = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_KotaBelud/FeatureServer/0", title: "Kota Belud" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_KotaKinabalu/FeatureServer/280", title: "Kota Kinabalu" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_KotaMarudu/FeatureServer/317", title: "Kota Marudu" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Kudat/FeatureServer/340", title: "Kudat" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Papar/FeatureServer/388", title: "Papar" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Ranau/FeatureServer/425", title: "Ranau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Sandakan/FeatureServer/489", title: "Sandakan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Semporna/FeatureServer/526", title: "Semporna" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Tambunan/FeatureServer/550", title: "Tambunan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Tamparuli/FeatureServer/561", title: "Tamparuli" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Tawau/FeatureServer/628", title: "Tawau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_MeterPoints_Tuaran/FeatureServer/665", title: "Tuaran" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_KotaKinabalu/FeatureServer/280", title: "Kota Kinabalu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_KotaMarudu/FeatureServer/317", title: "Kota Marudu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_Kudat/FeatureServer/340", title: "Kudat" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_Papar/FeatureServer/388", title: "Papar" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_Ranau/FeatureServer/425", title: "Ranau" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_Sandakan/FeatureServer/489", title: "Sandakan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_Semporna/FeatureServer/526", title: "Semporna" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_Tambunan/FeatureServer/550", title: "Tambunan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_Tamparuli/FeatureServer/561", title: "Tamparuli" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_Tawau/FeatureServer/628", title: "Tawau" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_Tuaran/FeatureServer/665", title: "Tuaran" },
       // { url: "", title: "" },
     ];
     const layersCustomerLocations = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Kota_Marudu/FeatureServer/50", title: "Kota Marudu" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Tambunan/FeatureServer/262", title: "Tambunan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Ranau/FeatureServer/155", title: "Ranau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Tamparuli/FeatureServer/274", title: "Tamparuli" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Papar/FeatureServer/106", title: "Papar" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Tuaran/FeatureServer/303", title: "Tuaran" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KotaBelud/FeatureServer/0", title: "Kota Belud" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Kudat/FeatureServer/74", title: "Kudat" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Sandakan/FeatureServer/213", title: "Sandakan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/customers_locationsLargeOne_Layer01/FeatureServer/0", title: "Kota Kinabalu" }
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Kota_Marudu/FeatureServer/297", title: "Kota Marudu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Tambunan/FeatureServer/544", title: "Tambunan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Ranau/FeatureServer/437", title: "Ranau" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Tamparuli/FeatureServer/556", title: "Tamparuli" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Papar/FeatureServer/372", title: "Papar" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Tuaran/FeatureServer/585", title: "Tuaran" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/KotaBelud/FeatureServer/309", title: "Kota Belud" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Kudat/FeatureServer/356", title: "Kudat" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Sandakan/FeatureServer/460", title: "Sandakan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/customers_locationsLargeOne_Layer01/FeatureServer/0", title: "Kota Kinabalu" }
     ];
     const layersDMZCriticalPoints = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_KotaKinabalu/FeatureServer/132", title: "Kota Kinabalu" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Semporna/FeatureServer/308", title: "Semporna" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Tambunan/FeatureServer/355", title: "Tambunan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Sandakan/FeatureServer/236", title: "Sandakan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Kudat/FeatureServer/198", title: "Kudat" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_KotaBelud/FeatureServer/0", title: "Kota Belud" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Papar/FeatureServer/213", title: "Papar" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_Ranau/FeatureServer/216", title: "Ranau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZCriticalPoint_KotaMarudu/FeatureServer/179", title: "Kota Marudu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZCriticalPoint_KotaKinabalu/FeatureServer/132", title: "Kota Kinabalu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZCriticalPoint_Semporna/FeatureServer/308", title: "Semporna" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZCriticalPoint_Tambunan/FeatureServer/355", title: "Tambunan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZCriticalPoint_Sandakan/FeatureServer/236", title: "Sandakan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZCriticalPoint_Kudat/FeatureServer/198", title: "Kudat" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZCriticalPoint_KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZCriticalPoint_Papar/FeatureServer/213", title: "Papar" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZCriticalPoint_Ranau/FeatureServer/216", title: "Ranau" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZCriticalPoint_KotaMarudu/FeatureServer/179", title: "Kota Marudu" },
       // { url: "", title: "" },
     ];
     const layersKTM = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KTM_KotaKinabalu/FeatureServer/0", title: "Kota Kinabalu" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KTM_Tambunan/FeatureServer/69", title: "Tambunan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KTM_Kudat/FeatureServer/59", title: "Kudat" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KTM_Papar/FeatureServer/60", title: "Papar" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/KTM_KotaKinabalu/FeatureServer/0", title: "Kota Kinabalu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/KTM_Tambunan/FeatureServer/69", title: "Tambunan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/KTM_Kudat/FeatureServer/59", title: "Kudat" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/KTM_Papar/FeatureServer/60", title: "Papar" },
       // { url: "", title: "" },
     ];
     const layersWTP = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_KotaKinabalu/FeatureServer/5", title: "Kota Kinabalu" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Semporna/FeatureServer/28", title: "Semporna" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Tambunan/FeatureServer/31", title: "Tambunan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Sandakan/FeatureServer/24", title: "Sandakan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Kudat/FeatureServer/13", title: "Kudat" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_KotaBelud/FeatureServer/0", title: "Kota Belud" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Tuaran/FeatureServer/38", title: "Tuaran" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Papar/FeatureServer/16", title: "Papar" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Tamparuli/FeatureServer/33", title: "Tamparuli" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_Ranau/FeatureServer/20", title: "Ranau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WTP_KotaMarudu/FeatureServer/9", title: "Kota Marudu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_KotaKinabalu/FeatureServer/5", title: "Kota Kinabalu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Semporna/FeatureServer/28", title: "Semporna" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Tambunan/FeatureServer/31", title: "Tambunan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Sandakan/FeatureServer/24", title: "Sandakan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Kudat/FeatureServer/13", title: "Kudat" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Tuaran/FeatureServer/38", title: "Tuaran" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Papar/FeatureServer/16", title: "Papar" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Tamparuli/FeatureServer/33", title: "Tamparuli" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Ranau/FeatureServer/20", title: "Ranau" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_KotaMarudu/FeatureServer/9", title: "Kota Marudu" },
       // { url: "", title: "" },
     ];
     const layersReservoirs = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_KotaKinabalu/FeatureServer/32", title: "Kota Kinabalu" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Semporna/FeatureServer/128", title: "Semporna" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Tambunan/FeatureServer/143", title: "Tambunan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Sandakan/FeatureServer/113", title: "Sandakan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Kudat/FeatureServer/66", title: "Kudat" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_KotaBelud/FeatureServer/0", title: "Kota Belud" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Tuaran/FeatureServer/152", title: "Tuaran" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Papar/FeatureServer/81", title: "Papar" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Tamparuli/FeatureServer/149", title: "Tamparuli" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_Ranau/FeatureServer/98", title: "Ranau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Reservoirs_KotaMarudu/FeatureServer/49", title: "Kota Marudu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_KotaKinabalu/FeatureServer/32", title: "Kota Kinabalu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_Semporna/FeatureServer/128", title: "Semporna" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_Tambunan/FeatureServer/143", title: "Tambunan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_Sandakan/FeatureServer/113", title: "Sandakan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_Kudat/FeatureServer/66", title: "Kudat" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_Tuaran/FeatureServer/152", title: "Tuaran" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_Papar/FeatureServer/81", title: "Papar" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_Tamparuli/FeatureServer/149", title: "Tamparuli" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_Ranau/FeatureServer/98", title: "Ranau" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Reservoirs_KotaMarudu/FeatureServer/49", title: "Kota Marudu" },
       // { url: "", title: "" },
     ];
     const layersDMZBoundaries = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Ranau/FeatureServer/458", title: "Ranau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tambunan/FeatureServer/579", title: "Tambunan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Papar/FeatureServer/434", title: "Papar" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tamparuli/FeatureServer/605", title: "Tamparuli" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaBelud/FeatureServer/46", title: "Kota Belud" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaMarudu/FeatureServer/365", title: "Kota Marudu" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Kudat/FeatureServer/385", title: "Kudat" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Sandakan/FeatureServer/540", title: "Sandakan" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Semporna/FeatureServer/567", title: "Semporna" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_Tawau/FeatureServer/677", title: "Tawau" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu/FeatureServer/339", title: "Kota Kinabalu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Ranau/FeatureServer/436", title: "Ranau" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Tambunan/FeatureServer/567", title: "Tambunan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Papar/FeatureServer/388", title: "Papar" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Tamparuli/FeatureServer/578", title: "Tamparuli" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_KotaBelud/FeatureServer/0", title: "Kota Belud" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_KotaMarudu/FeatureServer/341", title: "Kota Marudu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Kudat/FeatureServer/365", title: "Kudat" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Sandakan/FeatureServer/494", title: "Sandakan" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Semporna/FeatureServer/542", title: "Semporna" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_Tawau/FeatureServer/631", title: "Tawau" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu/FeatureServer/293", title: "Kota Kinabalu" },
       // { url: "", title: "" },
     ];
     const layersTransmissionMainMeterPoints = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Transmission_Main_Meter_Points_Kudat/FeatureServer/270", title: "Kudat" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Transmission_Main_Meter_Points_Papar/FeatureServer/265", title: "Papar" },
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Transmission_Main_Meter_Points_KotaKinabalu/FeatureServer/281", title: "Kota Kinabalu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Transmission_Main_Meter_Points_Kudat/FeatureServer/20", title: "Kudat" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Transmission_Main_Meter_Points_Papar/FeatureServer/21", title: "Papar" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Transmission_Main_Meter_Points_KotaKinabalu/FeatureServer/0", title: "Kota Kinabalu" },
       // { url: "", title: "" },
     ];
     const layersWaterMains = [
       {
         title: "Kota Kinabalu",
         subGroups: [
-          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kota_Kinabalu_PrimaryTransmissionMain/FeatureServer/15" },
-          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kota_Kinabalu_SecondaryTrunkMain/FeatureServer/38" },
-          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kota_Kinabalu_TertiaryDistributionMain/FeatureServer/49" },
-          { title: "Raw Water Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kota_Kinabalu_RawWaterMain/FeatureServer/23" },
+          { title: "Primary Transmission Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Kota_Kinabalu_PrimaryTransmissionMain/FeatureServer/0" },
+          { title: "Secondary Trunk Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Kota_Kinabalu_SecondaryTrunkMain/FeatureServer/23" },
+          { title: "Tertiary Distribution Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Kota_Kinabalu_TertiaryDistributionMain/FeatureServer/40" },
+          { title: "Raw Water Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Kota_Kinabalu_RawWaterMain/FeatureServer/18" },
         ]
       },
       {
         title: "Kota Belud",
         subGroups: [
-          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaBelud_PrimaryTransmissionMain/FeatureServer/61" },
-          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaBelud_SecondaryTrunkMain/FeatureServer/69" },
-          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaBelud_TertiaryDistributionMain/FeatureServer/77" }
+          { title: "Primary Transmission Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_KotaBelud_PrimaryTransmissionMain/FeatureServer/49" },
+          { title: "Secondary Trunk Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_KotaBelud_SecondaryTrunkMain/FeatureServer/57" },
+          { title: "Tertiary Distribution Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_KotaBelud_TertiaryDistributionMain/FeatureServer/65" }
         ]
       },
       {
         title: "Kota Marudu",
         subGroups: [
-          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaMarudu_PrimaryTransmissionMain/FeatureServer/93" },
-          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaMarudu_SecondaryTrunkMain/FeatureServer/98" },
-          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_KotaMarudu_TertiaryDistributionMain/FeatureServer/100" },
+          { title: "Primary Transmission Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_KotaMarudu_PrimaryTransmissionMain/FeatureServer/72" },
+          { title: "Secondary Trunk Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_KotaMarudu_SecondaryTrunkMain/FeatureServer/77" },
+          { title: "Tertiary Distribution Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_KotaMarudu_TertiaryDistributionMain/FeatureServer/79" },
 
         ]
       },
       {
         title: "Kudat",
         subGroups: [
-          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kudat_PrimaryTransmissionMain/FeatureServer/111" },
-          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kudat_SecondaryTrunkMain/FeatureServer/125" },
-          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Kudat_TertiaryDistributionMain/FeatureServer/134" },
+          { title: "Primary Transmission Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Kudat_PrimaryTransmissionMain/FeatureServer/86" },
+          { title: "Secondary Trunk Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Kudat_SecondaryTrunkMain/FeatureServer/94" },
+          { title: "Tertiary Distribution Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Kudat_TertiaryDistributionMain/FeatureServer/108" },
 
         ]
       },
       {
         title: "Papar",
         subGroups: [
-          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Papar_PrimaryTransmissionMain/FeatureServer/146" },
-          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Papar_SecondaryTrunkMain/FeatureServer/151" },
-          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Papar_TertiaryDistributionMain/FeatureServer/158" },
+          { title: "Primary Transmission Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Papar_PrimaryTransmissionMain/FeatureServer/117" },
+          { title: "Secondary Trunk Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Papar_SecondaryTrunkMain/FeatureServer/122" },
+          { title: "Tertiary Distribution Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Papar_TertiaryDistributionMain/FeatureServer/129" },
 
         ]
       },
       {
         title: "Ranau",
         subGroups: [
-          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Ranau_PrimaryTransmissionMain/FeatureServer/168" },
-          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Ranau_SecondaryTrunkMain/FeatureServer/174" },
-          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Ranau_TertiaryDistributionMain/FeatureServer/180" },
+          { title: "Primary Transmission Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Ranau_PrimaryTransmissionMain/FeatureServer/135" },
+          { title: "Secondary Trunk Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Ranau_SecondaryTrunkMain/FeatureServer/141" },
+          { title: "Tertiary Distribution Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Ranau_TertiaryDistributionMain/FeatureServer/147" },
 
         ]
       },
       {
         title: "Sandakan",
         subGroups: [
-          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Sandakan_PrimaryTransmissionMain/FeatureServer/196" },
-          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Sandakan_SecondaryTrunkMain/FeatureServer/219" },
-          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Sandakan_TertiaryDistributionMain/FeatureServer/231" },
-          { title: "Private Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Sandakan_PrivateMain/FeatureServer/206" },
+          { title: "Primary Transmission Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Sandakan_PrimaryTransmissionMain/FeatureServer/153" },
+          { title: "Secondary Trunk Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Sandakan_SecondaryTrunkMain/FeatureServer/176" },
+          { title: "Tertiary Distribution Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Sandakan_TertiaryDistributionMain/FeatureServer/189" },
+          { title: "Private Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Sandakan_PrivateMain/FeatureServer/166" },
 
         ]
       },
       {
         title: "Tambunan",
         subGroups: [
-          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Tambunan_TertiaryDistributionMain/FeatureServer/242" },
+          { title: "Tertiary Distribution Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Tambunan_TertiaryDistributionMain/FeatureServer/201" },
 
         ]
       },
       {
         title: "Tuaran",
         subGroups: [
-          { title: "Primary Transmission Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Tuaran_PrimaryTransmissionMain/FeatureServer/254" },
-          { title: "Secondary Trunk Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Tuaran_SecondaryTrunkMain/FeatureServer/258" },
-          { title: "Tertiary Distribution Main", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/WaterMain_Tuaran_TertiaryDistributionMain/FeatureServer/0" },
+          { title: "Primary Transmission Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Tuaran_PrimaryTransmissionMain/FeatureServer/210" },
+          { title: "Secondary Trunk Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Tuaran_SecondaryTrunkMain/FeatureServer/214" },
+          { title: "Tertiary Distribution Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WaterMain_Tuaran_TertiaryDistributionMain/FeatureServer/221" },
 
         ]
       },
@@ -3450,131 +3450,131 @@ async function displayLayers() {
       {
         title: "Beaufort",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Beaufort_Unallocated/FeatureServer/42" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Beaufort_LeakRepairContractor/FeatureServer/47" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Beaufort_Unallocated/FeatureServer/0" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Beaufort_LeakRepairContractor/FeatureServer/109" },
         ]
       },
       {
         title: "Beluran",
         subGroups: [
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Beluran_LeakRepairContractor/FeatureServer/54" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Beluran_LeakRepairContractor/FeatureServer/116" },
         ]
       },
       {
         title: "Kinabatangan",
         subGroups: [
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Kinabatangan/FeatureServer/68" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Kinabatangan/FeatureServer/10" },
         ]
       },
       {
         title: "Tenom",
         subGroups: [
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Tenom/FeatureServer/161" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Tenom/FeatureServer/102" },
         ]
       },
       {
         title: "Keningau",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Keningau/FeatureServer/168" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Keningau/FeatureServer/61" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_Keningau/FeatureServer/12" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Keningau/FeatureServer/0" },
         ]
       },
       {
         title: "Kota Belud",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_KotaBelud/FeatureServer/172" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_KotaBelud/FeatureServer/73" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_KotaBelud/FeatureServer/16" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_KotaBelud/FeatureServer/12" },
         ]
       },
       {
         title: "Kuala Penyu",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_KualaPenyu/FeatureServer/176" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_KualaPenyu/FeatureServer/80" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_KualaPenyu/FeatureServer/20" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_KualaPenyu/FeatureServer/19" },
         ]
       },
       {
         title: "Kunak",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Kunak/FeatureServer/178" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Kunak/FeatureServer/87" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_Kunak/FeatureServer/22" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Kunak/FeatureServer/26" },
         ]
       },
       {
         title: "Lahad Datu",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_LahadDatu/FeatureServer/182" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_LahadDatu/FeatureServer/94" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_LahadDatu/FeatureServer/26" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_LahadDatu/FeatureServer/42" },
         ]
       },
       {
         title: "Membakut",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Membakut/FeatureServer/185" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Membakut/FeatureServer/103" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_Membakut/FeatureServer/29" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Membakut/FeatureServer/44" },
         ]
       },
       {
         title: "Merotai",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Merotai/FeatureServer/188" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Merotai/FeatureServer/107" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_Merotai/FeatureServer/32" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Merotai/FeatureServer/48" },
         ]
       },
       {
         title: "Nabawan",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Nabawan/FeatureServer/191" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Nabawan/FeatureServer/114" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_Nabawan/FeatureServer/37" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Nabawan/FeatureServer/55" },
         ]
       },
       {
         title: "PulauSebatik",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_PulauSebatik/FeatureServer/193" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_PulauSebatik/FeatureServer/118" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_PulauSebatik/FeatureServer/39" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_PulauSebatik/FeatureServer/59" },
         ]
       },
       {
         title: "Sook",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Sook/FeatureServer/201" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Sook/FeatureServer/141" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_Sook/FeatureServer/47" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Sook/FeatureServer/82" },
         ]
       },
       {
         title: "Tambunan",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Tambunan/FeatureServer/204" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Tambunan/FeatureServer/145" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_Tambunan/FeatureServer/50" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Tambunan/FeatureServer/86" },
         ]
       },
       {
         title: "Tawau",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Tawau/FeatureServer/208" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Tawau/FeatureServer/151" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_Tawau/FeatureServer/54" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Tawau/FeatureServer/95" },
         ]
       },
       {
         title: "Semporna",
         subGroups: [
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Semporna/FeatureServer/133" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Semporna/FeatureServer/75" },
         ]
       },
       {
         title: "Sandakan",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/Unallocated_Sandakan/FeatureServer/195" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/LeakRepairContractor_Sandakan/FeatureServer/122" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Unallocated_Sandakan/FeatureServer/42" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/LeakRepairContractor_Sandakan/FeatureServer/67" },
         ]
       },
       {
         title: "Kota Kinabalu",
         subGroups: [
-          { title: "Unallocated", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KotaKinabalu_Unallocated/FeatureServer/33" },
-          { title: "JANS Internal", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KotaKinabalu_JANSInternalWork/FeatureServer/24" },
-          { title: "Leak Repair Contractor", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/KotaKinabalu_LeakRepairContractor/FeatureServer/26" },
+          { title: "Unallocated", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/KotaKinabalu_Unallocated/FeatureServer/7" },
+          { title: "JANS Internal", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/KotaKinabalu_JANSInternalWork/FeatureServer/0" },
+          { title: "Leak Repair Contractor", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/KotaKinabalu_LeakRepairContractor/FeatureServer/123" },
         ]
       },
     ];
@@ -3582,86 +3582,86 @@ async function displayLayers() {
       {
         title: "Kota Kinabalu",
         subGroups: [
-          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaKinabalu_OvarroXiLog4G/FeatureServer/430" },
-          { title: "Primayer XiLog", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaKinabalu_PrimayerXiLog/FeatureServer/447" },
-          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaKinabalu_PrimayerXiLog1/FeatureServer/567" },
+          { title: "Ovarro XiLog 4G", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_KotaKinabalu_OvarroXiLog4G/FeatureServer/430" },
+          { title: "Primayer XiLog", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_KotaKinabalu_PrimayerXiLog/FeatureServer/447" },
+          { title: "Primayer XiLog+", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_KotaKinabalu_PrimayerXiLog1/FeatureServer/567" },
         ]
       },
       {
         title: "Kota Belud",
         subGroups: [
-          { title: "i2OWater ALGA1161", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaBelud_i2OWaterALGA1161/FeatureServer/0" },
-          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaBelud_OvarroXiLog4G/FeatureServer/83" },
+          { title: "i2OWater ALGA1161", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_KotaBelud_i2OWaterALGA1161/FeatureServer/0" },
+          { title: "Ovarro XiLog 4G", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_KotaBelud_OvarroXiLog4G/FeatureServer/83" },
         ]
       },
       {
         title: "Kota Marudu",
         subGroups: [
-          { title: "i2OWater ALGA1130", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaMarudu_i2OWaterALGA1130/FeatureServer/584" },
-          { title: "i2OWater ALGA3230", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaMarudu_i2OWaterALGA3230/FeatureServer/598" },
-          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaMarudu_PrimayerXiLog1/FeatureServer/612" },
-          { title: "Technolog Cello", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_KotaMarudu_TechnologCello/FeatureServer/625" },
+          { title: "i2OWater ALGA1130", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_KotaMarudu_i2OWaterALGA1130/FeatureServer/584" },
+          { title: "i2OWater ALGA3230", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_KotaMarudu_i2OWaterALGA3230/FeatureServer/598" },
+          { title: "Primayer XiLog+", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_KotaMarudu_PrimayerXiLog1/FeatureServer/612" },
+          { title: "Technolog Cello", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_KotaMarudu_TechnologCello/FeatureServer/625" },
         ]
       },
       {
         title: "Kudat",
         subGroups: [
-          { title: "i2OWater ALGA1161", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Kudat_i2OWaterALGA1161/FeatureServer/640" },
-          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Kudat_OvarroXiLog4G/FeatureServer/684" },
-          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Kudat_PrimayerXiLog1/FeatureServer/701" },
+          { title: "i2OWater ALGA1161", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Kudat_i2OWaterALGA1161/FeatureServer/640" },
+          { title: "Ovarro XiLog 4G", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Kudat_OvarroXiLog4G/FeatureServer/684" },
+          { title: "Primayer XiLog+", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Kudat_PrimayerXiLog1/FeatureServer/701" },
         ]
       },
       {
         title: "Papar",
         subGroups: [
-          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Papar_OvarroXiLog4G/FeatureServer/721" },
-          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Papar_PrimayerXiLog1/FeatureServer/782" },
+          { title: "Ovarro XiLog 4G", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Papar_OvarroXiLog4G/FeatureServer/721" },
+          { title: "Primayer XiLog+", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Papar_PrimayerXiLog1/FeatureServer/782" },
         ]
       },
       {
         title: "Ranau",
         subGroups: [
-          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Ranau_OvarroXiLog4G/FeatureServer/808" },
-          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Ranau_PrimayerXiLog1/FeatureServer/842" },
+          { title: "Ovarro XiLog 4G", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Ranau_OvarroXiLog4G/FeatureServer/808" },
+          { title: "Primayer XiLog+", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Ranau_PrimayerXiLog1/FeatureServer/842" },
         ]
       },
       {
         title: "Sandakan",
         subGroups: [
-          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Sandakan_OvarroXiLog4G/FeatureServer/876" },
-          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Sandakan_PrimayerXiLog1/FeatureServer/972" },
+          { title: "Ovarro XiLog 4G", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Sandakan_OvarroXiLog4G/FeatureServer/876" },
+          { title: "Primayer XiLog+", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Sandakan_PrimayerXiLog1/FeatureServer/972" },
         ]
       },
       {
         title: "Tambunan",
         subGroups: [
-          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tambunan_PrimayerXiLog1/FeatureServer/1032" },
+          { title: "Primayer XiLog+", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Tambunan_PrimayerXiLog1/FeatureServer/1032" },
         ]
       },
       {
         title: "Tuaran",
         subGroups: [
-          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tuaran_OvarroXiLog4G/FeatureServer/1086" },
-          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tuaran_PrimayerXiLog1/FeatureServer/1101" },
+          { title: "Ovarro XiLog 4G", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Tuaran_OvarroXiLog4G/FeatureServer/1086" },
+          { title: "Primayer XiLog+", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Tuaran_PrimayerXiLog1/FeatureServer/1101" },
         ]
       },
       {
         title: "Tamparuli",
         subGroups: [
-          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tamparuli_OvarroXiLog4G/FeatureServer/1055" },
-          { title: "Primayer XiLog+", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Tamparuli_PrimayerXiLog1/FeatureServer/1070" },
+          { title: "Ovarro XiLog 4G", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Tamparuli_OvarroXiLog4G/FeatureServer/1055" },
+          { title: "Primayer XiLog+", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Tamparuli_PrimayerXiLog1/FeatureServer/1070" },
         ]
       },
       {
         title: "Semporna",
         subGroups: [
-          { title: "i2OWater ALGA1160", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Semporna_i2OWaterALGA1160/FeatureServer/989" },
-          { title: "Ovarro XiLog 4G", url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/datalogger_Semporna_OvarroXiLog4G/FeatureServer/1008" },
+          { title: "i2OWater ALGA1160", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Semporna_i2OWaterALGA1160/FeatureServer/989" },
+          { title: "Ovarro XiLog 4G", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/datalogger_Semporna_OvarroXiLog4G/FeatureServer/1008" },
         ]
       },
     ];
     const layersSivMeters = [
-      { url: "https://services3.arcgis.com/N0wDMTigPp02pamh/arcgis/rest/services/SivMeters0/FeatureServer/0", title: "Kota Kinabalu" },
+      { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/SivMeters/FeatureServer/0", title: "Kota Kinabalu" },
     ];
 
 
@@ -3951,7 +3951,7 @@ async function displayLayers() {
           sublayer.visible = false;
           sublayer.renderer.symbol.color.a = 0.3;
           sublayer.renderer.symbol.outline.width = 1;
-          sublayer.labelingInfo = [ labelClassDMZBoundaries ];
+          sublayer.labelingInfo = [ labelClassDMZBoundariesNamesOnly ];
           sublayer.labelsVisible = false;
           sublayer.popupTemplate = popupTemplateDMZBoundaries;
         });
@@ -4240,47 +4240,69 @@ async function displayLayers() {
 
 
 
-    displayMap.add(WorkOrders);  // adds the layer to the map
-    displayMap.add(WTP);  // adds the layer to the map
-    displayMap.add(WaterMains);  // adds the layer to the map
-    displayMap.add(KTM);
-    displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    displayMap.add(SivMetersPoints);  // adds the layer to the map
-    displayMap.add(Reservoirs);  // adds the layer to the map
-    displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    displayMap.add(DMZCriticalPoints);
-    displayMap.add(DMZBoundaries);  // adds the layer to the map
-    displayMap.add(DataLoggers);  // adds the layer to the map
-    displayMap.add(Customer_Locations);
+    await displayMap.add(WorkOrders);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(WTP);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(WaterMains);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(KTM);
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(SivMetersPoints);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(Reservoirs);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(DMZCriticalPoints);
+    await displayMap.add(DMZBoundaries);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(DataLoggers);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(Customer_Locations);
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
 
-  // Watch for when the popup becomes visible
-  reactiveUtils.watch(
-    () => view.popup.visible,
-    (isVisible) => {
-      if (isVisible) {
-        // Wait for the popup to be fully rendered
-        setTimeout(() => {
-          // Access the popup's DOM
-          const popupContainer = view.popup.container;
-          if (popupContainer) {
-            // Find the calcite-action-group within the popup
-            const actionGroups = popupContainer.querySelectorAll('calcite-action-group[layout="horizontal"]');
-            actionGroups.forEach(actionGroup => {
-              const shadowRoot = actionGroup.shadowRoot;
-              if (shadowRoot) {
-                const container = shadowRoot.querySelector('.container');
-                if (container) {
-                  container.style.display = 'flex';
-                  container.style.flexDirection = 'row-reverse';
+
+    // Watch for when the popup becomes visible
+    reactiveUtils.watch(
+      () => view.popup.visible,
+      (isVisible) => {
+        if (isVisible) {
+          // Wait for the popup to be fully rendered
+          setTimeout(() => {
+            // Access the popup's DOM
+            const popupContainer = view.popup.container;
+            if (popupContainer) {
+              // Find the calcite-action-group within the popup
+              const actionGroups = popupContainer.querySelectorAll('calcite-action-group[layout="horizontal"]');
+              actionGroups.forEach(actionGroup => {
+                const shadowRoot = actionGroup.shadowRoot;
+                if (shadowRoot) {
+                  const container = shadowRoot.querySelector('.container');
+                  if (container) {
+                    container.style.display = 'flex';
+                    container.style.flexDirection = 'row-reverse';
+                  }
                 }
-              }
-            });
-          }
-        }, 100); // Adjust the timeout as needed to ensure the popup is fully rendered
+              });
+            }
+          }, 100); // Adjust the timeout as needed to ensure the popup is fully rendered
+        }
       }
-    }
-  );
-
+    );
 
     view.when(() => {
       // // Watch for when features are selected
@@ -4337,6 +4359,16 @@ async function displayLayers() {
         }
       );
     });
+
+
+
+    // // Find the calcite-action-group within the popup
+    const calciteButton = document.querySelectorAll('calcite-button[appearance=outline-fill][kind=neutral]');
+
+    calciteButton[0].childEl.style.backgroundColor = "white";
+    calciteButton[0].childEl.style.color = "black";
+    calciteButton[0].childEl.style.borderColor = "transparent";
+
 
     await view.when();
     // return gra; // You can return the view object
@@ -5158,10 +5190,25 @@ document.getElementById("thematicButton").addEventListener("click", () => {
   // Force a reflow
   popup.offsetHeight;
   popup.classList.add("show");
+
+  const calciteButton = document.querySelectorAll('calcite-button[appearance=outline-fill][kind=neutral]');
+  document.getElementById("thematicButton").kind = "brand";
+  document.getElementById("thematicButton").appearance = "solid";
+  calciteButton[0].childEl.style.backgroundColor = "#007ac2";
+  calciteButton[0].childEl.style.color = "white";
+  calciteButton[0].childEl.style.borderColor = "transparent";
 });
 
 // Hide popup
 document.getElementById("closeThematicPopup").addEventListener("click", (e) => {
+  const calciteButton = document.querySelectorAll('calcite-button[appearance=solid][kind=brand]');
+  document.getElementById("thematicButton").kind = "neutral";
+  document.getElementById("thematicButton").appearance = "outline-fill";
+  calciteButton[0].childEl.style.backgroundColor = "white";
+  calciteButton[0].childEl.style.color = "black";
+  calciteButton[0].childEl.style.borderColor = "transparent";
+
+
   e.stopPropagation();
   const popup = document.getElementById("thematicPopup");
   
