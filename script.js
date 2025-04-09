@@ -2527,7 +2527,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 36111.909643,
+      minScale: 40111.909643,
       // where: "Conference = 'AFC'"
     };
 
@@ -2619,7 +2619,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 18055.9548215,
+      minScale: 40111.909643,
       // where: "Conference = 'AFC'"
     };
 
@@ -2682,7 +2682,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 36111.909643,
+      minScale: 40111.909643,
       // where: "Conference = 'AFC'"
     };
 
@@ -2994,7 +2994,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 36111.909643,
+      minScale: 40111.909643,
       // where: "Conference = 'AFC'"
     };
 
@@ -3267,7 +3267,7 @@ async function displayLayers() {
         // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
       },
       maxScale: 0,
-      minScale: 36111.909643,
+      minScale: 40111.909643,
       // where: "Conference = 'AFC'"
     };
 
@@ -19521,116 +19521,141 @@ async function addWidgets() {
 
     // At the top of your script, add this configuration object
     const THEME_CONFIG = {
-    'nrw-percentage': {
-      field: 'ranking_descr',
-      categories: [
-        { 
-          values: ["Not specified", "Negative NRW"],  // Array of values to match
-          label: "Non Specified and Negative NRW",
-          color: [128, 128, 128, 0.6] // Dark Grey
-        },
-        { 
-          values: ["< 25%"],
-          label: "Less than 25%",
-          color: [44, 123, 182, 0.6] // Blue
-        },
-        { 
-          values: ["25 to 35%", "35 to 45%"],  // Combined class
-          label: "26% to 45%",
-          color: [253, 174, 97, 0.6] // Orange
-        },
-        { 
-          values: ["> 45%"],
-          label: "45% above",
-          color: [215, 48, 39, 0.6] // Red
-        }
-      ]
-    },
-    'nrw-status': {
-      field: 'status_descr',
-      categories: [
-        {
-          value: "Not specified",
-          label: "Not specified",
-          color: [189, 189, 189, 0.6]
-        },
-        {
-          value: "No inflow",
-          label: "No inflow",
-          color: [253, 174, 97, 0.6]
-        },
-        {
-          value: "Zero inflow",
-          label: "Zero inflow",
-          color: [255, 255, 191, 0.6]
-        },
-        {
-          value: "No BMAC data",
-          label: "No BMAC data",
-          color: [166, 217, 106, 0.6]
-        },
-        {
-          value: "Negative NRW",
-          label: "Negative NRW",
-          color: [26, 150, 65, 0.6]
-        },
-        {
-          value: "Positive NRW",
-          label: "Positive NRW",
-          color: [215, 48, 39, 0.6]
-        }
-      ]
-    },
-    'operational-status': {
-      field: 'category_name',
-      categories: [
-        {
-          value: "Not specified",
-          label: "Not specified",
-          color: [189, 189, 189, 0.6]
-        },
-        {
-          value: "Active - hydraulically isolated",
-          label: "Active - hydraulically isolated",
-          color: [44, 123, 182, 0.6]
-        },
-        {
-          value: "Active - open boundary",
-          label: "Active - open boundary",
-          color: [171, 217, 233, 0.6]
-        },
-        {
-          value: "Active - bypassed mp",
-          label: "Active - bypassed mp",
-          color: [253, 174, 97, 0.6]
-        },
-        {
-          value: "Active - pending zpt",
-          label: "Active - pending zpt",
-          color: [215, 48, 39, 0.6]
-        }
-      ]
-    },
-    'hardware-alarm': {
-      field: 'Missing_Transmission',
-      categories: [
-        {
-          value: "5",  // Changed from ">3" to "5"
-          label: "Alarm Triggered",
-          symbol: symbolCIM
-        },
-        {
-          value: "no_alarm",
-          label: "No Alarm",
-          symbol: {
-            type: "picture-marker",
-            url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png",
-            width: "25px",
-            height: "25px"
+      // 'nrw-percentage': {
+      //   field: 'ranking_descr',
+      //   categories: [
+      //     { 
+      //       values: ["Not specified", "Negative NRW"],  // Array of values to match
+      //       label: "Non Specified and Negative NRW",
+      //       color: [128, 128, 128, 0.6] // Dark Grey
+      //     },
+      //     { 
+      //       values: ["< 25%"],
+      //       label: "Less than 25%",
+      //       color: [44, 123, 182, 0.6] // Blue
+      //     },
+      //     { 
+      //       values: ["25 to 35%", "35 to 45%"],  // Combined class
+      //       label: "26% to 45%",
+      //       color: [253, 174, 97, 0.6] // Orange
+      //     },
+      //     { 
+      //       values: ["> 45%"],
+      //       label: "45% above",
+      //       color: [215, 48, 39, 0.6] // Red
+      //     }
+      //   ]
+      // },
+      'nrw-percentage': {
+        field: 'classValue', // Changed from 'ranking_descr' to 'classValue'
+        categories: [
+          { 
+            value: "1",  // Changed from array of values to single value
+            label: "Non Specified and Negative NRW",
+            color: [128, 128, 128, 0.6] // Dark Grey
+          },
+          { 
+            value: "2",
+            label: "Less than 25%",
+            color: [44, 123, 182, 0.6] // Blue
+          },
+          { 
+            value: "3",
+            label: "26% to 45%",
+            color: [253, 174, 97, 0.6] // Orange
+          },
+          { 
+            value: "4",
+            label: "45% above",
+            color: [215, 48, 39, 0.6] // Red
           }
-        }
-      ]
-    }
+        ]
+      },
+      'nrw-status': {
+        field: 'status_descr',
+        categories: [
+          {
+            value: "Not specified",
+            label: "Not specified",
+            color: [189, 189, 189, 0.6]
+          },
+          {
+            value: "No inflow",
+            label: "No inflow",
+            color: [253, 174, 97, 0.6]
+          },
+          {
+            value: "Zero inflow",
+            label: "Zero inflow",
+            color: [255, 255, 191, 0.6]
+          },
+          {
+            value: "No BMAC data",
+            label: "No BMAC data",
+            color: [166, 217, 106, 0.6]
+          },
+          {
+            value: "Negative NRW",
+            label: "Negative NRW",
+            color: [26, 150, 65, 0.6]
+          },
+          {
+            value: "Positive NRW",
+            label: "Positive NRW",
+            color: [215, 48, 39, 0.6]
+          }
+        ]
+      },
+      'operational-status': {
+        field: 'category_name',
+        categories: [
+          {
+            value: "Not specified",
+            label: "Not specified",
+            color: [189, 189, 189, 0.6]
+          },
+          {
+            value: "Active - hydraulically isolated",
+            label: "Active - hydraulically isolated",
+            color: [44, 123, 182, 0.6]
+          },
+          {
+            value: "Active - open boundary",
+            label: "Active - open boundary",
+            color: [171, 217, 233, 0.6]
+          },
+          {
+            value: "Active - bypassed mp",
+            label: "Active - bypassed mp",
+            color: [253, 174, 97, 0.6]
+          },
+          {
+            value: "Active - pending zpt",
+            label: "Active - pending zpt",
+            color: [215, 48, 39, 0.6]
+          }
+        ]
+      },
+      'hardware-alarm': {
+        field: 'Missing_Transmission',
+        categories: [
+          {
+            value: "5",  // Changed from ">3" to "5"
+            label: "Alarm Triggered",
+            symbol: symbolCIM
+          },
+          {
+            value: "no_alarm",
+            label: "No Alarm",
+            symbol: {
+              type: "picture-marker",
+              url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png",
+              width: "25px",
+              height: "25px"
+            }
+          }
+        ]
+      }
     };
 
     // 2. Add all these utility functions together
@@ -19711,7 +19736,7 @@ async function addWidgets() {
           ]
         };
       } else if (themeKey === 'nrw-percentage') {
-        // Special handling for nrw-percentage with combined classes
+        // Updated handling for nrw-percentage using classValue
         return {
           type: "unique-value",
           field: themeConfig.field,
@@ -19720,18 +19745,37 @@ async function addWidgets() {
             color: [200, 200, 200, 0.6],
             outline: { color: [128, 128, 128, 0.8], width: 0.5 }
           },
-          uniqueValueInfos: themeConfig.categories.flatMap(category => 
-            category.values.map(value => ({
-              value: value,
-              symbol: {
-                type: "simple-fill",
-                color: category.color,
-                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
-              },
-              label: category.label
-            }))
-          )
+          uniqueValueInfos: themeConfig.categories.map(category => ({
+            value: category.value,
+            symbol: {
+              type: "simple-fill",
+              color: category.color,
+              outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+            },
+            label: category.label
+          }))
         };
+        // // Special handling for nrw-percentage with combined classes
+        // return {
+        //   type: "unique-value",
+        //   field: themeConfig.field,
+        //   defaultSymbol: {
+        //     type: "simple-fill",
+        //     color: [200, 200, 200, 0.6],
+        //     outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+        //   },
+        //   uniqueValueInfos: themeConfig.categories.flatMap(category => 
+        //     category.values.map(value => ({
+        //       value: value,
+        //       symbol: {
+        //         type: "simple-fill",
+        //         color: category.color,
+        //         outline: { color: [128, 128, 128, 0.8], width: 0.5 }
+        //       },
+        //       label: category.label
+        //     }))
+        //   )
+        // };
       } else {
         // Regular handling for other themes
         return {
@@ -20024,10 +20068,13 @@ async function addWidgets() {
         // Existing code for other layers
         const categoryCounts = {};
         if (selectedTheme === 'nrw-percentage') {
-          themeConfig.categories.forEach(cat => {
-            cat.values.forEach(value => {
-              categoryCounts[value] = 0;
-            });
+          // themeConfig.categories.forEach(cat => {
+          //   cat.values.forEach(value => {
+          //     categoryCounts[value] = 0;
+          //   });
+          // });
+          themeConfig.categories.forEach(category => {
+            categoryCounts[category.value] = 0;
           });
         } else {
           themeConfig.categories.forEach(cat => {
@@ -20080,37 +20127,53 @@ async function addWidgets() {
             await Promise.all(promises);
           }
 
+          // Update the legend creation
           legendTableBody.innerHTML = '';
-          
-          if (selectedTheme === 'nrw-percentage') {
-            themeConfig.categories.forEach(category => {
-              const totalCount = category.values.reduce((sum, value) => {
-                return sum + (categoryCounts[value] || 0);
-              }, 0);
+          themeConfig.categories.forEach(category => {
+            const count = categoryCounts[category.value] || 0;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>
+                <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
+              </td>
+              <td>${category.label}</td>
+              <td>${count}</td>
+            `;
+            legendTableBody.appendChild(row);
+          });
 
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>
-                  <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
-                </td>
-                <td>${category.label}</td>
-                <td>${totalCount}</td>
-              `;
-              legendTableBody.appendChild(row);
-            });
-          } else {
-            themeConfig.categories.forEach(category => {
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>
-                  <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
-                </td>
-                <td>${category.label}</td>
-                <td>${categoryCounts[category.value] || 0}</td>
-              `;
-              legendTableBody.appendChild(row);
-            });
-          }
+
+          // legendTableBody.innerHTML = '';
+          
+          // if (selectedTheme === 'nrw-percentage') {
+          //   themeConfig.categories.forEach(category => {
+          //     const totalCount = category.values.reduce((sum, value) => {
+          //       return sum + (categoryCounts[value] || 0);
+          //     }, 0);
+
+          //     const row = document.createElement('tr');
+          //     row.innerHTML = `
+          //       <td>
+          //         <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
+          //       </td>
+          //       <td>${category.label}</td>
+          //       <td>${totalCount}</td>
+          //     `;
+          //     legendTableBody.appendChild(row);
+          //   });
+          // } else {
+          //   themeConfig.categories.forEach(category => {
+          //     const row = document.createElement('tr');
+          //     row.innerHTML = `
+          //       <td>
+          //         <div class="color-box" style="background-color: rgba(${category.color.join(',')})"></div>
+          //       </td>
+          //       <td>${category.label}</td>
+          //       <td>${categoryCounts[category.value] || 0}</td>
+          //     `;
+          //     legendTableBody.appendChild(row);
+          //   });
+          // }
         }
       }
     } catch (error) {
