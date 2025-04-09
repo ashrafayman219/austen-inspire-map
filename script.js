@@ -252,16 +252,16 @@ async function initializeMap() {
       };
 
       await view.when();
-
-            //display geojsons
-            await displayLayers()
-            .then(([view, displayMap, gL]) => {
-              // console.log("gL Returned From Require Scope", gra);
-              // You can work with the view object here
-            })
-            .catch((error) => {
-              // Handle any errors here
-            });
+      view.ui.add("logoDiv", "top-right");
+      //display geojsons
+      await displayLayers()
+      .then(([view, displayMap, gL]) => {
+        // console.log("gL Returned From Require Scope", gra);
+        // You can work with the view object here
+      })
+      .catch((error) => {
+        // Handle any errors here
+      });
 
 
 
@@ -327,7 +327,7 @@ async function initializeMap() {
 // calling
 initializeMap()
   .then(() => {
-    view.ui.add("logoDiv", "top-right");
+
     console.log("Map Returned From Require Scope", displayMap);
 
     // You can work with the view object here
@@ -4461,7 +4461,7 @@ async function addWidgets() {
             "enable": true,
             "anchorPointUnits": "Relative",
             "dominantSizeAxis3D": "Z",
-            "size": 25,
+            "size": 19,
             "billboardMode3D": "FaceNearPlane",
             "frame": {
               "xmin": 0,
