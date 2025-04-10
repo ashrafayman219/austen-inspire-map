@@ -2138,6 +2138,84 @@ async function displayLayers() {
       }
     };
 
+    const popupTemplateValvesTransmissionMain = {
+      title: "Valves Locations <br> Site: {markerTitle}",
+      outFields: ["*"],
+      actions: [
+        {
+          id: "streetview",
+          icon: "360-view",
+          title: "Street View"
+        },
+        {
+          id: "sharelocation",
+          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          icon: "pin-tear",
+          title: "Share Location"
+        },
+      ],
+      content: function (feature) {
+        const attributes = feature.graphic.attributes;
+    
+        // Create the main container
+        const container = document.createElement("div");
+        container.classList.add("custom-popup");
+    
+        // Create tab buttons
+        const tabs = document.createElement("div");
+        tabs.classList.add("tab-buttons");
+    
+        const infoTabBtn = document.createElement("button");
+        infoTabBtn.innerText = "Info";
+        infoTabBtn.classList.add("active");
+    
+        const gisTabBtn = document.createElement("button");
+        gisTabBtn.innerText = "GIS";
+    
+        // Create tab content containers
+        const infoTabContent = document.createElement("div");
+        infoTabContent.classList.add("tab-content", "active");
+        infoTabContent.innerHTML = `
+          <p><strong>Valve ID:</strong> ${attributes.valveID}</p>
+          <p><strong>Valve Status:</strong> ${attributes.valve_status_descr}</p>
+          <p><strong>Valve Type:</strong> ${attributes.valve_type_descr}</p>
+          <p><strong>Valve Size:</strong> ${attributes.valve_dn_descr}</p>
+        `;
+    
+        const gisTabContent = document.createElement("div");
+        gisTabContent.classList.add("tab-content");
+        gisTabContent.innerHTML = `
+          <p><strong>Layer Name:</strong> Valves Points</p>
+          <p><strong>Longitude (Dec Deg.):</strong> ${attributes.X}</p>
+          <p><strong>Latitude (Dec Deg.):</strong> ${attributes.Y}</p>
+        `;
+    
+        // Append elements
+        tabs.appendChild(infoTabBtn);
+        tabs.appendChild(gisTabBtn);
+        container.appendChild(tabs);
+        container.appendChild(infoTabContent);
+        container.appendChild(gisTabContent);
+    
+        // Add event listeners for tab switching
+        infoTabBtn.addEventListener("click", () => {
+          infoTabBtn.classList.add("active");
+          gisTabBtn.classList.remove("active");
+          infoTabContent.classList.add("active");
+          gisTabContent.classList.remove("active");
+        });
+
+        gisTabBtn.addEventListener("click", () => {
+          gisTabBtn.classList.add("active");
+          infoTabBtn.classList.remove("active");
+          gisTabContent.classList.add("active");
+          infoTabContent.classList.remove("active");
+        });
+    
+        return container;
+      }
+    };
+
 
     // // Define a popup template for Customer Locations Layers
     // const popupTemplateCustomerLocations = {
@@ -3271,6 +3349,36 @@ async function displayLayers() {
       // where: "Conference = 'AFC'"
     };
 
+    const labelClassValvesTransmissionMain= {  // autocasts as new LabelClass()
+      symbol: {
+        type: "text",  // autocasts as new TextSymbol()
+        color: "black",
+        haloColor: "white",
+        haloSize: 2,
+        haloSize: 2,
+        yoffset: -6,
+        font: {  // autocast as new Font()
+          family: "Noto Sans",
+          weight: "bold",
+          size: 7
+         }
+      },
+      labelPlacement: "above-center",
+      labelExpressionInfo: {
+        expression: "$feature.valve_dn_descr"
+
+        // expression: `
+        //   var valveSize = $feature.valve_dn_descr;
+        //   return Text(Round(valveSize, 0), "#,##0") + "%";
+        // `
+
+        // expression: "$feature.sitename + TextFormatting.NewLine + $feature.Division"
+      },
+      maxScale: 0,
+      minScale: 18055.9548215,
+      // where: "Conference = 'AFC'"
+    };
+
 
     const layersDMZMeterPoints = [
       { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_KotaBelud/FeatureServer/0", title: "Kota Belud" },
@@ -3664,7 +3772,14 @@ async function displayLayers() {
     const layersSivMeters = [
       { url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/SivMeters/FeatureServer/0", title: "Kota Kinabalu" },
     ];
-
+    const layersValvesTransmissionMain = [
+      {
+        title: "Kota Kinabalu",
+        subGroups: [
+          { title: "Primary Transmission Main", url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Valves_transmission_main_updated/FeatureServer/0" },
+        ]
+      },
+    ];
 
 
 
@@ -3784,6 +3899,15 @@ async function displayLayers() {
       symbol: {
         type: "picture-marker",
         url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png",
+        width: "25px",
+        height: "25px"
+      }
+    };
+    const ValvesTransmissionMainRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/valves.png",
         width: "25px",
         height: "25px"
       }
@@ -4248,6 +4372,48 @@ async function displayLayers() {
     });
 
 
+    // Valves Transmission Main Layer
+    // Create SubtypeGroupLayers for Valves Transmission Main
+    // Define Valves Transmission Main Layers with structured hierarchy
+    const subtypeGroupLayersValvesTransmissionMain = layersValvesTransmissionMain.map(region => {
+      const subLayers = region.subGroups.map(subGroup => {
+        const layer = new SubtypeGroupLayer({
+          url: subGroup.url,
+          visible: false, // Hide all sublayers initially
+          title: subGroup.title,
+          outFields: ["*"], // Ensure all fields are available for future use
+        });
+        // Placeholder for renderer setup in the future
+        layer.when(() => {
+          // console.log(layer, "layer");
+          layer.sublayers.forEach(sublayer => {
+            sublayer.visible = false;
+            sublayer.renderer = ValvesTransmissionMainRenderer;
+            sublayer.labelingInfo = [ labelClassValvesTransmissionMain ];
+            sublayer.labelsVisible = false;
+            sublayer.popupTemplate = popupTemplateValvesTransmissionMain;
+          });
+          layer.orderBy = [{
+            field: "markerTitle",
+            order: "descending"
+          }];
+        });
+        return layer;
+      });
+      return new GroupLayer({
+        title: region.title,
+        layers: subLayers,
+        visible: false // Hide all sublayers initially
+      });
+    });
+    // Create the Main Water Main Group Layer
+    const ValvesTransmissionMain = new GroupLayer({
+      title: "Valves",
+      layers: subtypeGroupLayersValvesTransmissionMain,
+      visible: false // Hide initially
+    });
+
+
 
 
     await displayMap.add(WorkOrders);  // adds the layer to the map
@@ -4257,6 +4423,9 @@ async function displayLayers() {
     // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
     await displayMap.add(WaterMains);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(ValvesTransmissionMain);
     // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
     await displayMap.add(KTM);
@@ -20611,6 +20780,7 @@ async function addWidgets() {
       { feature: "SIV Meters Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png" },
       { feature: "Transmission Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png" },
       { feature: "Trunk Main Meter Points", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png" },
+      { feature: "Valves", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/valves.png" },
       { feature: "Water Mains", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png" },
       { feature: "Water Treatment Plant", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png" },
       { feature: "Maintenance Work Orders", count: '#', icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png" },
