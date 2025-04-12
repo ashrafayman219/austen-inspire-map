@@ -20974,6 +20974,22 @@ async function addWidgets() {
     // Call the function to create the legend initially
     createLegend(legendData);
 
+
+
+    Promise.all([
+      view.when(),
+      // view.map.when(),
+      ...view.map.allLayers.map(layer => layer.when()),
+      layerList.when()
+    ]).then(() => {
+      console.log("Everything is loaded: view, map, layers, layerList");
+      var preloader = document.getElementById('preloader');
+      if (preloader) {
+        preloader.style.display = 'none';
+      }
+    });
+
+
     await view.when();
     return [view, displayMap]; // You can return the view object
   } catch (error) {
