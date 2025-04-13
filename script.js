@@ -251,6 +251,7 @@ async function initializeMap() {
         // rotationEnabled: false // Disables map rotation
       };
 
+
       await view.when();
       view.ui.add("logoDiv", "top-right");
       //display geojsons
@@ -4574,7 +4575,7 @@ async function addWidgets() {
       Legend,
       CIMSymbol,
       Portal,
-      PortalBasemapsSource
+      PortalBasemapsSource,
     ] = await Promise.all([
       loadModule("esri/widgets/BasemapGallery"),
       loadModule("esri/widgets/Expand"),
@@ -4593,6 +4594,34 @@ async function addWidgets() {
     var search = new Search({
       //Add Search widget
       view: view,
+      includeDefaultSources: false,
+      sources: [
+        {
+          name: "Custom Geocoding Service",
+          placeholder: "Search in Sabah, Malaysia",
+          apiKey: "AAPK756f006de03e44d28710cb446c8dedb4rkQyhmzX6upFiYPzQT0HNQNMJ5qPyO1TnPDSPXT4EAM_DlQSj20ShRD7vyKa7a1H",
+          // singleLineFieldName: "SingleLine",
+          withinViewEnabled: true,
+          url: "https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer",
+          // resultSymbol: {
+          //   type: "picture-marker",  // autocasts as new PictureMarkerSymbol()
+          //   url: this.basePath + "/images/search/search-symbol-32.png",
+          //   size: 24,
+          //   width: 24,
+          //   height: 24,
+          //   xoffset: 0,
+          //   yoffset: 0
+          // },
+
+          // filter: searchExtent
+          // maxResults: 3,
+          // maxSuggestions: 6,
+          // suggestionsEnabled: false,
+          // minSuggestCharacters: 0
+
+          // apiKey: "YOUR_API_KEY", // Only needed if using API key auth
+      }
+      ]
     });
     view.ui.add(search, { position: "top-left", index: 0 }); //Add to the map
 
@@ -20409,18 +20438,31 @@ async function addWidgets() {
         ]);
       }
 
+      // Define actions for regions layers
+      if (item.layer.type === "group") {
+        if (item.layer.parent.type === "group") {
+          item.actionsSections.push([
+            {
+              title: "Search Features",
+              icon: "select-by-attributes", // search
+              id: "search-attr"
+            }
+          ]);
+        }
+      }
+
       // Check if the layer is a top-level GroupLayer
       const isTopLevelGroupLayer = view.map.layers.includes(item.layer);
 
       if (item.layer.type === "group" && isTopLevelGroupLayer) {
-          console.log("Top-Level GroupLayer:", item.layer.title);
-          item.actionsSections.push([
-              {
-                  title: "Show/Hide Labels",
-                  icon: "star",
-                  id: "toggle-labels"
-              }
-          ]);
+        console.log("Top-Level GroupLayer:", item.layer.title);
+        item.actionsSections.push([
+          {
+            title: "Show/Hide Labels",
+            icon: "star",
+            id: "toggle-labels"
+          }
+        ]);
       }
 
 
@@ -20564,6 +20606,12 @@ async function addWidgets() {
           console.log("Toggling labels for:", layer.title);
           toggleLayerLabels(layer, event.item);
         }
+
+        if (id === "search-attr") {
+          console.log("Searching by attributes...");
+        }
+
+
     });
   
     // Function to toggle labels for a layer, handling multiple hierarchy levels
@@ -20709,45 +20757,73 @@ async function addWidgets() {
     });
     view.ui.add(fullscreen, { position: "bottom-right", index: 2 });
   
-
+    let fl = false;
     // Show popup
     document.getElementById("thematicButton").addEventListener("click", () => {
-    const popup = document.getElementById("thematicPopup");
-    popup.style.display = "block"; // Make it visible first
-    // Force a reflow
-    popup.offsetHeight;
-    popup.classList.add("show");
+      if (fl == false) {
+        const popup = document.getElementById("thematicPopup");
+        popup.style.display = "block"; // Make it visible first
+        // Force a reflow
+        popup.offsetHeight;
+        popup.classList.add("show");
 
-    const calciteButton = document.querySelectorAll('calcite-button[appearance=outline-fill][kind=neutral]');
-    document.getElementById("thematicButton").kind = "brand";
-    document.getElementById("thematicButton").appearance = "solid";
-    calciteButton[0].childEl.style.backgroundColor = "#007ac2";
-    calciteButton[0].childEl.style.color = "white";
-    calciteButton[0].childEl.style.borderColor = "transparent";
+        const calciteButton = document.querySelectorAll('calcite-button[appearance=outline-fill][kind=neutral]');
+        document.getElementById("thematicButton").kind = "brand";
+        document.getElementById("thematicButton").appearance = "solid";
+        calciteButton[0].childEl.style.backgroundColor = "#007ac2";
+        calciteButton[0].childEl.style.color = "white";
+        calciteButton[0].childEl.style.borderColor = "transparent";
+        fl = true;
+      } else {
+        const calciteButton = document.querySelectorAll('calcite-button[appearance=solid][kind=brand]');
+        document.getElementById("thematicButton").kind = "neutral";
+        document.getElementById("thematicButton").appearance = "outline-fill";
+        calciteButton[0].childEl.style.backgroundColor = "white";
+        calciteButton[0].childEl.style.color = "black";
+        calciteButton[0].childEl.style.borderColor = "transparent";
+  
+  
+        // e.stopPropagation();
+        const popup = document.getElementById("thematicPopup");
+  
+        popup.classList.remove("show");
+        popup.classList.add("hiding");
+  
+        // Wait for animation to complete before hiding
+        popup.addEventListener("animationend", function hidePopup() {
+          popup.style.display = "none";
+          popup.classList.remove("hiding");
+          popup.removeEventListener("animationend", hidePopup);
+        });
+        fl = false;
+      }
+
+
+
     });
 
     // Hide popup
     document.getElementById("closeThematicPopup").addEventListener("click", (e) => {
-    const calciteButton = document.querySelectorAll('calcite-button[appearance=solid][kind=brand]');
-    document.getElementById("thematicButton").kind = "neutral";
-    document.getElementById("thematicButton").appearance = "outline-fill";
-    calciteButton[0].childEl.style.backgroundColor = "white";
-    calciteButton[0].childEl.style.color = "black";
-    calciteButton[0].childEl.style.borderColor = "transparent";
+      const calciteButton = document.querySelectorAll('calcite-button[appearance=solid][kind=brand]');
+      document.getElementById("thematicButton").kind = "neutral";
+      document.getElementById("thematicButton").appearance = "outline-fill";
+      calciteButton[0].childEl.style.backgroundColor = "white";
+      calciteButton[0].childEl.style.color = "black";
+      calciteButton[0].childEl.style.borderColor = "transparent";
 
 
-    e.stopPropagation();
-    const popup = document.getElementById("thematicPopup");
+      e.stopPropagation();
+      const popup = document.getElementById("thematicPopup");
 
-    popup.classList.remove("show");
-    popup.classList.add("hiding");
+      popup.classList.remove("show");
+      popup.classList.add("hiding");
 
-    // Wait for animation to complete before hiding
-    popup.addEventListener("animationend", function hidePopup() {
-      popup.style.display = "none";
-      popup.classList.remove("hiding");
-      popup.removeEventListener("animationend", hidePopup);
-    });
+      // Wait for animation to complete before hiding
+      popup.addEventListener("animationend", function hidePopup() {
+        popup.style.display = "none";
+        popup.classList.remove("hiding");
+        popup.removeEventListener("animationend", hidePopup);
+      });
     });
 
     // // Close popup when clicking outside
