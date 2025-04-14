@@ -4505,7 +4505,7 @@ async function displayLayers() {
         (event) => {
           if (event.action.id === "sharelocation") {
             const selectedFeature = view.popup.selectedFeature.geometry;
-            console.log(selectedFeature, "selectedFeature")
+            // console.log(selectedFeature, "selectedFeature")
             let info;
             if (selectedFeature.type === "point") {
               // Get the 'website' field attribute
@@ -20455,7 +20455,7 @@ async function addWidgets() {
       const isTopLevelGroupLayer = view.map.layers.includes(item.layer);
 
       if (item.layer.type === "group" && isTopLevelGroupLayer) {
-        console.log("Top-Level GroupLayer:", item.layer.title);
+        // console.log("Top-Level GroupLayer:", item.layer.title);
         item.actionsSections.push([
           {
             title: "Show/Hide Labels",
@@ -20494,7 +20494,7 @@ async function addWidgets() {
             while (parentLayer) {
               if (parentLayer.visible === false) {
                 parentLayer.visible = true;
-                console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
+                // console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
               }
               parentLayer = parentLayer.parent; // Move up the hierarchy
             }
@@ -20508,7 +20508,7 @@ async function addWidgets() {
                   while (parentLayer) {
                     if (parentLayer.visible === false) {
                       parentLayer.visible = true;
-                      console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
+                      // console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
                     }
                     parentLayer = parentLayer.parent; // Move up the hierarchy
                   }
@@ -20518,7 +20518,7 @@ async function addWidgets() {
                     item.layer.sublayers.forEach((sublayer) => {
                       if (!sublayer.visible) { // Only change if not already visible
                         sublayer.visible = true;
-                        console.log("Sublayer Made Visible:", sublayer.title);
+                        // console.log("Sublayer Made Visible:", sublayer.title);
                       }
                     });
                   }
@@ -20528,7 +20528,7 @@ async function addWidgets() {
                 while (parentLayer) {
                   if (parentLayer.visible === false) {
                     parentLayer.visible = true;
-                    console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
+                    // console.log("Parent Layer Made Visible:", parentLayer.title || "Unnamed Layer");
                   }
                   parentLayer = parentLayer.parent; // Move up the hierarchy
                 }
@@ -20539,7 +20539,7 @@ async function addWidgets() {
                 if (item.layer.layers && item.layer.layers.some(layer => layer.visible)) {
                   return;
                 } else {
-                  console.log(item.layer, "Here is the group layer...");
+                  // console.log(item.layer, "Here is the group layer...");
                   item.layer.layers.forEach((subtypegrouplayers) => {
                     subtypegrouplayers.visible = true;
 
@@ -20577,7 +20577,7 @@ async function addWidgets() {
           // Apply to all children, outside the condition
           item.children.forEach(child => {
             child.watch("visible", (childVisible) => {
-              console.log("Child Layer Visibility Changed:", child.layer.title, childVisible);
+              // console.log("Child Layer Visibility Changed:", child.layer.title, childVisible);
             });
           });
         }
@@ -20603,7 +20603,7 @@ async function addWidgets() {
             });
         }
         if (id === "toggle-labels") {
-          console.log("Toggling labels for:", layer.title);
+          // console.log("Toggling labels for:", layer.title);
           toggleLayerLabels(layer, event.item);
         }
 
@@ -20731,15 +20731,15 @@ async function addWidgets() {
 
     basemapGallery.when(function(){
       // This function will execute once the promise is resolved
-      console.log(basemapGallery, "Basemap Grallery...");
+      // console.log(basemapGallery, "Basemap Grallery...");
 
       basemapGallery.watch('activeBasemap', () => {
         if (basemapGallery.activeBasemap === null) {
-          console.log("Yes");
+          // console.log("Yes");
           return;
         } else {
           if (basemapWithoutLabels) {
-            console.log("No")
+            // console.log("No")
             displayMap.remove(basemapWithoutLabels);
           }
         }
