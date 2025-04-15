@@ -90,13 +90,6 @@ h3 {
 }
 
 
-
-
-
-
-
-
-
 .custom-popup {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   width: 100%;
@@ -172,16 +165,6 @@ h3 {
 }
 
 
-
-
-
-
-
-
-
-
-
-
 .esri-ui-bottom-right {
   flex-flow: column;
   gap: 10px;
@@ -234,21 +217,6 @@ calcite-action-group [layout="horizontal"] {
 calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
   margin-right: 91px; /* Adjust the value as needed for the desired gap */
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* Add this with your other keyframes */
@@ -380,20 +348,6 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Theme Legend Button Styles */
 .theme-legend-button {
   width: 100%;
@@ -516,20 +470,6 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* For a slower blink */
 .alarm-icon {
   animation: blink 2s ease-in infinite;
@@ -553,33 +493,6 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 .alarm-icon {
   animation: blink 1.5s ease-in-out infinite;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* pre loader */
@@ -635,3 +548,168 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
     transform: scale3D(0, 0, 1); 
   } 
 }
+
+
+
+
+
+
+
+
+/* Add this to your CSS */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  width: 600px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #323232;
+}
+
+.close-button {
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.close-button:hover {
+  color: #323232;
+}
+
+.query-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.query-label {
+  font-weight: bold;
+  color: #323232;
+  min-width: 50px;
+}
+
+.query-select, .query-input {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.query-select {
+  min-width: 120px;
+}
+
+.query-input {
+  flex: 1;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background-color: #0079c1;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #005e95;
+}
+
+.btn-secondary {
+  background-color: #f5f5f5;
+  color: #323232;
+}
+
+.btn-secondary:hover {
+  background-color: #e5e5e5;
+}
+
+/* Add these to your existing CSS
+.search-results {
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 10px 0;
+  display: none;
+}
+
+.search-result-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  background-color: #fff;
+}
+
+.search-result-item:hover {
+  background-color: #f5f5f5;
+} */
+
+/* Add to your existing CSS */
+.search-widget-container {
+  flex: 1;
+  min-height: 32px; /* Add this to ensure container has height */
+}
+
+.search-widget-container .esri-search {
+  width: 100%;
+}
+
+.search-widget-container .esri-search__container {
+  width: 100%;
+}
+
+.search-widget-container .esri-search__input-container {
+  width: 100%;
+}
+
+.search-widget-container .esri-search__input {
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.search-widget-container .esri-search__submit-button {
+  height: 32px;
+}
+

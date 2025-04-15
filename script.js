@@ -280,7 +280,7 @@ async function initializeMap() {
 
 
 
-              // Add hitTest functionality
+      // Add hitTest functionality
       view.on("click", function (event) {
         view.hitTest(event).then(function (response) {
           if (response.results.length) {
@@ -4426,8 +4426,8 @@ async function displayLayers() {
     await displayMap.add(WaterMains);  // adds the layer to the map
     // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(ValvesTransmissionMain);
-    // wait for the view to catch up
+    // await displayMap.add(ValvesTransmissionMain);
+    // // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
     await displayMap.add(KTM);
     // wait for the view to catch up
@@ -20584,6 +20584,487 @@ async function addWidgets() {
       });
     };
 
+
+
+    // Add at the top of your file
+    let lastSelectedField = '';
+    let lastSelectedOperator = '';
+    let lastInputValue = '';
+
+    function buildWhereClause(field, operator, value) {
+        // Remove any special characters and ensure proper formatting
+        const sanitizedValue = value.replace(/['"]/g, '').trim();
+        
+        if (field === 'pipe_dn_descr') {
+            // For pipe diameter, extract the number and compare
+            const numericValue = sanitizedValue.replace(/[^0-9]/g, '');
+            return `${field} ${operator} '${numericValue}mm'`;
+        } else {
+            // For other fields
+            const isNumeric = !isNaN(sanitizedValue) && !isNaN(parseFloat(sanitizedValue));
+            return `${field} ${operator} ${isNumeric ? sanitizedValue : `'${sanitizedValue}'`}`;
+        }
+    }
+
+
+    // Add this at the top of your file with other global variables
+    let searchWidget = null;
+
+
+    async function showSelectByAttributesModal(layer) {
+      const modal = document.getElementById("selectByAttributesModal");
+      const closeBtn = modal.querySelector(".close-button");
+      const fieldSelect = document.getElementById("fieldSelect");
+      const operatorSelect = document.getElementById("operatorSelect");
+      const valueInput = document.getElementById("valueInput");
+      
+      // Show modal
+      modal.style.display = "block";
+  
+
+      
+    // Function to destroy search widget and its container
+    function destroySearchWidget() {
+      if (searchWidget) {
+          searchWidget.destroy();
+          searchWidget = null;
+      }
+  }
+
+  // Destroy existing widget
+  destroySearchWidget();
+
+  // Remove existing container and create a new one
+  const queryLine = modal.querySelector(".query-line");
+  const oldContainer = document.getElementById("searchWidgetContainer");
+  if (oldContainer) {
+      oldContainer.remove();
+  }
+
+  // Create new container
+  const newContainer = document.createElement("div");
+  newContainer.id = "searchWidgetContainer";
+  newContainer.className = "search-widget-container";
+  queryLine.appendChild(newContainer);
+
+  // Create new search widget
+  searchWidget = new Search({
+      view: view,
+      container: newContainer,
+      allPlaceholder: "Search pipe diameter",
+      includeDefaultSources: false,
+      sources: []
+  });
+
+  // Add search sources based on layer type
+  if (layer.type === "group") {
+      const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+      subtypeGroupLayers.forEach(subtypeLayer => {
+          searchWidget.sources.push({
+              layer: subtypeLayer,
+              searchFields: ["pipe_dn_descr"],
+              displayField: "pipe_dn_descr",
+              exactMatch: false,
+              outFields: ["*"],
+              name: subtypeLayer.title || "Pipe Diameter",
+              placeholder: "example: 250mm",
+              suggestionTemplate: "Pipe Diameter: {pipe_dn_descr}"
+          });
+      });
+  } else if (layer.type === "subtype-group") {
+      searchWidget.sources.push({
+          layer: layer,
+          searchFields: ["pipe_dn_descr"],
+          displayField: "pipe_dn_descr",
+          exactMatch: false,
+          outFields: ["*"],
+          name: layer.title || "Pipe Diameter",
+          placeholder: "example: 250mm",
+          suggestionTemplate: "Pipe Diameter: {pipe_dn_descr}"
+      });
+  }
+
+  // Handle search results
+  searchWidget.on("select-result", function(event) {
+      if (event.result) {
+          applySelectionToLayer(
+              layer,
+              "pipe_dn_descr",
+              "=",
+              event.result.feature.attributes.pipe_dn_descr
+          );
+          destroySearchWidget();
+          modal.style.display = "none";
+      }
+  });
+
+
+
+  
+      // Initialize field select
+      fieldSelect.innerHTML = '<option value="">Select a field</option>';
+      
+      // Map to store unique fields (using name as key to prevent duplicates)
+      const uniqueFields = new Map();
+  
+      async function processLayerFields(layer) {
+          if (layer.type === "group") {
+              const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+              for (const subtypeLayer of subtypeGroupLayers) {
+                  await subtypeLayer.load();
+                  if (subtypeLayer.sublayers) {
+                      for (const sublayer of subtypeLayer.sublayers.toArray()) {
+                          if (sublayer.fields) {
+                              sublayer.fields.forEach(field => {
+                                  if (!uniqueFields.has(field.name)) {
+                                      uniqueFields.set(field.name, field);
+                                  }
+                              });
+                          }
+                      }
+                  }
+              }
+          } else if (layer.type === "subtype-group") {
+              await layer.load();
+              if (layer.sublayers) {
+                  for (const sublayer of layer.sublayers.toArray()) {
+                      if (sublayer.fields) {
+                          sublayer.fields.forEach(field => {
+                              if (!uniqueFields.has(field.name)) {
+                                  uniqueFields.set(field.name, field);
+                              }
+                          });
+                      }
+                  }
+              }
+          }
+      }
+  
+      // Process and populate fields
+      await processLayerFields(layer);
+      
+      // Sort fields alphabetically by name
+      const sortedFields = Array.from(uniqueFields.values())
+          .sort((a, b) => (a.alias || a.name).localeCompare(b.alias || b.name));
+  
+      // Populate field select
+      sortedFields.forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.name;
+          option.textContent = field.alias || field.name;
+          fieldSelect.appendChild(option);
+      });
+  
+      // Restore last selections
+      if (lastSelectedField) fieldSelect.value = lastSelectedField;
+      if (lastSelectedOperator) operatorSelect.value = lastSelectedOperator;
+      if (lastInputValue) valueInput.value = lastInputValue;
+  
+      // Event listeners
+      fieldSelect.addEventListener('change', (e) => {
+          lastSelectedField = e.target.value;
+      });
+  
+      operatorSelect.addEventListener('change', (e) => {
+          lastSelectedOperator = e.target.value;
+      });
+  
+      valueInput.addEventListener('input', (e) => {
+          lastInputValue = e.target.value;
+      });
+  
+      // closeBtn.onclick = () => {
+      //     modal.style.display = "none";
+      // };
+  
+      // window.onclick = (event) => {
+      //     if (event.target === modal) {
+      //         modal.style.display = "none";
+      //     }
+      // };
+  
+      document.getElementById("applySelection").onclick = () => {
+        const field = fieldSelect.value;
+        const operator = operatorSelect.value;
+        const value = valueInput.value;
+
+        if (field && operator && value) {
+            applySelectionToLayer(layer, field, operator, value);
+            modal.style.display = "none";
+        } else {
+            alert("Please fill in all fields before applying selection.");
+        }
+      };      
+  
+      // document.getElementById("clearSelection").onclick = () => {
+      //   clearSelectionFromLayer(layer);
+      //   modal.style.display = "none";
+      // };
+
+
+
+    // Update close handlers
+    closeBtn.onclick = () => {
+      destroySearchWidget();
+      modal.style.display = "none";
+  };
+
+  window.onclick = (event) => {
+      if (event.target === modal) {
+          destroySearchWidget();
+          modal.style.display = "none";
+      }
+  };
+
+  document.getElementById("clearSelection").onclick = () => {
+      destroySearchWidget();
+      clearSelectionFromLayer(layer);
+      modal.style.display = "none";
+  };
+
+
+    //       // Add search functionality
+    // const searchInput = document.getElementById("searchInput");
+    // const searchResults = document.getElementById("searchResults");
+    
+    // let searchTimeout;
+    // searchInput.addEventListener('input', (e) => {
+    //     clearTimeout(searchTimeout);
+    //     const searchValue = e.target.value;
+        
+    //     searchTimeout = setTimeout(async () => {
+    //         if (searchValue.length < 2) {
+    //             searchResults.style.display = 'none';
+    //             return;
+    //         }
+
+    //         try {
+    //             const results = await performSearch(layer, searchValue);
+    //             displaySearchResults(results, layer);
+    //         } catch (error) {
+    //             console.error('Search error:', error);
+    //         }
+    //     }, 300);
+    // });
+
+    // // Modify your existing clear function
+    // document.getElementById("clearSelection").onclick = () => {
+    //     clearSelectionFromLayer(layer);
+    //     searchResults.style.display = 'none';
+    //     searchInput.value = '';
+    //     modal.style.display = "none";
+    // };
+  }
+
+
+// Add this function to clean up when needed (e.g., when unloading your application)
+function destroySearchWidget() {
+  if (searchWidget) {
+      searchWidget.destroy();
+      searchWidget = null;
+  }
+}
+
+
+  // // Add these new functions
+  // async function performSearch(layer, searchValue) {
+  //   const results = [];
+    
+  //   async function searchSubtypeLayer(subtypeLayer) {
+  //       const query = {
+  //           where: `pipe_dn_descr LIKE '%${searchValue}%'`,
+  //           returnGeometry: true,
+  //           outFields: ["*"],
+  //           maxRecordCount: 10
+  //       };
+
+  //       try {
+  //           const features = await subtypeLayer.queryFeatures(query);
+  //           return features.features;
+  //       } catch (error) {
+  //           console.error('Error searching sublayer:', error);
+  //           return [];
+  //       }
+  //   }
+
+  //   if (layer.type === "group") {
+  //       const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+  //       for (const subtypeLayer of subtypeGroupLayers) {
+  //           const features = await searchSubtypeLayer(subtypeLayer);
+  //           results.push(...features);
+  //       }
+  //   } else if (layer.type === "subtype-group") {
+  //       const features = await searchSubtypeLayer(layer);
+  //       results.push(...features);
+  //   }
+
+  //   return results;
+  // }
+
+  // function displaySearchResults(results, layer) {
+  //   const searchResults = document.getElementById("searchResults");
+  //   searchResults.innerHTML = '';
+    
+  //   if (results.length === 0) {
+  //       searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+  //   } else {
+  //       results.forEach(feature => {
+  //           const div = document.createElement('div');
+  //           div.className = 'search-result-item';
+  //           div.textContent = `Pipe Diameter: ${feature.attributes.pipe_dn_descr}`;
+  //           div.addEventListener('click', () => {
+  //               // Apply selection when clicking a result
+  //               applySelectionToLayer(
+  //                   layer,
+  //                   'pipe_dn_descr',
+  //                   '=',
+  //                   feature.attributes.pipe_dn_descr
+  //               );
+  //               // Close the modal
+  //               document.getElementById("selectByAttributesModal").style.display = "none";
+  //           });
+  //           searchResults.appendChild(div);
+  //       });
+  //   }
+    
+  //   searchResults.style.display = 'block';
+  // }
+
+
+  async function applySelectionToLayer(layer, field, operator, value) {
+    const whereClause = buildWhereClause(field, operator, value);
+    console.log("Where clause:", whereClause); // Debug log
+
+    async function processSubtypeLayer(subtypeLayer) {
+        try {
+            subtypeLayer.visible = true;
+            
+            const query = {
+                where: whereClause,
+                returnGeometry: false,
+                outFields: ["*"]
+            };
+            
+            // First check if the subtype layer has any matching features
+            const subtypeFeatureCount = await subtypeLayer.queryFeatureCount(query);
+            
+            if (subtypeFeatureCount > 0) {
+                // Apply the definition expression to the subtype layer
+                subtypeLayer.definitionExpression = whereClause;
+                
+                // Check each sublayer for matching features
+                if (subtypeLayer.sublayers) {
+                    for (const sublayer of subtypeLayer.sublayers.toArray()) {
+                        try {
+                            const sublayerFeatureCount = await sublayer.queryFeatureCount(query);
+                            // Only make sublayer visible if it has matching features
+                            sublayer.visible = sublayerFeatureCount > 0;
+                        } catch (error) {
+                            console.error(`Error querying sublayer ${sublayer.id}:`, error);
+                            sublayer.visible = false;
+                        }
+                    }
+                }
+            } else {
+                // If no features match in the subtype layer, hide everything
+                subtypeLayer.definitionExpression = "";
+                subtypeLayer.visible = false;
+                if (subtypeLayer.sublayers) {
+                    subtypeLayer.sublayers.forEach(sublayer => {
+                        sublayer.visible = false;
+                    });
+                }
+            }
+            
+            console.log(`Subtype layer ${subtypeLayer.id} feature count:`, subtypeFeatureCount);
+            
+        } catch (error) {
+            console.error(`Error processing subtype layer ${subtypeLayer.id}:`, error);
+        }
+    }
+
+    if (layer.type === "group") {
+        layer.visible = true;
+        const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+        for (const subtypeLayer of subtypeGroupLayers) {
+            await processSubtypeLayer(subtypeLayer);
+        }
+    } else if (layer.type === "subtype-group") {
+        await processSubtypeLayer(layer);
+    }
+
+    // Zoom to selection
+    await zoomToSelection(layer, whereClause);
+}
+    
+    async function zoomToSelection(layer, whereClause) {
+      try {
+        let extent;
+        if (layer.type === "group") {
+          const promises = [];
+          
+          // Find the subtype group layer
+          const subtypeGroupLayer = layer.layers.find(l => l.type === "subtype-group");
+          
+          if (subtypeGroupLayer && subtypeGroupLayer.sublayers) {
+            subtypeGroupLayer.sublayers.forEach(sublayer => {
+              if (sublayer.visible) { // Only query visible sublayers
+                const query = {
+                  where: whereClause,
+                  returnGeometry: true,
+                  outSpatialReference: view.spatialReference
+                };
+                
+                // Use queryFeatures instead of queryExtent
+                promises.push(
+                  sublayer.queryFeatures(query)
+                    .then(result => {
+                      if (result.features.length > 0) {
+                        return result.features.reduce((acc, feature) => {
+                          const geomExtent = feature.geometry.extent;
+                          return acc ? acc.union(geomExtent) : geomExtent;
+                        }, null);
+                      }
+                      return null;
+                    })
+                    .catch(error => {
+                      console.error('Error querying features:', error);
+                      return null;
+                    })
+                );
+              }
+            });
+          }
+    
+          const results = await Promise.all(promises);
+          extent = results.reduce((acc, result) => {
+            if (!result) return acc;
+            return acc ? acc.union(result) : result;
+          }, null);
+        }
+    
+        if (extent) {
+          view.goTo(extent.expand(1.2));
+        }
+      } catch (error) {
+        console.error('Error zooming to selection:', error);
+      }
+    }
+    
+    function clearSelectionFromLayer(layer) {
+      if (layer.type === "group") {
+          const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+          subtypeGroupLayers.forEach(subtypeLayer => {
+              subtypeLayer.definitionExpression = "";
+              subtypeLayer.visible = false;
+          });
+      } else if (layer.type === "subtype-group") {
+          layer.definitionExpression = "";
+          layer.visible = false;
+      }
+    }
+
+
     // Keep the event listener for action triggers
     layerList.on("trigger-action", (event) => {
         const id = event.action.id;
@@ -20609,6 +21090,7 @@ async function addWidgets() {
 
         if (id === "search-attr") {
           console.log("Searching by attributes...");
+          showSelectByAttributesModal(event.item.layer);
         }
 
 
