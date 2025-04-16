@@ -663,26 +663,6 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
   background-color: #e5e5e5;
 }
 
-/* Add these to your existing CSS
-.search-results {
-  max-height: 200px;
-  overflow-y: auto;
-  margin: 10px 0;
-  display: none;
-}
-
-.search-result-item {
-  padding: 8px 12px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 5px;
-  background-color: #fff;
-}
-
-.search-result-item:hover {
-  background-color: #f5f5f5;
-} */
 
 /* Add to your existing CSS */
 .search-widget-container {
