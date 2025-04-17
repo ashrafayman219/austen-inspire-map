@@ -231,7 +231,7 @@ async function initializeMap() {
       // create a new instance of VectorTileLayer from the vector tiles style endpoint
       basemapWithoutLabels = new VectorTileLayer({
         // esri colored pencil style
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/WorldTopographicBasemMapLayerWithoutLabels.json",
+        url: "./WorldTopographicBasemMapLayerWithoutLabels.json",
         listMode: "hide",
       });
       displayMap.add(basemapWithoutLabels); // adds the layer to the map
@@ -452,7 +452,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -599,7 +599,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -779,7 +779,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -886,7 +886,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -1061,7 +1061,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -1138,7 +1138,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -1329,7 +1329,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -1506,7 +1506,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -1681,7 +1681,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -1759,7 +1759,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -1908,7 +1908,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -2019,7 +2019,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -2195,7 +2195,7 @@ async function displayLayers() {
         },
         {
           id: "sharelocation",
-          // image: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/sharelocation.png",
+          // image: "./sharelocation.png",
           icon: "pin-tear",
           title: "Share Location",
         },
@@ -4337,7 +4337,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png",
+        url: "./wtp.png",
         width: "25px",
         height: "25px",
         // style: "circle",
@@ -4353,7 +4353,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png",
+        url: "./tmm.png",
         width: "25px",
         height: "25px",
       },
@@ -4362,7 +4362,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png",
+        url: "./tkm.png",
         width: "25px",
         height: "25px",
       },
@@ -4371,7 +4371,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png",
+        url: "./dmz.png",
         width: "25px",
         height: "25px",
       },
@@ -4380,7 +4380,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png",
+        url: "./criticalpoints.png",
         width: "25px",
         height: "25px",
       },
@@ -4389,7 +4389,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png",
+        url: "./customerlocation.png",
         width: "15px",
         height: "15px",
       },
@@ -4398,7 +4398,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png",
+        url: "./reservoir.png",
         width: "25px",
         height: "25px",
       },
@@ -4407,7 +4407,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png",
+        url: "./workorders.png",
         width: "25px",
         height: "25px",
       },
@@ -4416,7 +4416,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png",
+        url: "./dataloggers.png",
         width: "25px",
         height: "25px",
       },
@@ -4425,7 +4425,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggersWithColor.png",
+        url: "./dataloggersWithColor.png",
         width: "25px",
         height: "25px",
       },
@@ -4434,7 +4434,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png",
+        url: "./siv.png",
         width: "25px",
         height: "25px",
       },
@@ -4443,7 +4443,7 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/valves.png",
+        url: "./valves.png",
         width: "25px",
         height: "25px",
       },
@@ -4944,45 +4944,45 @@ async function displayLayers() {
       visible: false, // Hide initially
     });
 
-    await displayMap.add(WorkOrders);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(WTP);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(WorkOrders);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(WTP);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
     await displayMap.add(WaterMains); // adds the layer to the map
     // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(ValvesTransmissionMain);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(KTM);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(SivMetersPoints);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(Reservoirs);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(DMZCriticalPoints);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(ValvesTransmissionMain);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(KTM);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(SivMetersPoints);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(Reservoirs);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(DMZCriticalPoints);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
     await displayMap.add(DMZBoundaries); // adds the layer to the map
     // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(DataLoggers);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(Customer_Locations);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(DataLoggers);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(Customer_Locations);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
 
     // Watch for when the popup becomes visible
     reactiveUtils.watch(
@@ -9978,7 +9978,7 @@ async function addWidgets() {
             label: "No Alarm",
             symbol: {
               type: "picture-marker",
-              url: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png",
+              url: "./dataloggers.png",
               width: "25px",
               height: "25px",
             },
@@ -10383,7 +10383,7 @@ async function addWidgets() {
               // For alarm triggered - add animation class
               row.innerHTML = `
               <td>
-                <img src="https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggersWithRedColor.png" 
+                <img src="./dataloggersWithRedColor.png" 
                       width="25" height="25" 
                       alt="${category.label}" 
                       class="alarm-icon" />
@@ -10834,25 +10834,25 @@ async function addWidgets() {
         subtypeGroupLayers.forEach((subtypeLayer) => {
           searchWidget.sources.push({
             layer: subtypeLayer,
-            searchFields: ["pipe_dn_descr", "site"],
+            searchFields: ["pipe_dn_descr", "pipe_mat"],
             displayField: "pipe_dn_descr",
             exactMatch: false,
             outFields: ["*"],
             name: subtypeLayer.title || "Pipe Size",
             placeholder: "example: 250mm",
-            suggestionTemplate: "Pipe Size: {pipe_dn_descr} with Site: {site}",
+            suggestionTemplate: "{markerTitle} with Pipe Mat: {pipe_mat} with Length: {mLength}",
           });
         });
       } else if (layer.type === "subtype-group") {
         searchWidget.sources.push({
           layer: layer,
-          searchFields: ["pipe_dn_descr", "site"],
+          searchFields: ["pipe_dn_descr", "pipe_mat"],
           displayField: "pipe_dn_descr",
           exactMatch: false,
           outFields: ["*"],
           name: layer.title || "Pipe Size",
           placeholder: "example: 250mm",
-          suggestionTemplate: "Pipe Size: {pipe_dn_descr} with Site: {site}",
+          suggestionTemplate: "{markerTitle} with Pipe Mat: {pipe_mat} with Length: {mLength}",
         });
       }
 
@@ -11378,75 +11378,77 @@ async function addWidgets() {
           popup.classList.remove("hiding");
           popup.removeEventListener("animationend", hidePopup);
         });
+
+        fl = false;
     });
 
     // Sample data for the legend with image URLs
     const legendData = [
-      {
-        feature: "Customer Locations",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/customerlocation.png",
-      },
-      {
-        feature: "Data Loggers",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dataloggers.png",
-      },
+      // {
+      //   feature: "Customer Locations",
+      //   count: "#",
+      //   icon: "./customerlocation.png",
+      // },
+      // {
+      //   feature: "Data Loggers",
+      //   count: "#",
+      //   icon: "./dataloggers.png",
+      // },
       {
         feature: "DMZ Boundaries",
         count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmzboundaries.png",
+        icon: "./dmzboundaries.png",
       },
-      {
-        feature: "DMZ Critical Points",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/criticalpoints.png",
-      },
-      {
-        feature: "DMZ Meter Points",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/dmz.png",
-      },
-      {
-        feature: "Reservoirs",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/reservoir.png",
-      },
-      {
-        feature: "SIV Meters Points",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/siv.png",
-      },
-      {
-        feature: "Transmission Main Meter Points",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tmm.png",
-      },
-      {
-        feature: "Trunk Main Meter Points",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/tkm.png",
-      },
-      {
-        feature: "Valves",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/valves.png",
-      },
+      // {
+      //   feature: "DMZ Critical Points",
+      //   count: "#",
+      //   icon: "./criticalpoints.png",
+      // },
+      // {
+      //   feature: "DMZ Meter Points",
+      //   count: "#",
+      //   icon: "./dmz.png",
+      // },
+      // {
+      //   feature: "Reservoirs",
+      //   count: "#",
+      //   icon: "./reservoir.png",
+      // },
+      // {
+      //   feature: "SIV Meters Points",
+      //   count: "#",
+      //   icon: "./siv.png",
+      // },
+      // {
+      //   feature: "Transmission Main Meter Points",
+      //   count: "#",
+      //   icon: "./tmm.png",
+      // },
+      // {
+      //   feature: "Trunk Main Meter Points",
+      //   count: "#",
+      //   icon: "./tkm.png",
+      // },
+      // {
+      //   feature: "Valves",
+      //   count: "#",
+      //   icon: "./valves.png",
+      // },
       {
         feature: "Water Mains",
         count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/watermains.png",
+        icon: "./watermains.png",
       },
-      {
-        feature: "Water Treatment Plant",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/wtp.png",
-      },
-      {
-        feature: "Maintenance Work Orders",
-        count: "#",
-        icon: "https://raw.githubusercontent.com/ashrafayman219/austen-inspire-map/refs/heads/main/workorders.png",
-      },
+      // {
+      //   feature: "Water Treatment Plant",
+      //   count: "#",
+      //   icon: "./wtp.png",
+      // },
+      // {
+      //   feature: "Maintenance Work Orders",
+      //   count: "#",
+      //   icon: "./workorders.png",
+      // },
     ];
 
     // Function to create the legend
