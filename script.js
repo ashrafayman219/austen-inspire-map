@@ -4944,45 +4944,45 @@ async function displayLayers() {
       visible: false, // Hide initially
     });
 
-    // await displayMap.add(WorkOrders);  // adds the layer to the map
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(WTP);  // adds the layer to the map
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(WorkOrders);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(WTP);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
     await displayMap.add(WaterMains); // adds the layer to the map
     // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(ValvesTransmissionMain);
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(KTM);
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(SivMetersPoints);  // adds the layer to the map
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(Reservoirs);  // adds the layer to the map
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(DMZCriticalPoints);
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(ValvesTransmissionMain);
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(KTM);
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(SivMetersPoints);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(Reservoirs);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(DMZCriticalPoints);
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
     await displayMap.add(DMZBoundaries); // adds the layer to the map
     // wait for the view to catch up
     await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(DataLoggers);  // adds the layer to the map
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
-    // await displayMap.add(Customer_Locations);
-    // // wait for the view to catch up
-    // await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(DataLoggers);  // adds the layer to the map
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
+    await displayMap.add(Customer_Locations);
+    // wait for the view to catch up
+    await reactiveUtils.whenOnce(() => !view.updating);
 
     // Watch for when the popup becomes visible
     reactiveUtils.watch(
@@ -11384,71 +11384,71 @@ async function addWidgets() {
 
     // Sample data for the legend with image URLs
     const legendData = [
-      // {
-      //   feature: "Customer Locations",
-      //   count: "#",
-      //   icon: "./customerlocation.png",
-      // },
-      // {
-      //   feature: "Data Loggers",
-      //   count: "#",
-      //   icon: "./dataloggers.png",
-      // },
+      {
+        feature: "Customer Locations",
+        count: "#",
+        icon: "./customerlocation.png",
+      },
+      {
+        feature: "Data Loggers",
+        count: "#",
+        icon: "./dataloggers.png",
+      },
       {
         feature: "DMZ Boundaries",
         count: "#",
         icon: "./dmzboundaries.png",
       },
-      // {
-      //   feature: "DMZ Critical Points",
-      //   count: "#",
-      //   icon: "./criticalpoints.png",
-      // },
-      // {
-      //   feature: "DMZ Meter Points",
-      //   count: "#",
-      //   icon: "./dmz.png",
-      // },
-      // {
-      //   feature: "Reservoirs",
-      //   count: "#",
-      //   icon: "./reservoir.png",
-      // },
-      // {
-      //   feature: "SIV Meters Points",
-      //   count: "#",
-      //   icon: "./siv.png",
-      // },
-      // {
-      //   feature: "Transmission Main Meter Points",
-      //   count: "#",
-      //   icon: "./tmm.png",
-      // },
-      // {
-      //   feature: "Trunk Main Meter Points",
-      //   count: "#",
-      //   icon: "./tkm.png",
-      // },
-      // {
-      //   feature: "Valves",
-      //   count: "#",
-      //   icon: "./valves.png",
-      // },
+      {
+        feature: "DMZ Critical Points",
+        count: "#",
+        icon: "./criticalpoints.png",
+      },
+      {
+        feature: "DMZ Meter Points",
+        count: "#",
+        icon: "./dmz.png",
+      },
+      {
+        feature: "Reservoirs",
+        count: "#",
+        icon: "./reservoir.png",
+      },
+      {
+        feature: "SIV Meters Points",
+        count: "#",
+        icon: "./siv.png",
+      },
+      {
+        feature: "Transmission Main Meter Points",
+        count: "#",
+        icon: "./tmm.png",
+      },
+      {
+        feature: "Trunk Main Meter Points",
+        count: "#",
+        icon: "./tkm.png",
+      },
+      {
+        feature: "Valves",
+        count: "#",
+        icon: "./valves.png",
+      },
       {
         feature: "Water Mains",
         count: "#",
         icon: "./watermains.png",
       },
-      // {
-      //   feature: "Water Treatment Plant",
-      //   count: "#",
-      //   icon: "./wtp.png",
-      // },
-      // {
-      //   feature: "Maintenance Work Orders",
-      //   count: "#",
-      //   icon: "./workorders.png",
-      // },
+      {
+        feature: "Water Treatment Plant",
+        count: "#",
+        icon: "./wtp.png",
+      },
+      {
+        feature: "Maintenance Work Orders",
+        count: "#",
+        icon: "./workorders.png",
+      },
     ];
 
     // Function to create the legend
