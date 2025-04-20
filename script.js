@@ -1718,8 +1718,8 @@ async function displayLayers() {
         gisTabContent.classList.add("tab-content");
         gisTabContent.innerHTML = `
           <p><strong>Layer Name:</strong> Water Mains</p>
-          <p><strong>ItemID:</strong> ${attributes.siteID}</p>
-          <p><strong>ObjectID:</strong> ${attributes.gID}</p>
+          <p><strong>ItemID:</strong> ${attributes.gID}</p>
+          <p><strong>ObjectID:</strong> ${attributes.OBJECTID}</p>
         `;
 
         // Append elements
@@ -10762,119 +10762,344 @@ async function addWidgets() {
     let lastSelectedOperator = "";
     let lastInputValue = "";
 
-    function buildWhereClause(field, operator, value) {
-      // Remove any special characters and ensure proper formatting
-      const sanitizedValue = value.replace(/['"]/g, "").trim();
+    // Add at the top of your file
+    const DROPDOWN_FIELDS = [
+      'regionID', 'pipe_type_dbID', 'pipe_type', 'pipe_type_descr', 
+      'pipe_dn_dbID', 'pipe_dn', 'pipe_dn_descr', 'markerTitle', 
+      'year_laid', 'pipe_mat_dbID', 'pipe_mat', 'pipe_mat_descr', 
+      'pipe_status_dbID', 'pipe_status', 'pipe_status_descr'
+    ];
 
+// Move this outside of showSelectByAttributesModal
+let addCriteriaHandler = null;
+    // Add these with your other global variables
+    let isSecondCriteriaVisible = false;
+    const uniqueFields = new Map(); // Add this line
+
+    function buildWhereClause(field, operator, value) {
+      if (!value) return null;
+      
+      // Remove any special characters and ensure proper formatting
+      const sanitizedValue = value.toString().replace(/['"]/g, "").trim();
+  
+      // Special handling for pipe_dn_descr
       if (field === "pipe_dn_descr") {
-        // For pipe diameter, extract the number and compare
-        const numericValue = sanitizedValue.replace(/[^0-9]/g, "");
-        return `${field} ${operator} '${numericValue}mm'`;
-      } else {
-        // For other fields
-        const isNumeric =
-          !isNaN(sanitizedValue) && !isNaN(parseFloat(sanitizedValue));
-        return `${field} ${operator} ${
-          isNumeric ? sanitizedValue : `'${sanitizedValue}'`
-        }`;
+          return `${field} ${operator} '${sanitizedValue}'`;
       }
+      
+      // Handle numeric fields (including IDs)
+      if (field.toLowerCase().includes('id') || 
+          !isNaN(sanitizedValue) && !isNaN(parseFloat(sanitizedValue))) {
+          return `${field} ${operator} ${sanitizedValue}`;
+      }
+      
+      // Handle all other fields as strings
+      return `${field} ${operator} '${sanitizedValue}'`;
     }
 
-    // Add this at the top of your file with other global variables
-    let searchWidget = null;
+    // // Add this at the top of your file with other global variables
+    // let searchWidget = null;
 
     async function showSelectByAttributesModal(layer) {
       const modal = document.getElementById("selectByAttributesModal");
       const closeBtn = modal.querySelector(".close-button");
-      const fieldSelect = document.getElementById("fieldSelect");
-      const operatorSelect = document.getElementById("operatorSelect");
-      const valueInput = document.getElementById("valueInput");
+      const fieldSelect1 = document.getElementById("fieldSelect1"); // Updated ID
+      const operatorSelect1 = document.getElementById("operatorSelect1"); // Updated ID
+      const valueInput1 = document.getElementById("valueInput1"); // Updated ID
+      const valueSelect1 = document.getElementById("valueSelect1"); // Updated ID
+      const loadingIndicator = document.getElementById("loadingIndicator");
+      const errorMessage = document.getElementById("errorMessage");
+      
+      function resetInputs() {
+        // Reset first set of inputs
+        const fieldSelect1 = document.getElementById("fieldSelect1");
+        const operatorSelect1 = document.getElementById("operatorSelect1");
+        const valueInput1 = document.getElementById("valueInput1");
+        const valueSelect1 = document.getElementById("valueSelect1");
+    
+        if (fieldSelect1) fieldSelect1.value = "";
+        if (operatorSelect1) operatorSelect1.value = "=";
+        if (valueInput1) {
+            valueInput1.value = "";
+            valueInput1.style.display = 'none';
+        }
+        if (valueSelect1) {
+            valueSelect1.innerHTML = '<option value="">Select a value</option>';
+            valueSelect1.style.display = 'none';
+        }
+    
+        // Reset second set if they exist
+        const fieldSelect2 = document.getElementById("fieldSelect2");
+        const operatorSelect2 = document.getElementById("operatorSelect2");
+        const valueInput2 = document.getElementById("valueInput2");
+        const valueSelect2 = document.getElementById("valueSelect2");
+    
+        if (fieldSelect2) fieldSelect2.value = "";
+        if (operatorSelect2) operatorSelect2.value = "=";
+        if (valueInput2) {
+            valueInput2.value = "";
+            valueInput2.style.display = 'none';
+        }
+        if (valueSelect2) {
+            valueSelect2.innerHTML = '<option value="">Select a value</option>';
+            valueSelect2.style.display = 'none';
+        }
+    
+        // Hide logical operator line and second query line
+        const logicalOperatorLine = document.getElementById("logicalOperatorLine");
+        const secondQueryLine = document.getElementById("secondQueryLine");
+        if (logicalOperatorLine) logicalOperatorLine.style.display = "none";
+        if (secondQueryLine) secondQueryLine.style.display = "none";
+    
+        // Reset stored values
+        lastSelectedField = "";
+        lastSelectedOperator = "";
+        lastInputValue = "";
+        isSecondCriteriaVisible = false;
+    
+        // Hide error message
+        hideError();
+      }
+
+      // Inside showSelectByAttributesModal, after your existing resetInputs function
+      function resetQueryBuilder() {
+        isSecondCriteriaVisible = false;
+        document.getElementById("logicalOperatorLine").style.display = "none";
+        document.getElementById("secondQueryLine").style.display = "none";
+        
+        // Reset all fields to full width
+        document.querySelectorAll('.query-select').forEach(select => {
+            select.classList.add('full-width');
+        });
+      }
+
+
+
+// Inside showSelectByAttributesModal
+const addCriteriaBtn = document.getElementById("addCriteria");
+if (addCriteriaBtn) {
+    // Remove old handler if it exists
+    if (addCriteriaHandler) {
+        addCriteriaBtn.removeEventListener("click", addCriteriaHandler);
+    }
+    
+    // Create new handler
+    addCriteriaHandler = () => {
+        const logicalOperatorLine = document.getElementById("logicalOperatorLine");
+        const secondQueryLine = document.getElementById("secondQueryLine");
+        const fieldSelect1 = document.getElementById("fieldSelect1");
+        const fieldSelect2 = document.getElementById("fieldSelect2");
+        
+        if (!isSecondCriteriaVisible && fieldSelect1 && fieldSelect2) {
+            logicalOperatorLine.style.display = "flex";
+            secondQueryLine.style.display = "flex";
+            isSecondCriteriaVisible = true;
+            
+            // Copy options from first select
+            fieldSelect2.innerHTML = fieldSelect1.innerHTML;
+        }
+    };
+    
+    addCriteriaBtn.addEventListener("click", addCriteriaHandler);
+}
+
+
+      // Reset everything when opening the modal
+      resetInputs();
 
       // Show modal
       modal.style.display = "block";
 
-      // Function to destroy search widget and its container
-      function destroySearchWidget() {
-        if (searchWidget) {
-          searchWidget.destroy();
-          searchWidget = null;
+      // Function to toggle loading indicator
+      function toggleLoading(show) {
+        loadingIndicator.style.display = show ? 'flex' : 'none';
+      }
+
+      // Function to show error message
+      function showError(message) {
+        const errorText = document.getElementById("errorText");
+        errorText.textContent = message;
+        errorMessage.style.display = "flex";
+      }
+
+      // Function to hide error message
+      function hideError() {
+        errorMessage.style.display = "none";
+      }
+
+      // Function to reset layer state
+      function resetLayerState(layer) {
+        if (layer.type === "group") {
+            const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+            subtypeGroupLayers.forEach(subtypeLayer => {
+                subtypeLayer.definitionExpression = "";
+                subtypeLayer.visible = false;
+                if (subtypeLayer.sublayers) {
+                    subtypeLayer.sublayers.forEach(sublayer => {
+                        sublayer.visible = false;
+                    });
+                }
+            });
+        } else if (layer.type === "subtype-group") {
+            layer.definitionExpression = "";
+            layer.visible = false;
+            if (layer.sublayers) {
+                layer.sublayers.forEach(sublayer => {
+                    sublayer.visible = false;
+                });
+            }
         }
       }
 
-      // Destroy existing widget
-      destroySearchWidget();
+
+
+      // Function to populate value dropdown
+      async function populateValueDropdown(field, layer, valueSelectId) {
+        toggleLoading(true);
+        hideError();
+
+        const valueSelect = document.getElementById(valueSelectId);
+        if (!valueSelect) return;
+
+        try {
+            const uniqueValues = new Set();
+            
+            if (layer.type === "group") {
+                const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+                for (const subtypeLayer of subtypeGroupLayers) {
+                    const query = {
+                        where: "1=1",
+                        outFields: [field],
+                        returnDistinctValues: true,
+                        returnGeometry: false
+                    };
+                    
+                    const result = await subtypeLayer.queryFeatures(query);
+                    result.features.forEach(feature => {
+                        const value = feature.attributes[field];
+                        if (value !== null && value !== undefined) {
+                            uniqueValues.add(value);
+                        }
+                    });
+                }
+            }
+            // else if (layer.type === "subtype-group") {
+            //   // Handle direct subtype-group layer selection
+            //   const query = {
+            //       where: "1=1",
+            //       outFields: [field],
+            //       returnDistinctValues: true,
+            //       returnGeometry: false
+            //   };
+              
+            //   const result = await layer.queryFeatures(query);
+            //   result.features.forEach(feature => {
+            //       const value = feature.attributes[field];
+            //       if (value !== null && value !== undefined) {
+            //           uniqueValues.add(value);
+            //       }
+            //   });
+            // }
+
+
+
+            // Clear the dropdown again before adding new values
+            valueSelect.innerHTML = '<option value="">Select a value</option>';
+            // Sort and add values to dropdown
+            Array.from(uniqueValues).sort().forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                valueSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error populating values:', error);
+            showError("Error loading values. Please try again.");
+        } finally {
+            toggleLoading(false);
+        }
+      }
+
+      // // Function to destroy search widget and its container
+      // function destroySearchWidget() {
+      //   if (searchWidget) {
+      //     searchWidget.destroy();
+      //     searchWidget = null;
+      //   }
+      // }
+
+      // // Destroy existing widget
+      // destroySearchWidget();
 
       // Remove existing container and create a new one
-      const queryLine = modal.querySelector(".query-line");
-      const oldContainer = document.getElementById("searchWidgetContainer");
-      if (oldContainer) {
-        oldContainer.remove();
-      }
+      // const queryLine = modal.querySelector(".query-line");
+      // const oldContainer = document.getElementById("searchWidgetContainer");
+      // if (oldContainer) {
+      //   oldContainer.remove();
+      // }
 
-      // Create new container
-      const newContainer = document.createElement("div");
-      newContainer.id = "searchWidgetContainer";
-      newContainer.className = "search-widget-container";
-      queryLine.appendChild(newContainer);
+      // // Create new container
+      // const newContainer = document.createElement("div");
+      // newContainer.id = "searchWidgetContainer";
+      // newContainer.className = "search-widget-container";
+      // queryLine.appendChild(newContainer);
 
-      // Create new search widget
-      searchWidget = new Search({
-        view: view,
-        container: newContainer,
-        allPlaceholder: "Search pipe size",
-        includeDefaultSources: false,
-        sources: [],
-      });
+      // // Create new search widget
+      // searchWidget = new Search({
+      //   view: view,
+      //   container: newContainer,
+      //   allPlaceholder: "Search pipe size",
+      //   includeDefaultSources: false,
+      //   sources: [],
+      // });
 
-      // Add search sources based on layer type
-      if (layer.type === "group") {
-        const subtypeGroupLayers = layer.layers.filter(
-          (l) => l.type === "subtype-group"
-        );
-        subtypeGroupLayers.forEach((subtypeLayer) => {
-          searchWidget.sources.push({
-            layer: subtypeLayer,
-            searchFields: ["pipe_dn_descr", "pipe_mat"],
-            displayField: "pipe_dn_descr",
-            exactMatch: false,
-            outFields: ["*"],
-            name: subtypeLayer.title || "Pipe Size",
-            placeholder: "example: 250mm",
-            suggestionTemplate: "{markerTitle} with Pipe Mat: {pipe_mat} with Length: {mLength}",
-          });
-        });
-      } else if (layer.type === "subtype-group") {
-        searchWidget.sources.push({
-          layer: layer,
-          searchFields: ["pipe_dn_descr", "pipe_mat"],
-          displayField: "pipe_dn_descr",
-          exactMatch: false,
-          outFields: ["*"],
-          name: layer.title || "Pipe Size",
-          placeholder: "example: 250mm",
-          suggestionTemplate: "{markerTitle} with Pipe Mat: {pipe_mat} with Length: {mLength}",
-        });
-      }
+      // // Add search sources based on layer type
+      // if (layer.type === "group") {
+      //   const subtypeGroupLayers = layer.layers.filter(
+      //     (l) => l.type === "subtype-group"
+      //   );
+      //   subtypeGroupLayers.forEach((subtypeLayer) => {
+      //     searchWidget.sources.push({
+      //       layer: subtypeLayer,
+      //       searchFields: ["pipe_dn_descr", "pipe_mat"],
+      //       displayField: "pipe_dn_descr",
+      //       exactMatch: false,
+      //       outFields: ["*"],
+      //       name: subtypeLayer.title || "Pipe Size",
+      //       placeholder: "example: 250mm",
+      //       suggestionTemplate: "{markerTitle} with Pipe Mat: {pipe_mat} with Length: {mLength}",
+      //     });
+      //   });
+      // } else if (layer.type === "subtype-group") {
+      //   searchWidget.sources.push({
+      //     layer: layer,
+      //     searchFields: ["pipe_dn_descr", "pipe_mat"],
+      //     displayField: "pipe_dn_descr",
+      //     exactMatch: false,
+      //     outFields: ["*"],
+      //     name: layer.title || "Pipe Size",
+      //     placeholder: "example: 250mm",
+      //     suggestionTemplate: "{markerTitle} with Pipe Mat: {pipe_mat} with Length: {mLength}",
+      //   });
+      // }
 
-      // Handle search results
-      searchWidget.on("select-result", function (event) {
-        if (event.result) {
-          applySelectionToLayer(
-            layer,
-            "pipe_dn_descr",
-            "=",
-            event.result.feature.attributes.pipe_dn_descr
-          );
-          destroySearchWidget();
-          modal.style.display = "none";
-        }
-      });
+      // // Handle search results
+      // searchWidget.on("select-result", function (event) {
+      //   if (event.result) {
+      //     applySelectionToLayer(
+      //       layer,
+      //       "pipe_dn_descr",
+      //       "=",
+      //       event.result.feature.attributes.pipe_dn_descr
+      //     );
+      //     destroySearchWidget();
+      //     modal.style.display = "none";
+      //   }
+      // });
 
-      // Initialize field select
-      fieldSelect.innerHTML = '<option value="">Select a field</option>';
 
-      // Map to store unique fields (using name as key to prevent duplicates)
-      const uniqueFields = new Map();
+      // // Map to store unique fields (using name as key to prevent duplicates)
+      // const uniqueFields = new Map();
 
       async function processLayerFields(layer) {
         if (layer.type === "group") {
@@ -10919,75 +11144,249 @@ async function addWidgets() {
         (a.alias || a.name).localeCompare(b.alias || b.name)
       );
 
-      // Populate field select
-      sortedFields.forEach((field) => {
-        const option = document.createElement("option");
-        option.value = field.name;
-        option.textContent = field.alias || field.name;
-        fieldSelect.appendChild(option);
-      });
+
+      // Replace the fieldSelect initialization with:
+      if (fieldSelect1) {
+        fieldSelect1.innerHTML = '<option value="">Select a field</option>';
+        
+        // Populate field select
+        sortedFields.forEach((field) => {
+            const option = document.createElement("option");
+            option.value = field.name;
+            option.textContent = field.alias || field.name;
+            fieldSelect1.appendChild(option);
+        });
+      }
 
       // Restore last selections
       if (lastSelectedField) fieldSelect.value = lastSelectedField;
       if (lastSelectedOperator) operatorSelect.value = lastSelectedOperator;
       if (lastInputValue) valueInput.value = lastInputValue;
 
-      // Event listeners
-      fieldSelect.addEventListener("change", (e) => {
-        lastSelectedField = e.target.value;
-      });
+      // // Handle field selection change
+      // fieldSelect.addEventListener("change", async (e) => {
+      //   hideError();
+      //   // Clear both input methods
+      //   valueInput.value = "";
+      //   valueSelect.innerHTML = '<option value="">Select a value</option>';
+        
+      //   if (!e.target.value) {
+      //     valueInput.style.display = 'none';
+      //     valueSelect.style.display = 'none';
+      //     return;
+      //   }
+      //   // Show/hide appropriate input based on field type
+      //   if (DROPDOWN_FIELDS.includes(e.target.value)) {
+      //     valueInput.style.display = 'none';
+      //     valueSelect.style.display = 'block';
+      //     await populateValueDropdown(e.target.value, layer);
+      //   } else {
+      //       valueInput.style.display = 'block';
+      //       valueSelect.style.display = 'none';
+      //   }
+      // });
 
+
+      // Add new ones for both sets
+['1', '2'].forEach(num => {
+  const operatorSelect = document.getElementById(`operatorSelect${num}`);
+  const valueInput = document.getElementById(`valueInput${num}`);
+  
+  if (operatorSelect) {
       operatorSelect.addEventListener("change", (e) => {
-        lastSelectedOperator = e.target.value;
+          if (num === '1') lastSelectedOperator = e.target.value;
       });
-
+  }
+  
+  if (valueInput) {
       valueInput.addEventListener("input", (e) => {
-        lastInputValue = e.target.value;
+          if (num === '1') lastInputValue = e.target.value;
       });
+  }
+});
 
-      document.getElementById("applySelection").onclick = () => {
-        const field = fieldSelect.value;
-        const operator = operatorSelect.value;
-        const value = valueInput.value;
 
-        if (field && operator && value) {
-          applySelectionToLayer(layer, field, operator, value);
-          modal.style.display = "none";
-        } else {
-          alert("Please fill in all fields before applying selection.");
+      // Modify your existing applySelection click handler
+      document.getElementById("applySelection").onclick = async () => {
+        const field1 = document.getElementById("fieldSelect1").value;
+        const operator1 = document.getElementById("operatorSelect1").value;
+        const value1 = DROPDOWN_FIELDS.includes(field1) ? 
+            document.getElementById("valueSelect1").value : 
+            document.getElementById("valueInput1").value;
+
+        hideError();
+
+        if (!field1 || !operator1 || !value1) {
+            showError("Please fill in all fields before applying selection.");
+            return;
+        }
+
+        let whereClause = buildWhereClause(field1, operator1, value1);
+
+        if (isSecondCriteriaVisible) {
+            const logicalOp = document.getElementById("logicalOperator").value;
+            const field2 = document.getElementById("fieldSelect2").value;
+            const operator2 = document.getElementById("operatorSelect2").value;
+            const value2 = DROPDOWN_FIELDS.includes(field2) ? 
+                document.getElementById("valueSelect2").value : 
+                document.getElementById("valueInput2").value;
+
+            if (field2 && operator2 && value2) {
+                const secondClause = buildWhereClause(field2, operator2, value2);
+                whereClause = `(${whereClause}) ${logicalOp} (${secondClause})`;
+            }
+        }
+
+        toggleLoading(true);
+        try {
+            const hasFeatures = await checkForFeatures(layer, whereClause);
+            
+            if (!hasFeatures) {
+                toggleLoading(false);
+                showError("No features found matching the criteria. Please try different values.");
+                resetLayerState(layer);
+                return;
+            }
+
+            await applySelectionToLayer(layer, whereClause);
+            resetInputs();
+            resetQueryBuilder();
+            modal.style.display = "none";
+        } catch (error) {
+            console.error('Error applying selection:', error);
+            showError("An error occurred while applying the selection. Please try again.");
+            resetLayerState(layer);
+        } finally {
+            toggleLoading(false);
         }
       };
 
+
+
+
+      // Add this function to handle field select width
+      function setupFieldSelect(fieldSelectId, valueInputId, valueSelectId, layer) {
+        const fieldSelect = document.getElementById(fieldSelectId);
+        if (!fieldSelect) return;
+    
+        fieldSelect.addEventListener("change", async (e) => {
+            fieldSelect.classList.remove('full-width');
+            const operatorSelect = document.getElementById(fieldSelectId.replace('field', 'operator'));
+            if (operatorSelect) operatorSelect.classList.remove('full-width');
+            
+            hideError();
+            const valueInput = document.getElementById(valueInputId);
+            const valueSelect = document.getElementById(valueSelectId);
+            
+            if (!valueInput || !valueSelect) return;
+            
+            valueInput.value = "";
+            valueSelect.innerHTML = '<option value="">Select a value</option>';
+            
+            if (!e.target.value) {
+                valueInput.style.display = 'none';
+                valueSelect.style.display = 'none';
+                return;
+            }
+    
+            // Get field info
+            const fieldInfo = uniqueFields.get(e.target.value);
+            
+            // Show appropriate input based on field type and whether it's in DROPDOWN_FIELDS
+            if (DROPDOWN_FIELDS.includes(e.target.value)) {
+                valueInput.style.display = 'none';
+                valueSelect.style.display = 'block';
+                await populateValueDropdown(e.target.value, layer, valueSelectId);
+            } else {
+                valueInput.style.display = 'block';
+                valueSelect.style.display = 'none';
+                
+                // Set input type based on field type
+                if (fieldInfo) {
+                    switch (fieldInfo.type) {
+                        case "small-integer":
+                        case "integer":
+                            valueInput.type = "number";
+                            valueInput.step = "1";
+                            break;
+                        case "double":
+                            valueInput.type = "number";
+                            valueInput.step = "any";
+                            break;
+                        default:
+                            valueInput.type = "text";
+                    }
+                }
+            }
+        });
+      }
+
+      // Update the setupFieldSelect calls to include the layer parameter
+      setupFieldSelect('fieldSelect1', 'valueInput1', 'valueSelect1', layer);
+      setupFieldSelect('fieldSelect2', 'valueInput2', 'valueSelect2', layer);
+
+
+
       // Update close handlers
       closeBtn.onclick = () => {
-        destroySearchWidget();
+        // destroySearchWidget();
+        resetInputs();
         modal.style.display = "none";
       };
 
       window.onclick = (event) => {
         if (event.target === modal) {
-          destroySearchWidget();
+          // destroySearchWidget();
+          resetInputs();
           modal.style.display = "none";
         }
       };
 
       document.getElementById("clearSelection").onclick = () => {
-        destroySearchWidget();
+        // destroySearchWidget();
+        resetInputs();
         clearSelectionFromLayer(layer);
         modal.style.display = "none";
       };
     }
 
-    // Add this function to clean up when needed (e.g., when unloading your application)
-    function destroySearchWidget() {
-      if (searchWidget) {
-        searchWidget.destroy();
-        searchWidget = null;
+
+
+    // Add this function to check for matching features
+    async function checkForFeatures(layer, whereClause) {
+      try {
+          if (layer.type === "group") {
+              const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+              for (const subtypeLayer of subtypeGroupLayers) {
+                  const count = await subtypeLayer.queryFeatureCount({
+                      where: whereClause
+                  });
+                  if (count > 0) return true;
+              }
+          } else if (layer.type === "subtype-group") {
+              const count = await layer.queryFeatureCount({
+                  where: whereClause
+              });
+              return count > 0;
+          }
+          return false;
+      } catch (error) {
+          console.error('Error checking for features:', error);
+          return false;
       }
     }
 
-    async function applySelectionToLayer(layer, field, operator, value) {
-      const whereClause = buildWhereClause(field, operator, value);
+
+    // // Add this function to clean up when needed (e.g., when unloading your application)
+    // function destroySearchWidget() {
+    //   if (searchWidget) {
+    //     searchWidget.destroy();
+    //     searchWidget = null;
+    //   }
+    // }
+
+    async function applySelectionToLayer(layer, whereClause) {
+
       console.log("Where clause:", whereClause); // Debug log
 
       async function processSubtypeLayer(subtypeLayer) {
@@ -11029,6 +11428,7 @@ async function addWidgets() {
             }
           } else {
             // If no features match in the subtype layer, hide everything
+            console.log("No features found in the expression...");
             subtypeLayer.definitionExpression = "";
             subtypeLayer.visible = false;
             if (subtypeLayer.sublayers) {
@@ -11039,7 +11439,7 @@ async function addWidgets() {
           }
 
           console.log(
-            `Subtype layer ${subtypeLayer.id} feature count:`,
+            `Subtype layer ${subtypeLayer.title} feature count:`,
             subtypeFeatureCount
           );
         } catch (error) {

@@ -156,35 +156,80 @@
           <h3>Select By Attributes</h3>
           <span class="close-button">&times;</span>
         </div>
+        <!-- Add search widget container
+        <div class="query-line">
+          <span class="query-label">Search</span>
+          Container will be created dynamically
+        </div> -->
+
+
+        <!-- Inside the modal-content div, replace the current modal-body -->
         <div class="modal-body">
-          <!-- Add search widget container -->
-          <div class="query-line">
-            <span class="query-label">Search</span>
-            <!-- Container will be created dynamically -->
+<!-- Replace your existing query-line div with this -->
+<div class="query-line">
+  <span class="query-label">Search</span>
+  <select id="fieldSelect1" class="query-select full-width">
+      <option value="">Select a field</option>
+  </select>
+  <select id="operatorSelect1" class="query-select full-width">
+      <option value="=">=</option>
+      <option value="<>">≠</option>
+      <option value=">">></option>
+      <option value="<"><</option>
+      <option value=">=">=</option>
+      <option value="<="><=</option>
+  </select>
+  <input type="text" id="valueInput1" class="query-input" placeholder="Enter value" style="display: none;">
+  <select id="valueSelect1" class="query-select" style="display: none;">
+      <option value="">Select a value</option>
+  </select>
+</div>
+
+<!-- Add these new divs -->
+<div class="query-line" id="logicalOperatorLine" style="display: none;">
+  <select id="logicalOperator" class="query-select">
+      <option value="AND">AND</option>
+      <option value="OR">OR</option>
+  </select>
+</div>
+
+<div class="query-line" id="secondQueryLine" style="display: none;">
+  <span class="query-label">Search</span>
+  <select id="fieldSelect2" class="query-select full-width">
+      <option value="">Select a field</option>
+  </select>
+  <select id="operatorSelect2" class="query-select full-width">
+      <option value="=">=</option>
+      <option value="<>">≠</option>
+      <option value=">">></option>
+      <option value="<"><</option>
+      <option value=">=">=</option>
+      <option value="<="><=</option>
+  </select>
+  <input type="text" id="valueInput2" class="query-input" placeholder="Enter value" style="display: none;">
+  <select id="valueSelect2" class="query-select" style="display: none;">
+      <option value="">Select a value</option>
+  </select>
+</div>
+
+<div class="query-line">
+  <button id="addCriteria" class="btn btn-secondary">Add Criteria</button>
+</div>
+
+          <!-- Error message -->
+          <div id="errorMessage" class="error-message" style="display: none;">
+              <span class="error-icon">⚠️</span>
+              <span id="errorText"></span>
           </div>
 
-          <!-- Existing query line -->
-          <div class="query-line">
-            <span class="query-label">Where</span>
-            <select id="fieldSelect" class="query-select">
-              <option value="">Select a field</option>
-            </select>
-            <select id="operatorSelect" class="query-select">
-              <option value="=">=</option>
-              <option value="<>">≠</option>
-              <option value=">">></option>
-              <option value="<"><</option>
-              <option value=">=">=</option>
-              <option value="<="><=</option>
-            </select>
-            <input
-              type="text"
-              id="valueInput"
-              class="query-input"
-              placeholder="Enter value"
-            />
+          <!-- Loading indicator -->
+          <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+              <div class="spinner"></div>
+              <span>Processing...</span>
           </div>
         </div>
+
+
         <div class="modal-footer">
           <button id="applySelection" class="btn btn-primary">Apply</button>
           <button id="clearSelection" class="btn btn-secondary">Clear</button>
