@@ -7,6 +7,19 @@ let isThematicInitialized = false;
 // Add this at the beginning of your script
 const originalRenderers = new Map();
 
+// Add these with your other global variables
+const lastSearchState = {
+  field1: '',
+  operator1: '=',
+  value1: '',
+  logicalOperator: 'AND',
+  field2: '',
+  operator2: '=',
+  value2: '',
+  isSecondCriteriaVisible: false
+};
+
+
 const labelClassDMZBoundaries = {
   symbol: {
     type: "text",
@@ -10763,15 +10776,10 @@ async function addWidgets() {
     let lastInputValue = "";
 
     // Add at the top of your file
-    const DROPDOWN_FIELDS = [
-      'regionID', 'pipe_type_dbID', 'pipe_type', 'pipe_type_descr', 
-      'pipe_dn_dbID', 'pipe_dn', 'pipe_dn_descr', 'markerTitle', 
-      'year_laid', 'pipe_mat_dbID', 'pipe_mat', 'pipe_mat_descr', 
-      'pipe_status_dbID', 'pipe_status', 'pipe_status_descr'
-    ];
+    const DROPDOWN_FIELDS = ['pipe_dn', 'pipe_type', 'year_laid'];
 
-// Move this outside of showSelectByAttributesModal
-let addCriteriaHandler = null;
+    // Move this outside of showSelectByAttributesModal
+    let addCriteriaHandler = null;
     // Add these with your other global variables
     let isSecondCriteriaVisible = false;
     const uniqueFields = new Map(); // Add this line
@@ -10811,51 +10819,76 @@ let addCriteriaHandler = null;
       const errorMessage = document.getElementById("errorMessage");
       
       function resetInputs() {
-        // Reset first set of inputs
+        // Don't reset everything, instead restore the last state
         const fieldSelect1 = document.getElementById("fieldSelect1");
         const operatorSelect1 = document.getElementById("operatorSelect1");
         const valueInput1 = document.getElementById("valueInput1");
         const valueSelect1 = document.getElementById("valueSelect1");
     
-        if (fieldSelect1) fieldSelect1.value = "";
-        if (operatorSelect1) operatorSelect1.value = "=";
-        if (valueInput1) {
-            valueInput1.value = "";
-            valueInput1.style.display = 'none';
-        }
-        if (valueSelect1) {
-            valueSelect1.innerHTML = '<option value="">Select a value</option>';
-            valueSelect1.style.display = 'none';
+        // Initially hide both input methods
+        valueInput1.style.display = 'none';
+        valueSelect1.style.display = 'none';
+    
+        // Restore first criteria
+        if (fieldSelect1) fieldSelect1.value = lastSearchState.field1;
+        if (operatorSelect1) operatorSelect1.value = lastSearchState.operator1;
+    
+        // Only show and populate inputs if there's a selected field
+        if (lastSearchState.field1) {
+            if (DROPDOWN_FIELDS.includes(lastSearchState.field1)) {
+                valueInput1.style.display = 'none';
+                valueSelect1.style.display = 'block';
+                // Populate the dropdown and set the value
+                populateValueDropdown(lastSearchState.field1, layer, 'valueSelect1').then(() => {
+                    valueSelect1.value = lastSearchState.value1;
+                });
+            } else {
+                valueInput1.style.display = 'block';
+                valueSelect1.style.display = 'none';
+                valueInput1.value = lastSearchState.value1;
+            }
         }
     
-        // Reset second set if they exist
-        const fieldSelect2 = document.getElementById("fieldSelect2");
-        const operatorSelect2 = document.getElementById("operatorSelect2");
-        const valueInput2 = document.getElementById("valueInput2");
-        const valueSelect2 = document.getElementById("valueSelect2");
+        // Handle second criteria if it was visible
+        if (lastSearchState.isSecondCriteriaVisible) {
+            const logicalOperatorLine = document.getElementById("logicalOperatorLine");
+            const secondQueryLine = document.getElementById("secondQueryLine");
+            const logicalOperator = document.getElementById("logicalOperator");
+            const fieldSelect2 = document.getElementById("fieldSelect2");
+            const operatorSelect2 = document.getElementById("operatorSelect2");
+            const valueInput2 = document.getElementById("valueInput2");
+            const valueSelect2 = document.getElementById("valueSelect2");
     
-        if (fieldSelect2) fieldSelect2.value = "";
-        if (operatorSelect2) operatorSelect2.value = "=";
-        if (valueInput2) {
-            valueInput2.value = "";
+            // Show the second criteria
+            logicalOperatorLine.style.display = "flex";
+            secondQueryLine.style.display = "flex";
+            isSecondCriteriaVisible = true;
+    
+            // Initially hide both input methods for second criteria
             valueInput2.style.display = 'none';
-        }
-        if (valueSelect2) {
-            valueSelect2.innerHTML = '<option value="">Select a value</option>';
             valueSelect2.style.display = 'none';
+    
+            // Restore second criteria values
+            logicalOperator.value = lastSearchState.logicalOperator;
+            fieldSelect2.value = lastSearchState.field2;
+            operatorSelect2.value = lastSearchState.operator2;
+    
+            // Only show and populate inputs if there's a selected field
+            if (lastSearchState.field2) {
+                if (DROPDOWN_FIELDS.includes(lastSearchState.field2)) {
+                    valueInput2.style.display = 'none';
+                    valueSelect2.style.display = 'block';
+                    // Populate the dropdown and set the value
+                    populateValueDropdown(lastSearchState.field2, layer, 'valueSelect2').then(() => {
+                        valueSelect2.value = lastSearchState.value2;
+                    });
+                } else {
+                    valueInput2.style.display = 'block';
+                    valueSelect2.style.display = 'none';
+                    valueInput2.value = lastSearchState.value2;
+                }
+            }
         }
-    
-        // Hide logical operator line and second query line
-        const logicalOperatorLine = document.getElementById("logicalOperatorLine");
-        const secondQueryLine = document.getElementById("secondQueryLine");
-        if (logicalOperatorLine) logicalOperatorLine.style.display = "none";
-        if (secondQueryLine) secondQueryLine.style.display = "none";
-    
-        // Reset stored values
-        lastSelectedField = "";
-        lastSelectedOperator = "";
-        lastInputValue = "";
-        isSecondCriteriaVisible = false;
     
         // Hide error message
         hideError();
@@ -10875,33 +10908,33 @@ let addCriteriaHandler = null;
 
 
 
-// Inside showSelectByAttributesModal
-const addCriteriaBtn = document.getElementById("addCriteria");
-if (addCriteriaBtn) {
-    // Remove old handler if it exists
-    if (addCriteriaHandler) {
-        addCriteriaBtn.removeEventListener("click", addCriteriaHandler);
-    }
-    
-    // Create new handler
-    addCriteriaHandler = () => {
-        const logicalOperatorLine = document.getElementById("logicalOperatorLine");
-        const secondQueryLine = document.getElementById("secondQueryLine");
-        const fieldSelect1 = document.getElementById("fieldSelect1");
-        const fieldSelect2 = document.getElementById("fieldSelect2");
-        
-        if (!isSecondCriteriaVisible && fieldSelect1 && fieldSelect2) {
-            logicalOperatorLine.style.display = "flex";
-            secondQueryLine.style.display = "flex";
-            isSecondCriteriaVisible = true;
-            
-            // Copy options from first select
-            fieldSelect2.innerHTML = fieldSelect1.innerHTML;
-        }
-    };
-    
-    addCriteriaBtn.addEventListener("click", addCriteriaHandler);
-}
+      // Inside showSelectByAttributesModal
+      const addCriteriaBtn = document.getElementById("addCriteria");
+      if (addCriteriaBtn) {
+          // Remove old handler if it exists
+          if (addCriteriaHandler) {
+              addCriteriaBtn.removeEventListener("click", addCriteriaHandler);
+          }
+          
+          // Create new handler
+          addCriteriaHandler = () => {
+              const logicalOperatorLine = document.getElementById("logicalOperatorLine");
+              const secondQueryLine = document.getElementById("secondQueryLine");
+              const fieldSelect1 = document.getElementById("fieldSelect1");
+              const fieldSelect2 = document.getElementById("fieldSelect2");
+              
+              if (!isSecondCriteriaVisible && fieldSelect1 && fieldSelect2) {
+                  logicalOperatorLine.style.display = "flex";
+                  secondQueryLine.style.display = "flex";
+                  isSecondCriteriaVisible = true;
+                  
+                  // Copy options from first select
+                  fieldSelect2.innerHTML = fieldSelect1.innerHTML;
+              }
+          };
+          
+          addCriteriaBtn.addEventListener("click", addCriteriaHandler);
+      }
 
 
       // Reset everything when opening the modal
@@ -11102,37 +11135,39 @@ if (addCriteriaBtn) {
       // const uniqueFields = new Map();
 
       async function processLayerFields(layer) {
+
+        // Predefined fields we want to show
+        const allowedFields = ['pipe_dn', 'pipe_type', 'year_laid'];
+
         if (layer.type === "group") {
-          const subtypeGroupLayers = layer.layers.filter(
-            (l) => l.type === "subtype-group"
-          );
-          for (const subtypeLayer of subtypeGroupLayers) {
-            await subtypeLayer.load();
-            if (subtypeLayer.sublayers) {
-              for (const sublayer of subtypeLayer.sublayers.toArray()) {
-                if (sublayer.fields) {
-                  sublayer.fields.forEach((field) => {
-                    if (!uniqueFields.has(field.name)) {
-                      uniqueFields.set(field.name, field);
+            const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+            for (const subtypeLayer of subtypeGroupLayers) {
+                await subtypeLayer.load();
+                if (subtypeLayer.sublayers) {
+                    for (const sublayer of subtypeLayer.sublayers.toArray()) {
+                        if (sublayer.fields) {
+                            sublayer.fields.forEach((field) => {
+                                if (allowedFields.includes(field.name) && !uniqueFields.has(field.name)) {
+                                    uniqueFields.set(field.name, field);
+                                }
+                            });
+                        }
                     }
-                  });
                 }
-              }
             }
-          }
         } else if (layer.type === "subtype-group") {
-          await layer.load();
-          if (layer.sublayers) {
-            for (const sublayer of layer.sublayers.toArray()) {
-              if (sublayer.fields) {
-                sublayer.fields.forEach((field) => {
-                  if (!uniqueFields.has(field.name)) {
-                    uniqueFields.set(field.name, field);
-                  }
-                });
-              }
+            await layer.load();
+            if (layer.sublayers) {
+                for (const sublayer of layer.sublayers.toArray()) {
+                    if (sublayer.fields) {
+                        sublayer.fields.forEach((field) => {
+                            if (allowedFields.includes(field.name) && !uniqueFields.has(field.name)) {
+                                uniqueFields.set(field.name, field);
+                            }
+                        });
+                    }
+                }
             }
-          }
         }
       }
 
@@ -11145,16 +11180,25 @@ if (addCriteriaBtn) {
       );
 
 
-      // Replace the fieldSelect initialization with:
+      // Then in the field select population part:
       if (fieldSelect1) {
         fieldSelect1.innerHTML = '<option value="">Select a field</option>';
         
-        // Populate field select
+        // Add custom labels for the fields
+        const fieldLabels = {
+            'pipe_dn': 'Pipe Size',
+            'pipe_type': 'Pipe Type',
+            'year_laid': 'Year Laid'
+        };
+        
+        // Populate field select with custom labels
         sortedFields.forEach((field) => {
-            const option = document.createElement("option");
-            option.value = field.name;
-            option.textContent = field.alias || field.name;
-            fieldSelect1.appendChild(option);
+            if (['pipe_dn', 'pipe_type', 'year_laid'].includes(field.name)) {
+                const option = document.createElement("option");
+                option.value = field.name;
+                option.textContent = fieldLabels[field.name] || field.name;
+                fieldSelect1.appendChild(option);
+            }
         });
       }
 
@@ -11188,22 +11232,22 @@ if (addCriteriaBtn) {
 
 
       // Add new ones for both sets
-['1', '2'].forEach(num => {
-  const operatorSelect = document.getElementById(`operatorSelect${num}`);
-  const valueInput = document.getElementById(`valueInput${num}`);
-  
-  if (operatorSelect) {
-      operatorSelect.addEventListener("change", (e) => {
-          if (num === '1') lastSelectedOperator = e.target.value;
+      ['1', '2'].forEach(num => {
+        const operatorSelect = document.getElementById(`operatorSelect${num}`);
+        const valueInput = document.getElementById(`valueInput${num}`);
+        
+        if (operatorSelect) {
+            operatorSelect.addEventListener("change", (e) => {
+                if (num === '1') lastSelectedOperator = e.target.value;
+            });
+        }
+        
+        if (valueInput) {
+            valueInput.addEventListener("input", (e) => {
+                if (num === '1') lastInputValue = e.target.value;
+            });
+        }
       });
-  }
-  
-  if (valueInput) {
-      valueInput.addEventListener("input", (e) => {
-          if (num === '1') lastInputValue = e.target.value;
-      });
-  }
-});
 
 
       // Modify your existing applySelection click handler
@@ -11213,6 +11257,37 @@ if (addCriteriaBtn) {
         const value1 = DROPDOWN_FIELDS.includes(field1) ? 
             document.getElementById("valueSelect1").value : 
             document.getElementById("valueInput1").value;
+
+
+                // Save the first criteria
+    lastSearchState.field1 = field1;
+    lastSearchState.operator1 = operator1;
+    lastSearchState.value1 = value1;
+
+    if (isSecondCriteriaVisible) {
+        const logicalOp = document.getElementById("logicalOperator").value;
+        const field2 = document.getElementById("fieldSelect2").value;
+        const operator2 = document.getElementById("operatorSelect2").value;
+        const value2 = DROPDOWN_FIELDS.includes(field2) ? 
+            document.getElementById("valueSelect2").value : 
+            document.getElementById("valueInput2").value;
+
+        // Save the second criteria
+        lastSearchState.logicalOperator = logicalOp;
+        lastSearchState.field2 = field2;
+        lastSearchState.operator2 = operator2;
+        lastSearchState.value2 = value2;
+        lastSearchState.isSecondCriteriaVisible = true;
+    } else {
+        // Reset second criteria if not visible
+        lastSearchState.logicalOperator = 'AND';
+        lastSearchState.field2 = '';
+        lastSearchState.operator2 = '=';
+        lastSearchState.value2 = '';
+        lastSearchState.isSecondCriteriaVisible = false;
+    }
+
+
 
         hideError();
 
@@ -11343,8 +11418,53 @@ if (addCriteriaBtn) {
       };
 
       document.getElementById("clearSelection").onclick = () => {
-        // destroySearchWidget();
-        resetInputs();
+        // Reset the lastSearchState
+        lastSearchState.field1 = '';
+        lastSearchState.operator1 = '=';
+        lastSearchState.value1 = '';
+        lastSearchState.logicalOperator = 'AND';
+        lastSearchState.field2 = '';
+        lastSearchState.operator2 = '=';
+        lastSearchState.value2 = '';
+        lastSearchState.isSecondCriteriaVisible = false;
+    
+        // Reset all inputs
+        const fieldSelect1 = document.getElementById("fieldSelect1");
+        const operatorSelect1 = document.getElementById("operatorSelect1");
+        const valueInput1 = document.getElementById("valueInput1");
+        const valueSelect1 = document.getElementById("valueSelect1");
+    
+        if (fieldSelect1) fieldSelect1.value = "";
+        if (operatorSelect1) operatorSelect1.value = "=";
+        
+        // Hide both input methods
+        if (valueInput1) {
+            valueInput1.value = "";
+            valueInput1.style.display = 'none';
+        }
+        if (valueSelect1) {
+            valueSelect1.innerHTML = '<option value="">Select a value</option>';
+            valueSelect1.style.display = 'none';
+        }
+    
+        // Reset second criteria
+        const logicalOperatorLine = document.getElementById("logicalOperatorLine");
+        const secondQueryLine = document.getElementById("secondQueryLine");
+        if (logicalOperatorLine) logicalOperatorLine.style.display = "none";
+        if (secondQueryLine) secondQueryLine.style.display = "none";
+    
+        // Also reset second criteria inputs if they exist
+        const valueInput2 = document.getElementById("valueInput2");
+        const valueSelect2 = document.getElementById("valueSelect2");
+        if (valueInput2) {
+            valueInput2.value = "";
+            valueInput2.style.display = 'none';
+        }
+        if (valueSelect2) {
+            valueSelect2.innerHTML = '<option value="">Select a value</option>';
+            valueSelect2.style.display = 'none';
+        }
+    
         clearSelectionFromLayer(layer);
         modal.style.display = "none";
       };

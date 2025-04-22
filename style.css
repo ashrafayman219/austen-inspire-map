@@ -624,10 +624,12 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 .query-select {
   min-width: 120px;
+  max-width: 200px;
 }
 
 .query-input {
-  flex: 1;
+  width: 200px;
+  max-width: 200px;
 }
 
 .modal-footer {
@@ -744,8 +746,8 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 /* Add these to your existing modal-related CSS */
 .query-select.full-width {
-  flex: 1;
-  min-width: 200px;
+  width: 100%;
+  max-width: none;
 }
 
 #logicalOperator {
@@ -765,3 +767,14 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
   gap: 10px;
   margin-bottom: 15px;
 }
+
+
+
+
+/* Add these new classes to your CSS file */
+.value-container {
+  flex: 1;
+  max-width: 200px;
+  min-width: 120px;
+}
+
