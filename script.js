@@ -9889,29 +9889,33 @@ async function addWidgets() {
       //   ]
       // },
       "nrw-percentage": {
-        field: "classValue", // Changed from 'ranking_descr' to 'classValue'
+        field: "current_nrw_pcnt", // Changed to use current_nrw_pcnt directly
         categories: [
           {
-            value: "1", // Changed from array of values to single value
+            value: "Non Specified and Negative NRW",
             label: "Non Specified and Negative NRW",
             color: [128, 128, 128, 0.6], // Dark Grey
+            condition: value => value <= 0 || value === null || value === undefined
           },
           {
-            value: "2",
+            value: "Less than 25%",
             label: "Less than 25%",
             color: [44, 123, 182, 0.6], // Blue
+            condition: value => value > 0 && value <= 25
           },
           {
-            value: "3",
+            value: "26% to 45%",
             label: "26% to 45%",
             color: [253, 174, 97, 0.6], // Orange
+            condition: value => value > 25 && value <= 45
           },
           {
-            value: "4",
+            value: "45% above",
             label: "45% above",
             color: [215, 48, 39, 0.6], // Red
-          },
-        ],
+            condition: value => value > 45
+          }
+        ]
       },
       "nrw-status": {
         field: "status_descr",
@@ -10080,20 +10084,27 @@ async function addWidgets() {
           return {
             type: "unique-value",
             field: themeConfig.field,
-            defaultSymbol: {
-              type: "simple-fill",
-              color: [200, 200, 200, 0.6],
-              outline: { color: [128, 128, 128, 0.8], width: 0.5 },
-            },
-            uniqueValueInfos: themeConfig.categories.map((category) => ({
+            uniqueValueInfos: themeConfig.categories.map(category => ({
               value: category.value,
               symbol: {
                 type: "simple-fill",
                 color: category.color,
-                outline: { color: [128, 128, 128, 0.8], width: 0.5 },
+                outline: { color: [128, 128, 128, 0.8], width: 0.5 }
               },
-              label: category.label,
+              label: category.label
             })),
+            valueExpression: `
+              var nrwValue = $feature.current_nrw_pcnt;
+              if (nrwValue == null || nrwValue <= 0) {
+                return 'Non Specified and Negative NRW';
+              } else if (nrwValue <= 25) {
+                return 'Less than 25%';
+              } else if (nrwValue <= 45) {
+                return '26% to 45%';
+              } else {
+                return '45% above';
+              }
+            `
           };
           // // Special handling for nrw-percentage with combined classes
           // return {
@@ -10311,6 +10322,19 @@ async function addWidgets() {
       isThematicInitialized = true;
     }
 
+    function getNRWCategory(nrwValue) {
+      if (nrwValue === null || nrwValue === undefined || nrwValue <= 0) {
+        return "Non Specified and Negative NRW";
+      }
+      if (nrwValue > 0 && nrwValue <= 25) {
+        return "Less than 25%";
+      }
+      if (nrwValue > 25 && nrwValue <= 45) {
+        return "26% to 45%";
+      }
+      return "45% above";
+    }
+
     async function updateThemeLegend() {
       try {
         const legendTableBody = document.getElementById("legendTableBody");
@@ -10419,73 +10443,73 @@ async function addWidgets() {
             legendTableBody.appendChild(row);
           });
         } else {
-          // Existing code for other layers
-          const categoryCounts = {};
-          if (selectedTheme === "nrw-percentage") {
-            // themeConfig.categories.forEach(cat => {
-            //   cat.values.forEach(value => {
-            //     categoryCounts[value] = 0;
-            //   });
-            // });
-            themeConfig.categories.forEach((category) => {
-              categoryCounts[category.value] = 0;
-            });
-          } else {
-            themeConfig.categories.forEach((cat) => {
-              categoryCounts[cat.value] = 0;
-            });
+  // Existing code for other layers
+  const categoryCounts = {};
+  
+  if (layer.layers) {
+    const visibleSublayers = [];
+
+    layer.layers.forEach((subtypeGroupLayer) => {
+      if (
+        subtypeGroupLayer.visible &&
+        subtypeGroupLayer.type === "subtype-group"
+      ) {
+        subtypeGroupLayer.sublayers.forEach((sublayer) => {
+          if (sublayer.visible) {
+            visibleSublayers.push(sublayer);
           }
+        });
+      }
+    });
 
-          if (layer.layers) {
-            const visibleSublayers = [];
+    if (visibleSublayers.length > 0) {
+      const promises = visibleSublayers.map((sublayer) => {
+        const query = sublayer.createQuery();
+        query.where = "1=1";
+        query.outFields = [themeConfig.field];
+        query.returnGeometry = false;
 
-            layer.layers.forEach((subtypeGroupLayer) => {
-              if (
-                subtypeGroupLayer.visible &&
-                subtypeGroupLayer.type === "subtype-group"
-              ) {
-                subtypeGroupLayer.sublayers.forEach((sublayer) => {
-                  if (sublayer.visible) {
-                    visibleSublayers.push(sublayer);
-                  }
-                });
-              }
-            });
-
-            if (visibleSublayers.length > 0) {
-              const promises = visibleSublayers.map((sublayer) => {
-                const query = sublayer.createQuery();
-                query.where = "1=1";
-                query.outFields = [themeConfig.field];
-                query.returnGeometry = false;
-                query.returnDistinctValues = true;
-                query.groupByFieldsForStatistics = [themeConfig.field];
-                query.outStatistics = [
-                  {
-                    statisticType: "count",
-                    onStatisticField: themeConfig.field,
-                    outStatisticFieldName: "count",
-                  },
-                ];
-
-                return sublayer
-                  .queryFeatures(query)
-                  .then((result) => {
-                    result.features.forEach((feature) => {
-                      const value = feature.attributes[themeConfig.field];
-                      const count = feature.attributes.count;
-                      if (value in categoryCounts) {
-                        categoryCounts[value] += count;
-                      }
-                    });
-                  })
-                  .catch((error) => {
-                    console.error(`Error querying sublayer: ${error}`);
-                  });
+        if (selectedTheme === "nrw-percentage") {
+          // Special handling for NRW percentage
+          return sublayer.queryFeatures(query)
+            .then(result => {
+              result.features.forEach(feature => {
+                const nrwValue = feature.attributes[themeConfig.field];
+                const category = getNRWCategory(nrwValue);
+                categoryCounts[category] = (categoryCounts[category] || 0) + 1;
               });
+            });
+        } else {
+          // Regular handling for other themes
+          query.returnDistinctValues = true;
+          query.groupByFieldsForStatistics = [themeConfig.field];
+          query.outStatistics = [
+            {
+              statisticType: "count",
+              onStatisticField: themeConfig.field,
+              outStatisticFieldName: "count",
+            },
+          ];
+
+          return sublayer.queryFeatures(query)
+            .then((result) => {
+              result.features.forEach((feature) => {
+                const value = feature.attributes[themeConfig.field];
+                const count = feature.attributes.count;
+                if (value in categoryCounts) {
+                  categoryCounts[value] += count;
+                }
+              });
+            });
+        }
+      });
 
               await Promise.all(promises);
             }
+
+
+  
+
 
             // Update the legend creation
             legendTableBody.innerHTML = "";
@@ -10493,14 +10517,14 @@ async function addWidgets() {
               const count = categoryCounts[category.value] || 0;
               const row = document.createElement("tr");
               row.innerHTML = `
-              <td>
-                <div class="color-box" style="background-color: rgba(${category.color.join(
-                  ","
-                )})"></div>
-              </td>
-              <td>${category.label}</td>
-              <td>${count}</td>
-            `;
+                <td>
+                  <div class="color-box" style="background-color: rgba(${category.color.join(
+                    ","
+                  )})"></div>
+                </td>
+                <td>${category.label}</td>
+                <td>${count}</td>
+              `;
               legendTableBody.appendChild(row);
             });
 
