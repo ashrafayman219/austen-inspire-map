@@ -10800,7 +10800,7 @@ async function addWidgets() {
     let lastInputValue = "";
 
     // Add at the top of your file
-    const DROPDOWN_FIELDS = ['pipe_dn', 'pipe_type', 'year_laid'];
+    const DROPDOWN_FIELDS = ['pipe_dn', 'pipe_type_descr', 'year_laid', 'pipe_mat'];
 
     // Move this outside of showSelectByAttributesModal
     let addCriteriaHandler = null;
@@ -11014,10 +11014,37 @@ async function addWidgets() {
       async function populateValueDropdown(field, layer, valueSelectId) {
         toggleLoading(true);
         hideError();
-
+    
         const valueSelect = document.getElementById(valueSelectId);
         if (!valueSelect) return;
-
+    
+        // Function to check if a value is valid
+        const isValidValue = (value) => {
+            if (value === null || value === undefined || value === '') {
+                return false;
+            }
+    
+            // Check for the specific large number as string or number
+            if (value.toString().includes('92233720368547')) {
+                return false;
+            }
+    
+            // For pipe_dn field
+            if (field === 'pipe_dn') {
+                const numValue = parseFloat(value);
+                return !isNaN(numValue) && numValue > 0 && numValue <= 3000;
+            }
+    
+            // For pipe_mat field (Pipe Material)
+            if (field === 'pipe_mat') {
+                // Only allow valid material codes (add any other valid codes as needed)
+                const validMaterials = ['ABS', 'AC', 'DI', 'GI', 'HDPE', 'MS', 'MSCL', 'PVC', 'UPVC'];
+                return validMaterials.includes(value.toString().toUpperCase());
+            }
+    
+            return true;
+        };
+    
         try {
             const uniqueValues = new Set();
             
@@ -11031,44 +11058,60 @@ async function addWidgets() {
                         returnGeometry: false
                     };
                     
-                    const result = await subtypeLayer.queryFeatures(query);
-                    result.features.forEach(feature => {
-                        const value = feature.attributes[field];
-                        if (value !== null && value !== undefined) {
-                            uniqueValues.add(value);
-                        }
-                    });
+                    try {
+                        const result = await subtypeLayer.queryFeatures(query);
+                        result.features.forEach(feature => {
+                            const value = feature.attributes[field];
+                            if (isValidValue(value)) {
+                                uniqueValues.add(value);
+                            }
+                        });
+                    } catch (queryError) {
+                        console.error(`Error querying sublayer: ${queryError}`);
+                        continue;
+                    }
                 }
             }
-            // else if (layer.type === "subtype-group") {
-            //   // Handle direct subtype-group layer selection
-            //   const query = {
-            //       where: "1=1",
-            //       outFields: [field],
-            //       returnDistinctValues: true,
-            //       returnGeometry: false
-            //   };
-              
-            //   const result = await layer.queryFeatures(query);
-            //   result.features.forEach(feature => {
-            //       const value = feature.attributes[field];
-            //       if (value !== null && value !== undefined) {
-            //           uniqueValues.add(value);
-            //       }
-            //   });
-            // }
-
-
-
-            // Clear the dropdown again before adding new values
+    
+            // Clear the dropdown
             valueSelect.innerHTML = '<option value="">Select a value</option>';
-            // Sort and add values to dropdown
-            Array.from(uniqueValues).sort().forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                valueSelect.appendChild(option);
+    
+            // Convert Set to Array and sort
+            let sortedValues = Array.from(uniqueValues)
+                .filter(value => value !== null && value !== undefined);
+            
+            if (field === 'pipe_dn') {
+                // Numeric sorting for pipe sizes
+                sortedValues = sortedValues
+                    .map(value => parseFloat(value))
+                    .filter(value => !isNaN(value))
+                    .sort((a, b) => a - b);
+            } else if (field === 'pipe_mat') {
+                // Alphabetical sorting for pipe materials
+                sortedValues.sort();
+            } else {
+                // Default sorting for other fields
+                sortedValues.sort((a, b) => {
+                    if (typeof a === 'number' && typeof b === 'number') {
+                        return a - b;
+                    }
+                    return String(a).localeCompare(String(b), undefined, { 
+                        numeric: true,
+                        sensitivity: 'base'
+                    });
+                });
+            }
+    
+            // Add sorted values to dropdown
+            sortedValues.forEach(value => {
+                if (value !== null && value !== undefined && value !== '') {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = value;
+                    valueSelect.appendChild(option);
+                }
             });
+    
         } catch (error) {
             console.error('Error populating values:', error);
             showError("Error loading values. Please try again.");
@@ -11161,7 +11204,7 @@ async function addWidgets() {
       async function processLayerFields(layer) {
 
         // Predefined fields we want to show
-        const allowedFields = ['pipe_dn', 'pipe_type', 'year_laid'];
+        const allowedFields = ['pipe_dn', 'pipe_type_descr', 'year_laid', 'pipe_mat'];
 
         if (layer.type === "group") {
             const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
@@ -11211,20 +11254,47 @@ async function addWidgets() {
         // Add custom labels for the fields
         const fieldLabels = {
             'pipe_dn': 'Pipe Size',
-            'pipe_type': 'Pipe Type',
-            'year_laid': 'Year Laid'
+            'pipe_type_descr': 'Pipe Type',
+            'year_laid': 'Year Laid',
+            'pipe_mat': 'Pipe Material'
         };
         
         // Populate field select with custom labels
         sortedFields.forEach((field) => {
-            if (['pipe_dn', 'pipe_type', 'year_laid'].includes(field.name)) {
+            if (DROPDOWN_FIELDS.includes(field.name)) {
                 const option = document.createElement("option");
                 option.value = field.name;
+                // Store both value and display text
                 option.textContent = fieldLabels[field.name] || field.name;
                 fieldSelect1.appendChild(option);
             }
         });
+
+        // After populating options, set the saved value
+        if (lastSearchState.field1) {
+            fieldSelect1.value = lastSearchState.field1;
+            
+            // Trigger the change event to ensure proper setup of value inputs
+            const event = new Event('change');
+            fieldSelect1.dispatchEvent(event);
+        }
       }
+
+      // Do the same for fieldSelect2 if it exists and is visible
+      if (document.getElementById("fieldSelect2") && lastSearchState.isSecondCriteriaVisible) {
+        const fieldSelect2 = document.getElementById("fieldSelect2");
+        fieldSelect2.innerHTML = fieldSelect1.innerHTML; // Copy options from first select
+        
+        if (lastSearchState.field2) {
+            fieldSelect2.value = lastSearchState.field2;
+            
+            // Trigger the change event
+            const event = new Event('change');
+            fieldSelect2.dispatchEvent(event);
+        }
+      }
+
+
 
       // Restore last selections
       if (lastSelectedField) fieldSelect.value = lastSelectedField;
@@ -11378,27 +11448,47 @@ async function addWidgets() {
             const valueSelect = document.getElementById(valueSelectId);
             
             if (!valueInput || !valueSelect) return;
+    
+            // Get the current field and the saved field
+            const currentField = e.target.value;
+            const savedField = fieldSelectId === 'fieldSelect1' ? 
+                lastSearchState.field1 : 
+                lastSearchState.field2;
             
-            valueInput.value = "";
-            valueSelect.innerHTML = '<option value="">Select a value</option>';
+            // Get the saved value only if we're on the same field
+            const savedValue = (currentField === savedField) ? 
+                (fieldSelectId === 'fieldSelect1' ? lastSearchState.value1 : lastSearchState.value2) : 
+                null;
             
-            if (!e.target.value) {
+            if (!currentField) {
                 valueInput.style.display = 'none';
                 valueSelect.style.display = 'none';
                 return;
             }
     
             // Get field info
-            const fieldInfo = uniqueFields.get(e.target.value);
+            const fieldInfo = uniqueFields.get(currentField);
             
-            // Show appropriate input based on field type and whether it's in DROPDOWN_FIELDS
-            if (DROPDOWN_FIELDS.includes(e.target.value)) {
+            // Show appropriate input based on field type
+            if (DROPDOWN_FIELDS.includes(currentField)) {
                 valueInput.style.display = 'none';
                 valueSelect.style.display = 'block';
-                await populateValueDropdown(e.target.value, layer, valueSelectId);
+                
+                // Populate dropdown
+                await populateValueDropdown(currentField, layer, valueSelectId);
+    
+                // Set value based on whether we're on the same field or a new one
+                if (savedValue && currentField === savedField) {
+                    valueSelect.value = savedValue;
+                } else {
+                    valueSelect.value = ''; // Default to "Select a value"
+                }
             } else {
                 valueInput.style.display = 'block';
                 valueSelect.style.display = 'none';
+                
+                // Set value based on whether we're on the same field or a new one
+                valueInput.value = (savedValue && currentField === savedField) ? savedValue : '';
                 
                 // Set input type based on field type
                 if (fieldInfo) {
@@ -11612,61 +11702,92 @@ async function addWidgets() {
 
     async function zoomToSelection(layer, whereClause) {
       try {
-        let extent;
-        if (layer.type === "group") {
-          const promises = [];
-
-          // Find the subtype group layer
-          const subtypeGroupLayer = layer.layers.find(
-            (l) => l.type === "subtype-group"
-          );
-
-          if (subtypeGroupLayer && subtypeGroupLayer.sublayers) {
-            subtypeGroupLayer.sublayers.forEach((sublayer) => {
-              if (sublayer.visible) {
-                // Only query visible sublayers
-                const query = {
-                  where: whereClause,
-                  returnGeometry: true,
-                  outSpatialReference: view.spatialReference,
-                };
-
-                // Use queryFeatures instead of queryExtent
-                promises.push(
-                  sublayer
-                    .queryFeatures(query)
-                    .then((result) => {
-                      if (result.features.length > 0) {
-                        return result.features.reduce((acc, feature) => {
-                          const geomExtent = feature.geometry.extent;
-                          return acc ? acc.union(geomExtent) : geomExtent;
-                        }, null);
-                      }
-                      return null;
-                    })
-                    .catch((error) => {
-                      console.error("Error querying features:", error);
-                      return null;
-                    })
-                );
+          let allExtents = [];
+  
+          if (layer.type === "group") {
+              const subtypeGroupLayers = layer.layers.filter(l => l.type === "subtype-group");
+              
+              for (const subtypeLayer of subtypeGroupLayers) {
+                  if (subtypeLayer.sublayers) {
+                      const sublayerPromises = subtypeLayer.sublayers.map(async (sublayer) => {
+                          if (sublayer.visible) {
+                              try {
+                                  const query = {
+                                      where: whereClause,
+                                      returnGeometry: true,
+                                      outSpatialReference: view.spatialReference
+                                  };
+  
+                                  const result = await sublayer.queryFeatures(query);
+                                  if (result.features.length > 0) {
+                                      const extent = result.features.reduce((acc, feature) => {
+                                          const geomExtent = feature.geometry.extent;
+                                          return acc ? acc.union(geomExtent) : geomExtent;
+                                      }, null);
+                                      if (extent) {
+                                          allExtents.push(extent);
+                                      }
+                                  }
+                              } catch (error) {
+                                  console.error(`Error querying sublayer ${sublayer.id}:`, error);
+                              }
+                          }
+                      });
+  
+                      await Promise.all(sublayerPromises);
+                  }
               }
-            });
+  
+              // Combine all extents
+              if (allExtents.length > 0) {
+                  const combinedExtent = allExtents.reduce((acc, extent) => {
+                      return acc ? acc.union(extent) : extent;
+                  });
+  
+                  if (combinedExtent) {
+                      // Add padding and zoom to the extent
+                      await view.goTo({
+                          target: combinedExtent.expand(1.5),
+                          options: {
+                              duration: 1000,
+                              easing: "ease-out"
+                          }
+                      });
+  
+                      // Double-check if zoom was successful, if not try again with different parameters
+                      setTimeout(async () => {
+                          const currentExtent = view.extent;
+                          const visibleFeatures = allExtents.some(extent => 
+                              currentExtent.intersects(extent));
+                          
+                          if (!visibleFeatures) {
+                              await view.goTo({
+                                  target: combinedExtent.expand(2),
+                                  options: {
+                                      duration: 1000,
+                                      easing: "ease-out"
+                                  }
+                              });
+                          }
+                      }, 1500);
+                  }
+              }
           }
-
-          const results = await Promise.all(promises);
-          extent = results.reduce((acc, result) => {
-            if (!result) return acc;
-            return acc ? acc.union(result) : result;
-          }, null);
-        }
-
-        if (extent) {
-          view.goTo(extent.expand(1.2));
-        }
       } catch (error) {
-        console.error("Error zooming to selection:", error);
+          console.error("Error in zoomToSelection:", error);
+          
+          // Fallback zoom attempt if the main method fails
+          try {
+              const visibleLayers = layer.layers.filter(l => l.visible);
+              if (visibleLayers.length > 0) {
+                  const firstLayer = visibleLayers[0];
+                  await view.goTo(firstLayer.fullExtent.expand(1.2));
+              }
+          } catch (fallbackError) {
+              console.error("Fallback zoom failed:", fallbackError);
+          }
       }
-    }
+  }
 
     function clearSelectionFromLayer(layer) {
       if (layer.type === "group") {
