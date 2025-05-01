@@ -4957,45 +4957,556 @@ async function displayLayers() {
       visible: false, // Hide initially
     });
 
-    await displayMap.add(WorkOrders);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(WTP);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(WaterMains); // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(ValvesTransmissionMain);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(KTM);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(SivMetersPoints);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(Reservoirs);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(DMZMeterPoints);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(DMZCriticalPoints);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(DMZBoundaries); // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(DataLoggers);  // adds the layer to the map
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
-    await displayMap.add(Customer_Locations);
-    // wait for the view to catch up
-    await reactiveUtils.whenOnce(() => !view.updating);
+
+
+// Create a function to get unique regions
+function getUniqueRegions() {
+  const regionSets = [
+    layersDMZBoundaries,
+    layersDMZMeterPoints,
+    layersReservoirs,
+    layersCustomerLocations,
+    layersDMZCriticalPoints,
+    layersWTP,
+    layersKTM,
+    layersTransmissionMainMeterPoints,
+    layersWaterMains.map(region => ({ title: region.title })),
+    layersWaorkOrders.map(region => ({ title: region.title })),
+    layersDataLoggers.map(region => ({ title: region.title })),
+    layersSivMeters,
+    layersValvesTransmissionMain.map(region => ({ title: region.title }))
+  ];
+
+  // Collect all unique regions
+  const uniqueRegions = new Set();
+  
+  regionSets.forEach(layerArray => {
+    layerArray.forEach(layerInfo => {
+      if (layerInfo.title) {
+        uniqueRegions.add(layerInfo.title);
+      }
+    });
+  });
+
+  // Convert to sorted array
+  return Array.from(uniqueRegions).sort();
+}
+
+// Populate region select dropdown
+function populateRegionDropdown() {
+  const regionSelect = document.getElementById("regionSelect");
+  regionSelect.innerHTML = '<option value="">Select region</option>';
+  
+  const validRegions = getUniqueRegions();
+  
+  validRegions.forEach(region => {
+    const option = document.createElement("option");
+    option.value = region;
+    option.textContent = region;
+    regionSelect.appendChild(option);
+  });
+
+  console.log("Populated Regions:", validRegions);
+}
+
+// Call this function after your layers are defined
+populateRegionDropdown();
+
+
+async function displayRegionLayers(selectedRegion) {
+  console.log("Starting to display layers for:", selectedRegion);
+
+  // Show preloader
+  const preloader = document.getElementById("preloader");
+  if (preloader) {
+      preloader.style.display = "flex";
+  }
+
+
+  try {
+      // First, remove any existing layers
+      displayMap.layers.removeAll();
+      displayMap.add(basemapWithoutLabels); // adds the layer to the map
+
+      console.log("Cleared existing layers");
+
+      const mainLayers = [];
+      let zoomTargetLayer = null; // Add this to track first layer
+
+      // Helper function to create and configure layers
+      async function createLayerGroup(layerArray, groupTitle, renderer, labelClass, popupTemplate, customConfig = null) {
+          const filteredLayers = layerArray.filter(layer => layer.title === selectedRegion);
+          
+          if (filteredLayers.length > 0) {
+              console.log(`Processing ${groupTitle} for:`, selectedRegion);
+              
+              const layers = filteredLayers.map(layerInfo => {
+                  const layer = new SubtypeGroupLayer({
+                      url: layerInfo.url,
+                      visible: false,
+                      title: layerInfo.title,
+                      outFields: ["*"]
+                  });
+
+                  // Set as zoom target if not already set
+                  if (!zoomTargetLayer) {
+                    console.log(`Setting ${groupTitle} as zoom target`);
+                    zoomTargetLayer = layer;
+                  }
+
+                  return layer;
+              });
+
+              const groupLayer = new GroupLayer({
+                  title: groupTitle,
+                  layers: layers,
+                  visible: false
+              });
+
+              // Configure layers after creation
+              for (const layer of layers) {
+                  try {
+                      await layer.load();
+                      
+                      if (layer.sublayers) {
+                          layer.sublayers.forEach(sublayer => {
+                              sublayer.visible = false;
+                              if (renderer) sublayer.renderer = renderer;
+                              if (labelClass) sublayer.labelingInfo = [labelClass];
+                              sublayer.labelsVisible = false;
+                              if (popupTemplate) sublayer.popupTemplate = popupTemplate;
+                              
+                              // Apply custom configuration if provided
+                              if (customConfig) customConfig(sublayer);
+                          });
+                      }
+                  } catch (error) {
+                      console.error(`Error loading layer in ${groupTitle}:`, error);
+                  }
+              }
+
+              mainLayers.push(groupLayer);
+          }
+      }
+
+      // 1. DMZ Boundaries
+      await createLayerGroup(
+          layersDMZBoundaries,
+          "DMZ Boundaries",
+          null,
+          labelClassDMZBoundariesNamesOnly,
+          popupTemplateDMZBoundaries,
+          (sublayer) => {
+              sublayer.renderer.symbol.color.a = 0.3;
+              sublayer.renderer.symbol.outline.width = 1;
+          }
+      );
+
+      // 2. DMZ Meter Points
+      await createLayerGroup(
+          layersDMZMeterPoints,
+          "DMZ Meter Points",
+          DMZRenderer,
+          labelClassDMZMeterPoints,
+          popupTemplateDMZMeterPoints
+      );
+
+      // 3. Reservoirs
+      await createLayerGroup(
+          layersReservoirs,
+          "Reservoirs",
+          ReservoirRenderer,
+          labelClassReservoirs,
+          popupTemplateReservoirs
+      );
+
+      // 4. Customer Locations
+      await createLayerGroup(
+          layersCustomerLocations,
+          "Customer Locations",
+          CustomerLocationsRenderer,
+          labelClassCustomerLocations,
+          popupTemplateCustomerLocations
+      );
+
+      // 5. DMZ Critical Points
+      await createLayerGroup(
+          layersDMZCriticalPoints,
+          "DMZ Critical Points",
+          CriticalPointsRenderer,
+          labelClassDMZCriticalPoints,
+          popupTemplateDMZCriticalPoints
+      );
+
+      // Continue in next message...
+
+      // 6. WTP (Water Treatment Plant)
+      await createLayerGroup(
+        layersWTP,
+        "Water Treatment Plant",
+        WTPRenderer,
+        labelClassWTP,
+        popupTemplateWTP
+      );
+
+      // 7. KTM (Trunk Main Meter Points)
+      await createLayerGroup(
+          layersKTM,
+          "Trunk Main Meter Points",
+          TKMRenderer,
+          labelClassKTM,
+          popupTemplateKTM
+      );
+
+      // 8. Transmission Main Meter Points
+      await createLayerGroup(
+          layersTransmissionMainMeterPoints,
+          "Transmission Main Meter Points",
+          TMMRenderer,
+          labelClassTransmissionMainMeterPoints,
+          popupTemplateTransmissionMainMeterPoints
+      );
+
+      // 9. SIV Meters
+      await createLayerGroup(
+          layersSivMeters,
+          "SIV Meters Points",
+          SivMetersRenderer,
+          labelClassSivMeters,
+          popupTemplateSivMeters
+      );
+
+      // 10. Water Mains (Special handling for nested structure)
+      const waterMainsRegion = layersWaterMains.filter(region => region.title === selectedRegion);
+      if (waterMainsRegion.length > 0) {
+          console.log("Processing Water Mains for:", selectedRegion);
+          
+          const regionLayers = waterMainsRegion.map(region => {
+              const subLayers = region.subGroups.map(subGroup => {
+                  const layer = new SubtypeGroupLayer({
+                      url: subGroup.url,
+                      visible: false,
+                      title: subGroup.title,
+                      outFields: ["*"]
+                  });
+
+                  layer.when(() => {
+                      layer.sublayers.forEach(sublayer => {
+                          sublayer.visible = false;
+                          if (renderers[subGroup.title]) {
+                              sublayer.renderer = renderers[subGroup.title];
+                              sublayer.labelingInfo = [labelClassWaterMains];
+                              sublayer.labelsVisible = false;
+                              sublayer.popupTemplate = popupTemplateWaterMains;
+                          }
+                      });
+                  });
+
+                  return layer;
+              });
+
+              return new GroupLayer({
+                  title: region.title,
+                  layers: subLayers,
+                  visible: false
+              });
+          });
+
+          const waterMainsGroup = new GroupLayer({
+              title: "Water Mains",
+              layers: regionLayers,
+              visible: false
+          });
+
+          mainLayers.push(waterMainsGroup);
+      }
+
+      // 11. Work Orders (Special handling for nested structure)
+      const workOrdersRegion = layersWaorkOrders.filter(region => region.title === selectedRegion);
+      if (workOrdersRegion.length > 0) {
+          console.log("Processing Work Orders for:", selectedRegion);
+          
+          const regionLayers = workOrdersRegion.map(region => {
+              const subLayers = region.subGroups.map(subGroup => {
+                  const layer = new SubtypeGroupLayer({
+                      url: subGroup.url,
+                      visible: false,
+                      title: subGroup.title,
+                      outFields: ["*"]
+                  });
+
+                  layer.when(() => {
+                      layer.sublayers.forEach(sublayer => {
+                          sublayer.visible = false;
+                          sublayer.renderer = WorkOrdersRenderer;
+                          sublayer.popupTemplate = popupTemplateWorkOrders;
+                      });
+                  });
+
+                  return layer;
+              });
+
+              return new GroupLayer({
+                  title: region.title,
+                  layers: subLayers,
+                  visible: false
+              });
+          });
+
+          const workOrdersGroup = new GroupLayer({
+              title: "Maintenance Work Orders",
+              layers: regionLayers,
+              visible: false
+          });
+
+          mainLayers.push(workOrdersGroup);
+      }
+
+      // 12. Data Loggers (Special handling for nested structure)
+      const dataLoggersRegion = layersDataLoggers.filter(region => region.title === selectedRegion);
+      if (dataLoggersRegion.length > 0) {
+          console.log("Processing Data Loggers for:", selectedRegion);
+          
+          const regionLayers = dataLoggersRegion.map(region => {
+              const subLayers = region.subGroups.map(subGroup => {
+                  const layer = new SubtypeGroupLayer({
+                      url: subGroup.url,
+                      visible: false,
+                      title: subGroup.title,
+                      outFields: ["*"]
+                  });
+
+                  layer.when(() => {
+                      layer.sublayers.forEach(sublayer => {
+                          sublayer.visible = false;
+                          sublayer.renderer = DataLoggersRenderer;
+                          sublayer.labelingInfo = [labelClassDataLoggers];
+                          sublayer.labelsVisible = false;
+                          sublayer.popupTemplate = popupTemplateDataLoggers;
+                      });
+                  });
+
+                  return layer;
+              });
+
+              return new GroupLayer({
+                  title: region.title,
+                  layers: subLayers,
+                  visible: false
+              });
+          });
+
+          const dataLoggersGroup = new GroupLayer({
+              title: "Data Loggers",
+              layers: regionLayers,
+              visible: false
+          });
+
+          mainLayers.push(dataLoggersGroup);
+      }
+
+      // 13. Valves Transmission Main (Special handling for nested structure)
+      const valvesRegion = layersValvesTransmissionMain.filter(region => region.title === selectedRegion);
+      if (valvesRegion.length > 0) {
+          console.log("Processing Valves Transmission Main for:", selectedRegion);
+          
+          const regionLayers = valvesRegion.map(region => {
+              const subLayers = region.subGroups.map(subGroup => {
+                  const layer = new SubtypeGroupLayer({
+                      url: subGroup.url,
+                      visible: false,
+                      title: subGroup.title,
+                      outFields: ["*"]
+                  });
+
+                  layer.when(() => {
+                      layer.sublayers.forEach(sublayer => {
+                          sublayer.visible = false;
+                          sublayer.renderer = ValvesTransmissionMainRenderer;
+                          sublayer.labelingInfo = [labelClassValvesTransmissionMain];
+                          sublayer.labelsVisible = false;
+                          sublayer.popupTemplate = popupTemplateValvesTransmissionMain;
+                      });
+                  });
+
+                  return layer;
+              });
+
+              return new GroupLayer({
+                  title: region.title,
+                  layers: subLayers,
+                  visible: false
+              });
+          });
+
+          const valvesGroup = new GroupLayer({
+              title: "Valves",
+              layers: regionLayers,
+              visible: false
+          });
+
+          mainLayers.push(valvesGroup);
+      }
+
+      // Add all layers to the map
+      console.log("Adding layers to map:", mainLayers);
+      mainLayers.forEach(layer => displayMap.add(layer));
+
+      // Wait for all layers to load
+      const loadPromises = mainLayers.map(async (groupLayer) => {
+          try {
+              await groupLayer.when();
+              console.log("Group layer loaded:", groupLayer.title);
+
+              if (groupLayer.layers) {
+                  const subLayerPromises = groupLayer.layers.map(layer => layer.when());
+                  await Promise.all(subLayerPromises);
+                  console.log("All sublayers loaded for:", groupLayer.title);
+              }
+          } catch (error) {
+              console.error("Error loading group layer:", error);
+          }
+      });
+
+      await Promise.all(loadPromises);
+      console.log("All layers loaded");
+
+      if (zoomTargetLayer) {
+        try {
+            console.log("Attempting to zoom to target layer:", zoomTargetLayer.title);
+            await zoomTargetLayer.when();
+            
+            if (zoomTargetLayer.fullExtent) {
+                console.log("Zooming to layer extent");
+                await view.goTo({
+                    target: zoomTargetLayer.fullExtent.expand(1.2),
+                    options: {
+                        duration: 1000,
+                        easing: "ease-out"
+                    }
+                });
+            }
+        } catch (zoomError) {
+            console.error("Error during zoom operation:", zoomError);
+        }
+      }
+
+      console.log("Layer display completed");
+
+    } catch (error) {
+        console.error("Error in displayRegionLayers:", error);
+    } finally {
+      // Hide preloader in all cases
+      if (preloader) {
+          preloader.style.display = "none";
+      }
+    }
+}
+
+ // Add an event listener to the region select dropdown
+document.getElementById("regionSelect").addEventListener("change", async function(event) {
+  // Get the selected value
+  const selectedRegion = event.target.value;
+  
+  // Log the selected region
+  // console.log("Selected Region:", selectedRegion);
+
+  // Check if a region is actually selected (not the default "Select region" option)
+  if (selectedRegion) {
+    console.log("Selected Region:", selectedRegion);
+    try {
+        await displayRegionLayers(selectedRegion);
+        console.log("Layers successfully displayed");
+    } catch (error) {
+        console.error("Error in change event handler:", error);
+        // Ensure preloader is hidden in case of error
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+            preloader.style.display = "none";
+        }
+    }
+    // Validate the selected region exists in your layer arrays
+    const validationResults = {
+      DMZBoundaries: layersDMZBoundaries.some(layer => layer.title === selectedRegion),
+      DMZMeterPoints: layersDMZMeterPoints.some(layer => layer.title === selectedRegion),
+      Reservoirs: layersReservoirs.some(layer => layer.title === selectedRegion),
+      CustomerLocations: layersCustomerLocations.some(layer => layer.title === selectedRegion),
+      DMZCriticalPoints: layersDMZCriticalPoints.some(layer => layer.title === selectedRegion),
+      WTP: layersWTP.some(layer => layer.title === selectedRegion),
+      KTM: layersKTM.some(layer => layer.title === selectedRegion),
+      TransmissionMainMeterPoints: layersTransmissionMainMeterPoints.some(layer => layer.title === selectedRegion),
+      WaterMains: layersWaterMains.some(region => region.title === selectedRegion),
+      WorkOrders: layersWaorkOrders.some(region => region.title === selectedRegion),
+      DataLoggers: layersDataLoggers.some(region => region.title === selectedRegion),
+      SivMeters: layersSivMeters.some(layer => layer.title === selectedRegion),
+      ValvesTransmissionMain: layersValvesTransmissionMain.some(region => region.title === selectedRegion)
+    };
+
+    // Log validation results
+    console.log("Layer Validation Results:", validationResults);
+
+    // Detailed logging of layers for the selected region
+    console.group(`Layers for ${selectedRegion}`);
+    
+    console.log("DMZ Boundaries:", 
+      layersDMZBoundaries.filter(layer => layer.title === selectedRegion)
+    );
+    console.log("DMZ Meter Points:", 
+      layersDMZMeterPoints.filter(layer => layer.title === selectedRegion)
+    );
+    console.log("Water Mains:", 
+      layersWaterMains.filter(region => region.title === selectedRegion)
+    );
+    // Add similar logs for other layer types
+
+    console.groupEnd();
+
+    // Optional: Additional checks
+    const layersFound = Object.values(validationResults).filter(Boolean).length;
+    console.log(`Layers found for ${selectedRegion}: ${layersFound}`);
+  }
+});
+
+
+    // await displayMap.add(WorkOrders);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(WTP);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(WaterMains); // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(ValvesTransmissionMain);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(KTM);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(TransmissionMainMeterPoints);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(SivMetersPoints);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(Reservoirs);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(DMZMeterPoints);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(DMZCriticalPoints);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(DMZBoundaries); // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(DataLoggers);  // adds the layer to the map
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
+    // await displayMap.add(Customer_Locations);
+    // // wait for the view to catch up
+    // await reactiveUtils.whenOnce(() => !view.updating);
 
     // Watch for when the popup becomes visible
     reactiveUtils.watch(
@@ -5088,9 +5599,9 @@ async function displayLayers() {
       "calcite-button[appearance=outline-fill][kind=neutral]"
     );
 
-    calciteButton[0].childEl.style.backgroundColor = "white";
-    calciteButton[0].childEl.style.color = "black";
-    calciteButton[0].childEl.style.borderColor = "transparent";
+    // calciteButton[0].childEl.style.backgroundColor = "white";
+    // calciteButton[0].childEl.style.color = "black";
+    // calciteButton[0].childEl.style.borderColor = "transparent";
 
     await view.when();
     // return gra; // You can return the view object
@@ -10726,7 +11237,7 @@ async function addWidgets() {
                   item.layer.sublayers.forEach((sublayer) => {
                     if (!sublayer.visible) {
                       // Only change if not already visible
-                      sublayer.visible = true;
+                      sublayer.visible = false;
                       // console.log("Sublayer Made Visible:", sublayer.title);
                     }
                   });
@@ -12049,71 +12560,71 @@ async function addWidgets() {
 
     // Sample data for the legend with image URLs
     const legendData = [
-      {
-        feature: "Customer Locations",
-        count: "#",
-        icon: "./customerlocation.png",
-      },
-      {
-        feature: "Data Loggers",
-        count: "#",
-        icon: "./dataloggers.png",
-      },
+      // {
+      //   feature: "Customer Locations",
+      //   count: "#",
+      //   icon: "./customerlocation.png",
+      // },
+      // {
+      //   feature: "Data Loggers",
+      //   count: "#",
+      //   icon: "./dataloggers.png",
+      // },
       {
         feature: "DMZ Boundaries",
         count: "#",
         icon: "./dmzboundaries.png",
       },
-      {
-        feature: "DMZ Critical Points",
-        count: "#",
-        icon: "./criticalpoints.png",
-      },
-      {
-        feature: "DMZ Meter Points",
-        count: "#",
-        icon: "./dmz.png",
-      },
-      {
-        feature: "Reservoirs",
-        count: "#",
-        icon: "./reservoir.png",
-      },
-      {
-        feature: "SIV Meters Points",
-        count: "#",
-        icon: "./siv.png",
-      },
-      {
-        feature: "Transmission Main Meter Points",
-        count: "#",
-        icon: "./tmm.png",
-      },
-      {
-        feature: "Trunk Main Meter Points",
-        count: "#",
-        icon: "./tkm.png",
-      },
-      {
-        feature: "Valves",
-        count: "#",
-        icon: "./valves.png",
-      },
+      // {
+      //   feature: "DMZ Critical Points",
+      //   count: "#",
+      //   icon: "./criticalpoints.png",
+      // },
+      // {
+      //   feature: "DMZ Meter Points",
+      //   count: "#",
+      //   icon: "./dmz.png",
+      // },
+      // {
+      //   feature: "Reservoirs",
+      //   count: "#",
+      //   icon: "./reservoir.png",
+      // },
+      // {
+      //   feature: "SIV Meters Points",
+      //   count: "#",
+      //   icon: "./siv.png",
+      // },
+      // {
+      //   feature: "Transmission Main Meter Points",
+      //   count: "#",
+      //   icon: "./tmm.png",
+      // },
+      // {
+      //   feature: "Trunk Main Meter Points",
+      //   count: "#",
+      //   icon: "./tkm.png",
+      // },
+      // {
+      //   feature: "Valves",
+      //   count: "#",
+      //   icon: "./valves.png",
+      // },
       {
         feature: "Water Mains",
         count: "#",
         icon: "./watermains.png",
       },
-      {
-        feature: "Water Treatment Plant",
-        count: "#",
-        icon: "./wtp.png",
-      },
-      {
-        feature: "Maintenance Work Orders",
-        count: "#",
-        icon: "./workorders.png",
-      },
+      // {
+      //   feature: "Water Treatment Plant",
+      //   count: "#",
+      //   icon: "./wtp.png",
+      // },
+      // {
+      //   feature: "Maintenance Work Orders",
+      //   count: "#",
+      //   icon: "./workorders.png",
+      // },
     ];
 
     // Function to create the legend

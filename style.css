@@ -778,3 +778,30 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
   min-width: 120px;
 }
 
+
+
+
+
+
+.region-select {
+  width: 100%;
+  padding: 10px 32px 10px 12px;
+  border: 1.5px solid #0078d4;
+  border-radius: 8px;
+  background: #f8fbff url('data:image/svg+xml;utf8,<svg fill="0078d4" height="24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 8px center/18px 18px;
+  font-size: 16px;
+  color: #2b2b2b;
+  appearance: none;
+  transition: border-color 0.2s;
+  margin-top: 6px;
+  box-sizing: border-box;
+}
+.region-select:focus {
+  border-color: #005ea8;
+  outline: none;
+  background-color: #e6f2fb;
+}
+#regionSelectorSection label {
+  margin-bottom: 2px;
+  font-size: 15px;
+}
