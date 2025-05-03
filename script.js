@@ -4326,7 +4326,11 @@ async function displayLayers() {
         subGroups: [
           {
             title: "Primary Transmission Main",
-            url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Valves_transmission_main_updated/FeatureServer/0",
+            url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Valves_PrimaryTransmissionMain/FeatureServer/0",
+          },
+          {
+            title: "Secondary Trunk Main",
+            url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/Valves_SecondaryTrunkMain/FeatureServer/314",
           },
         ],
       },
@@ -5012,35 +5016,262 @@ function populateRegionDropdown() {
 // Call this function after your layers are defined
 populateRegionDropdown();
 
+// Add this debugging function
+function logAvailableLayersForRegion(region) {
+  console.log(`\nAvailable layers for ${region}:`);
+  
+  // Check Work Orders
+  const hasWorkOrders = layersWaorkOrders.some(l => l.title === region);
+  console.log('Work Orders:', hasWorkOrders);
 
-async function displayRegionLayers(selectedRegion) {
-  console.log("Starting to display layers for:", selectedRegion);
+  // Check DMZ Boundaries
+  const hasDMZBoundaries = layersDMZBoundaries.some(l => l.title === region);
+  console.log('DMZ Boundaries:', hasDMZBoundaries);
 
-  // Show preloader
+  // Check Water Mains
+  const hasWaterMains = layersWaterMains.some(l => l.title === region);
+  console.log('Water Mains:', hasWaterMains);
+
+  // Check DMZ Meter Points
+  const hasDMZMeterPoints = layersDMZMeterPoints.some(l => l.title === region);
+  console.log('DMZ Meter Points:', hasDMZMeterPoints);
+
+  // Check Customer Locations
+  const hasCustomerLocations = layersCustomerLocations.some(l => l.title === region);
+  console.log('Customer Locations:', hasCustomerLocations);
+
+  // Check SIV Meters
+  const hasSIVMeters = layersSivMeters.some(l => l.title === region);
+  console.log('SIV Meters:', hasSIVMeters);
+
+  // Add checks for other layer types...
+}
+// Inside your region selection event listener
+document.getElementById("regionSelect").addEventListener("change", async function(event) {
+  const selectedRegion = event.target.value;
+  if (!selectedRegion) return;
+
+  // Log available layers for debugging
+  logAvailableLayersForRegion(selectedRegion);
+
   const preloader = document.getElementById("preloader");
   if (preloader) {
       preloader.style.display = "flex";
   }
 
-
   try {
-      // First, remove any existing layers
       displayMap.layers.removeAll();
-      displayMap.add(basemapWithoutLabels); // adds the layer to the map
-
-      console.log("Cleared existing layers");
+      displayMap.add(basemapWithoutLabels);
 
       const mainLayers = [];
-      let zoomTargetLayer = null; // Add this to track first layer
+      let firstLayer = null;
 
-      // Helper function to create and configure layers
-      async function createLayerGroup(layerArray, groupTitle, renderer, labelClass, popupTemplate, customConfig = null) {
-          const filteredLayers = layerArray.filter(layer => layer.title === selectedRegion);
-          
-          if (filteredLayers.length > 0) {
-              console.log(`Processing ${groupTitle} for:`, selectedRegion);
-              
-              const layers = filteredLayers.map(layerInfo => {
+      // Helper function to setup sublayer visibility
+      function setupSublayerVisibility(layer) {
+          if (layer.sublayers) {
+              layer.sublayers.forEach(sublayer => {
+                  sublayer.watch("visible", (visible) => {
+                      if (visible) {
+                          let currentLayer = sublayer.parent;
+                          while (currentLayer) {
+                              if (!currentLayer.visible) {
+                                  currentLayer.visible = true;
+                              }
+                              currentLayer = currentLayer.parent;
+                          }
+                      }
+                  });
+              });
+          }
+      }
+
+      // Helper function to create a GroupLayer only if it has sublayers
+      function createGroupLayer(layerTitle, sublayers) {
+          if (sublayers && sublayers.length > 0) {
+              return new GroupLayer({
+                  title: layerTitle,
+                  layers: sublayers,
+                  visible: false
+              });
+          }
+          return null;
+      }
+
+      // 1. Work Orders (since Beaufort only has Work Orders)
+      const workOrdersRegion = layersWaorkOrders.find(region => region.title === selectedRegion);
+      if (workOrdersRegion && workOrdersRegion.subGroups.length > 0) {
+          const workOrdersLayers = workOrdersRegion.subGroups.map((subGroup) => {
+              const layer = new SubtypeGroupLayer({
+                  url: subGroup.url,
+                  visible: false,
+                  title: subGroup.title,
+                  outFields: ["*"]
+              });
+
+              layer.when(() => {
+                  layer.sublayers.forEach((sublayer) => {
+                      sublayer.visible = false;
+                      sublayer.renderer = WorkOrdersRenderer;
+                      sublayer.popupTemplate = popupTemplateWorkOrders;
+                  });
+                  setupSublayerVisibility(layer);
+              });
+
+              layer.watch("visible", (visible) => {
+                  if (visible && layer.parent) {
+                      let parentLayer = layer.parent;
+                      while (parentLayer) {
+                          if (!parentLayer.visible) {
+                              parentLayer.visible = true;
+                          }
+                          parentLayer = parentLayer.parent;
+                      }
+
+                      if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                          layer.sublayers.forEach(sublayer => {
+                              sublayer.visible = true;
+                          });
+                      }
+                  } else {
+                      if (layer.sublayers) {
+                          layer.sublayers.forEach(sublayer => {
+                              sublayer.visible = false;
+                          });
+                      }
+                  }
+              });
+
+              return layer;
+          });
+
+          const workOrdersGroup = createGroupLayer("Maintenance Work Orders", workOrdersLayers);
+          if (workOrdersGroup) {
+              if (!firstLayer) firstLayer = workOrdersGroup;
+              mainLayers.push(workOrdersGroup);
+          }
+      }
+
+      // 2. DMZ Boundaries
+      if (layersDMZBoundaries.some(l => l.title === selectedRegion)) {
+        const dmzLayers = layersDMZBoundaries
+            .filter(layer => layer.title === selectedRegion)
+            .map((layerInfo) => {
+                const layer = new SubtypeGroupLayer({
+                    url: layerInfo.url,
+                    visible: false,
+                    title: layerInfo.title,
+                    outFields: ["*"]
+                });
+
+                layer.when(() => {
+                    layer.sublayers.forEach((sublayer) => {
+                        sublayer.visible = false;
+                        sublayer.renderer.symbol.color.a = 0.3;
+                        sublayer.renderer.symbol.outline.width = 1;
+                        sublayer.labelingInfo = [labelClassDMZBoundariesNamesOnly];
+                        sublayer.labelsVisible = false;
+                        sublayer.popupTemplate = popupTemplateDMZBoundaries;
+                    });
+                    setupSublayerVisibility(layer);
+                });
+
+                layer.watch("visible", (visible) => {
+                    if (visible && layer.parent) {
+                        let parentLayer = layer.parent;
+                        while (parentLayer) {
+                            if (!parentLayer.visible) {
+                                parentLayer.visible = true;
+                            }
+                            parentLayer = parentLayer.parent;
+                        }
+
+                        if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                            layer.sublayers.forEach(sublayer => {
+                                sublayer.visible = true;
+                            });
+                        }
+                    } else {
+                        if (layer.sublayers) {
+                            layer.sublayers.forEach(sublayer => {
+                                sublayer.visible = false;
+                            });
+                        }
+                    }
+                });
+
+                return layer;
+            });
+
+        const dmzGroup = createGroupLayer("DMZ Boundaries", dmzLayers);
+        if (dmzGroup) {
+            if (!firstLayer) firstLayer = dmzGroup;
+            mainLayers.push(dmzGroup);
+        }
+      }
+    
+      // 3. Water Mains
+      const waterMainsRegion = layersWaterMains.find(region => region.title === selectedRegion);
+      if (waterMainsRegion && waterMainsRegion.subGroups.length > 0) {
+          const waterMainsLayers = waterMainsRegion.subGroups.map((subGroup) => {
+              const layer = new SubtypeGroupLayer({
+                  url: subGroup.url,
+                  visible: false,
+                  title: subGroup.title,
+                  outFields: ["*"]
+              });
+
+              layer.when(() => {
+                  layer.sublayers.forEach((sublayer) => {
+                      sublayer.visible = false;
+                      if (renderers[subGroup.title]) {
+                          sublayer.renderer = renderers[subGroup.title];
+                          sublayer.labelingInfo = [labelClassWaterMains];
+                          sublayer.labelsVisible = false;
+                          sublayer.popupTemplate = popupTemplateWaterMains;
+                      }
+                  });
+                  setupSublayerVisibility(layer);
+              });
+
+              layer.watch("visible", (visible) => {
+                  if (visible && layer.parent) {
+                      let parentLayer = layer.parent;
+                      while (parentLayer) {
+                          if (!parentLayer.visible) {
+                              parentLayer.visible = true;
+                          }
+                          parentLayer = parentLayer.parent;
+                      }
+
+                      if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                          layer.sublayers.forEach(sublayer => {
+                              sublayer.visible = true;
+                          });
+                      }
+                  } else {
+                      if (layer.sublayers) {
+                          layer.sublayers.forEach(sublayer => {
+                              sublayer.visible = false;
+                          });
+                      }
+                  }
+              });
+
+              return layer;
+          });
+
+          const waterMainsGroup = createGroupLayer("Water Mains", waterMainsLayers);
+          if (waterMainsGroup) {
+              if (!firstLayer) firstLayer = waterMainsGroup;
+              mainLayers.push(waterMainsGroup);
+          }
+      }
+
+      // 4. DMZ Meter Points
+      if (layersDMZMeterPoints.some(l => l.title === selectedRegion)) {
+          const dmzMeterLayers = layersDMZMeterPoints
+              .filter(layer => layer.title === selectedRegion)
+              .map((layerInfo) => {
                   const layer = new SubtypeGroupLayer({
                       url: layerInfo.url,
                       visible: false,
@@ -5048,423 +5279,512 @@ async function displayRegionLayers(selectedRegion) {
                       outFields: ["*"]
                   });
 
-                  // Set as zoom target if not already set
-                  if (!zoomTargetLayer) {
-                    console.log(`Setting ${groupTitle} as zoom target`);
-                    zoomTargetLayer = layer;
-                  }
+                  layer.when(() => {
+                      layer.sublayers.forEach((sublayer) => {
+                          sublayer.visible = false;
+                          sublayer.renderer = DMZRenderer;
+                          sublayer.labelingInfo = [labelClassDMZMeterPoints];
+                          sublayer.labelsVisible = false;
+                          sublayer.popupTemplate = popupTemplateDMZMeterPoints;
+                      });
+                      setupSublayerVisibility(layer);
+                  });
+
+                  layer.watch("visible", (visible) => {
+                      if (visible && layer.parent) {
+                          let parentLayer = layer.parent;
+                          while (parentLayer) {
+                              if (!parentLayer.visible) {
+                                  parentLayer.visible = true;
+                              }
+                              parentLayer = parentLayer.parent;
+                          }
+
+                          if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = true;
+                              });
+                          }
+                      } else {
+                          if (layer.sublayers) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = false;
+                              });
+                          }
+                      }
+                  });
 
                   return layer;
               });
 
-              const groupLayer = new GroupLayer({
-                  title: groupTitle,
-                  layers: layers,
-                  visible: false
+          const dmzMeterGroup = createGroupLayer("DMZ Meter Points", dmzMeterLayers);
+          if (dmzMeterGroup) {
+              if (!firstLayer) firstLayer = dmzMeterGroup;
+              mainLayers.push(dmzMeterGroup);
+          }
+      }
+
+      // 5. Customer Locations
+      if (layersCustomerLocations.some(l => l.title === selectedRegion)) {
+        const customerLayers = layersCustomerLocations
+            .filter(layer => layer.title === selectedRegion)
+            .map((layerInfo) => {
+                const layer = new SubtypeGroupLayer({
+                    url: layerInfo.url,
+                    visible: false,
+                    title: layerInfo.title,
+                    outFields: ["*"]
+                });
+
+                layer.when(() => {
+                    layer.sublayers.forEach((sublayer) => {
+                        sublayer.visible = false;
+                        sublayer.renderer = CustomerLocationsRenderer;
+                        sublayer.labelingInfo = [labelClassCustomerLocations];
+                        sublayer.labelsVisible = false;
+                        sublayer.popupTemplate = popupTemplateCustomerLocations;
+                    });
+                    setupSublayerVisibility(layer);
+                });
+
+                layer.watch("visible", (visible) => {
+                    if (visible && layer.parent) {
+                        let parentLayer = layer.parent;
+                        while (parentLayer) {
+                            if (!parentLayer.visible) {
+                                parentLayer.visible = true;
+                            }
+                            parentLayer = parentLayer.parent;
+                        }
+
+                        if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                            layer.sublayers.forEach(sublayer => {
+                                sublayer.visible = true;
+                            });
+                        }
+                    } else {
+                        if (layer.sublayers) {
+                            layer.sublayers.forEach(sublayer => {
+                                sublayer.visible = false;
+                            });
+                        }
+                    }
+                });
+
+                return layer;
+            });
+
+        const customerGroup = createGroupLayer("Customer Locations", customerLayers);
+        if (customerGroup) {
+            if (!firstLayer) firstLayer = customerGroup;
+            mainLayers.push(customerGroup);
+        }
+      }
+
+      // 6. DMZ Critical Points
+      if (layersDMZCriticalPoints.some(l => l.title === selectedRegion)) {
+          const criticalPointsLayers = layersDMZCriticalPoints
+              .filter(layer => layer.title === selectedRegion)
+              .map((layerInfo) => {
+                  const layer = new SubtypeGroupLayer({
+                      url: layerInfo.url,
+                      visible: false,
+                      title: layerInfo.title,
+                      outFields: ["*"]
+                  });
+
+                  layer.when(() => {
+                      layer.sublayers.forEach((sublayer) => {
+                          sublayer.visible = false;
+                          sublayer.renderer = CriticalPointsRenderer;
+                          sublayer.labelingInfo = [labelClassDMZCriticalPoints];
+                          sublayer.labelsVisible = false;
+                          sublayer.popupTemplate = popupTemplateDMZCriticalPoints;
+                      });
+                      setupSublayerVisibility(layer);
+                  });
+
+                  layer.watch("visible", (visible) => {
+                      if (visible && layer.parent) {
+                          let parentLayer = layer.parent;
+                          while (parentLayer) {
+                              if (!parentLayer.visible) {
+                                  parentLayer.visible = true;
+                              }
+                              parentLayer = parentLayer.parent;
+                          }
+
+                          if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = true;
+                              });
+                          }
+                      } else {
+                          if (layer.sublayers) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = false;
+                              });
+                          }
+                      }
+                  });
+
+                  return layer;
               });
 
-              // Configure layers after creation
-              for (const layer of layers) {
-                  try {
-                      await layer.load();
-                      
+          const criticalPointsGroup = createGroupLayer("DMZ Critical Points", criticalPointsLayers);
+          if (criticalPointsGroup) {
+              if (!firstLayer) firstLayer = criticalPointsGroup;
+              mainLayers.push(criticalPointsGroup);
+          }
+      }
+
+      // 7. WTP (Water Treatment Plant)
+      if (layersWTP.some(l => l.title === selectedRegion)) {
+          const wtpLayers = layersWTP
+              .filter(layer => layer.title === selectedRegion)
+              .map((layerInfo) => {
+                  const layer = new SubtypeGroupLayer({
+                      url: layerInfo.url,
+                      visible: false,
+                      title: layerInfo.title,
+                      outFields: ["*"]
+                  });
+
+                  layer.when(() => {
+                      layer.sublayers.forEach((sublayer) => {
+                          sublayer.visible = false;
+                          sublayer.renderer = WTPRenderer;
+                          sublayer.labelingInfo = [labelClassWTP];
+                          sublayer.labelsVisible = false;
+                          sublayer.popupTemplate = popupTemplateWTP;
+                      });
+                      setupSublayerVisibility(layer);
+                  });
+
+                  layer.watch("visible", (visible) => {
+                      if (visible && layer.parent) {
+                          let parentLayer = layer.parent;
+                          while (parentLayer) {
+                              if (!parentLayer.visible) {
+                                  parentLayer.visible = true;
+                              }
+                              parentLayer = parentLayer.parent;
+                          }
+
+                          if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = true;
+                              });
+                          }
+                      } else {
+                          if (layer.sublayers) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = false;
+                              });
+                          }
+                      }
+                  });
+
+                  return layer;
+              });
+
+          const wtpGroup = createGroupLayer("Water Treatment Plant", wtpLayers);
+          if (wtpGroup) {
+              if (!firstLayer) firstLayer = wtpGroup;
+              mainLayers.push(wtpGroup);
+          }
+      }
+
+      // 8. Reservoirs
+      if (layersReservoirs.some(l => l.title === selectedRegion)) {
+        const reservoirLayers = layersReservoirs
+            .filter(layer => layer.title === selectedRegion)
+            .map((layerInfo) => {
+                const layer = new SubtypeGroupLayer({
+                    url: layerInfo.url,
+                    visible: false,
+                    title: layerInfo.title,
+                    outFields: ["*"]
+                });
+
+                layer.when(() => {
+                    layer.sublayers.forEach((sublayer) => {
+                        sublayer.visible = false;
+                        sublayer.renderer = ReservoirRenderer;
+                        sublayer.labelingInfo = [labelClassReservoirs];
+                        sublayer.labelsVisible = false;
+                        sublayer.popupTemplate = popupTemplateReservoirs;
+                    });
+                    setupSublayerVisibility(layer);
+                });
+
+                layer.watch("visible", (visible) => {
+                    if (visible && layer.parent) {
+                        let parentLayer = layer.parent;
+                        while (parentLayer) {
+                            if (!parentLayer.visible) {
+                                parentLayer.visible = true;
+                            }
+                            parentLayer = parentLayer.parent;
+                        }
+
+                        if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                            layer.sublayers.forEach(sublayer => {
+                                sublayer.visible = true;
+                            });
+                        }
+                    } else {
+                        if (layer.sublayers) {
+                            layer.sublayers.forEach(sublayer => {
+                                sublayer.visible = false;
+                            });
+                        }
+                    }
+                });
+
+                return layer;
+            });
+
+        const reservoirGroup = createGroupLayer("Reservoirs", reservoirLayers);
+        if (reservoirGroup) {
+            if (!firstLayer) firstLayer = reservoirGroup;
+            mainLayers.push(reservoirGroup);
+        }
+      }
+    
+      // 9. Data Loggers
+      const dataLoggersRegion = layersDataLoggers.find(region => region.title === selectedRegion);
+      if (dataLoggersRegion && dataLoggersRegion.subGroups.length > 0) {
+          const dataLoggerLayers = dataLoggersRegion.subGroups.map((subGroup) => {
+              const layer = new SubtypeGroupLayer({
+                  url: subGroup.url,
+                  visible: false,
+                  title: subGroup.title,
+                  outFields: ["*"]
+              });
+
+              layer.when(() => {
+                  layer.sublayers.forEach((sublayer) => {
+                      sublayer.visible = false;
+                      sublayer.renderer = DataLoggersRenderer;
+                      sublayer.labelingInfo = [labelClassDataLoggers];
+                      sublayer.labelsVisible = false;
+                      sublayer.popupTemplate = popupTemplateDataLoggers;
+                  });
+                  setupSublayerVisibility(layer);
+              });
+
+              layer.watch("visible", (visible) => {
+                  if (visible && layer.parent) {
+                      let parentLayer = layer.parent;
+                      while (parentLayer) {
+                          if (!parentLayer.visible) {
+                              parentLayer.visible = true;
+                          }
+                          parentLayer = parentLayer.parent;
+                      }
+
+                      if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                          layer.sublayers.forEach(sublayer => {
+                              sublayer.visible = true;
+                          });
+                      }
+                  } else {
                       if (layer.sublayers) {
                           layer.sublayers.forEach(sublayer => {
                               sublayer.visible = false;
-                              if (renderer) sublayer.renderer = renderer;
-                              if (labelClass) sublayer.labelingInfo = [labelClass];
-                              sublayer.labelsVisible = false;
-                              if (popupTemplate) sublayer.popupTemplate = popupTemplate;
-                              
-                              // Apply custom configuration if provided
-                              if (customConfig) customConfig(sublayer);
                           });
                       }
-                  } catch (error) {
-                      console.error(`Error loading layer in ${groupTitle}:`, error);
                   }
-              }
+              });
 
-              mainLayers.push(groupLayer);
+              return layer;
+          });
+
+          const dataLoggerGroup = createGroupLayer("Data Loggers", dataLoggerLayers);
+          if (dataLoggerGroup) {
+              if (!firstLayer) firstLayer = dataLoggerGroup;
+              mainLayers.push(dataLoggerGroup);
           }
       }
 
-      // 1. DMZ Boundaries
-      await createLayerGroup(
-          layersDMZBoundaries,
-          "DMZ Boundaries",
-          null,
-          labelClassDMZBoundariesNamesOnly,
-          popupTemplateDMZBoundaries,
-          (sublayer) => {
-              sublayer.renderer.symbol.color.a = 0.3;
-              sublayer.renderer.symbol.outline.width = 1;
-          }
-      );
-
-      // 2. DMZ Meter Points
-      await createLayerGroup(
-          layersDMZMeterPoints,
-          "DMZ Meter Points",
-          DMZRenderer,
-          labelClassDMZMeterPoints,
-          popupTemplateDMZMeterPoints
-      );
-
-      // 3. Reservoirs
-      await createLayerGroup(
-          layersReservoirs,
-          "Reservoirs",
-          ReservoirRenderer,
-          labelClassReservoirs,
-          popupTemplateReservoirs
-      );
-
-      // 4. Customer Locations
-      await createLayerGroup(
-          layersCustomerLocations,
-          "Customer Locations",
-          CustomerLocationsRenderer,
-          labelClassCustomerLocations,
-          popupTemplateCustomerLocations
-      );
-
-      // 5. DMZ Critical Points
-      await createLayerGroup(
-          layersDMZCriticalPoints,
-          "DMZ Critical Points",
-          CriticalPointsRenderer,
-          labelClassDMZCriticalPoints,
-          popupTemplateDMZCriticalPoints
-      );
-
-      // Continue in next message...
-
-      // 6. WTP (Water Treatment Plant)
-      await createLayerGroup(
-        layersWTP,
-        "Water Treatment Plant",
-        WTPRenderer,
-        labelClassWTP,
-        popupTemplateWTP
-      );
-
-      // 7. KTM (Trunk Main Meter Points)
-      await createLayerGroup(
-          layersKTM,
-          "Trunk Main Meter Points",
-          TKMRenderer,
-          labelClassKTM,
-          popupTemplateKTM
-      );
-
-      // 8. Transmission Main Meter Points
-      await createLayerGroup(
-          layersTransmissionMainMeterPoints,
-          "Transmission Main Meter Points",
-          TMMRenderer,
-          labelClassTransmissionMainMeterPoints,
-          popupTemplateTransmissionMainMeterPoints
-      );
-
-      // 9. SIV Meters
-      await createLayerGroup(
-          layersSivMeters,
-          "SIV Meters Points",
-          SivMetersRenderer,
-          labelClassSivMeters,
-          popupTemplateSivMeters
-      );
-
-      // 10. Water Mains (Special handling for nested structure)
-      const waterMainsRegion = layersWaterMains.filter(region => region.title === selectedRegion);
-      if (waterMainsRegion.length > 0) {
-          console.log("Processing Water Mains for:", selectedRegion);
-          
-          const regionLayers = waterMainsRegion.map(region => {
-              const subLayers = region.subGroups.map(subGroup => {
+      // 10. SIV Meters (with strict checking)
+      if (layersSivMeters.some(l => l.title === selectedRegion)) {
+          const sivLayers = layersSivMeters
+              .filter(layer => layer.title === selectedRegion)
+              .map((layerInfo) => {
                   const layer = new SubtypeGroupLayer({
-                      url: subGroup.url,
+                      url: layerInfo.url,
                       visible: false,
-                      title: subGroup.title,
+                      title: layerInfo.title,
                       outFields: ["*"]
                   });
 
                   layer.when(() => {
-                      layer.sublayers.forEach(sublayer => {
+                      layer.sublayers.forEach((sublayer) => {
                           sublayer.visible = false;
-                          if (renderers[subGroup.title]) {
-                              sublayer.renderer = renderers[subGroup.title];
-                              sublayer.labelingInfo = [labelClassWaterMains];
-                              sublayer.labelsVisible = false;
-                              sublayer.popupTemplate = popupTemplateWaterMains;
+                          sublayer.renderer = SivMetersRenderer;
+                          sublayer.labelingInfo = [labelClassSivMeters];
+                          sublayer.labelsVisible = false;
+                          sublayer.popupTemplate = popupTemplateSivMeters;
+                      });
+                      setupSublayerVisibility(layer);
+                  });
+
+                  layer.watch("visible", (visible) => {
+                      if (visible && layer.parent) {
+                          let parentLayer = layer.parent;
+                          while (parentLayer) {
+                              if (!parentLayer.visible) {
+                                  parentLayer.visible = true;
+                              }
+                              parentLayer = parentLayer.parent;
                           }
-                      });
+
+                          if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = true;
+                              });
+                          }
+                      } else {
+                          if (layer.sublayers) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = false;
+                              });
+                          }
+                      }
                   });
 
                   return layer;
               });
 
-              return new GroupLayer({
-                  title: region.title,
-                  layers: subLayers,
-                  visible: false
-              });
-          });
-
-          const waterMainsGroup = new GroupLayer({
-              title: "Water Mains",
-              layers: regionLayers,
-              visible: false
-          });
-
-          mainLayers.push(waterMainsGroup);
-      }
-
-      // 11. Work Orders (Special handling for nested structure)
-      const workOrdersRegion = layersWaorkOrders.filter(region => region.title === selectedRegion);
-      if (workOrdersRegion.length > 0) {
-          console.log("Processing Work Orders for:", selectedRegion);
-          
-          const regionLayers = workOrdersRegion.map(region => {
-              const subLayers = region.subGroups.map(subGroup => {
-                  const layer = new SubtypeGroupLayer({
-                      url: subGroup.url,
-                      visible: false,
-                      title: subGroup.title,
-                      outFields: ["*"]
-                  });
-
-                  layer.when(() => {
-                      layer.sublayers.forEach(sublayer => {
-                          sublayer.visible = false;
-                          sublayer.renderer = WorkOrdersRenderer;
-                          sublayer.popupTemplate = popupTemplateWorkOrders;
-                      });
-                  });
-
-                  return layer;
-              });
-
-              return new GroupLayer({
-                  title: region.title,
-                  layers: subLayers,
-                  visible: false
-              });
-          });
-
-          const workOrdersGroup = new GroupLayer({
-              title: "Maintenance Work Orders",
-              layers: regionLayers,
-              visible: false
-          });
-
-          mainLayers.push(workOrdersGroup);
-      }
-
-      // 12. Data Loggers (Special handling for nested structure)
-      const dataLoggersRegion = layersDataLoggers.filter(region => region.title === selectedRegion);
-      if (dataLoggersRegion.length > 0) {
-          console.log("Processing Data Loggers for:", selectedRegion);
-          
-          const regionLayers = dataLoggersRegion.map(region => {
-              const subLayers = region.subGroups.map(subGroup => {
-                  const layer = new SubtypeGroupLayer({
-                      url: subGroup.url,
-                      visible: false,
-                      title: subGroup.title,
-                      outFields: ["*"]
-                  });
-
-                  layer.when(() => {
-                      layer.sublayers.forEach(sublayer => {
-                          sublayer.visible = false;
-                          sublayer.renderer = DataLoggersRenderer;
-                          sublayer.labelingInfo = [labelClassDataLoggers];
-                          sublayer.labelsVisible = false;
-                          sublayer.popupTemplate = popupTemplateDataLoggers;
-                      });
-                  });
-
-                  return layer;
-              });
-
-              return new GroupLayer({
-                  title: region.title,
-                  layers: subLayers,
-                  visible: false
-              });
-          });
-
-          const dataLoggersGroup = new GroupLayer({
-              title: "Data Loggers",
-              layers: regionLayers,
-              visible: false
-          });
-
-          mainLayers.push(dataLoggersGroup);
-      }
-
-      // 13. Valves Transmission Main (Special handling for nested structure)
-      const valvesRegion = layersValvesTransmissionMain.filter(region => region.title === selectedRegion);
-      if (valvesRegion.length > 0) {
-          console.log("Processing Valves Transmission Main for:", selectedRegion);
-          
-          const regionLayers = valvesRegion.map(region => {
-              const subLayers = region.subGroups.map(subGroup => {
-                  const layer = new SubtypeGroupLayer({
-                      url: subGroup.url,
-                      visible: false,
-                      title: subGroup.title,
-                      outFields: ["*"]
-                  });
-
-                  layer.when(() => {
-                      layer.sublayers.forEach(sublayer => {
-                          sublayer.visible = false;
-                          sublayer.renderer = ValvesTransmissionMainRenderer;
-                          sublayer.labelingInfo = [labelClassValvesTransmissionMain];
-                          sublayer.labelsVisible = false;
-                          sublayer.popupTemplate = popupTemplateValvesTransmissionMain;
-                      });
-                  });
-
-                  return layer;
-              });
-
-              return new GroupLayer({
-                  title: region.title,
-                  layers: subLayers,
-                  visible: false
-              });
-          });
-
-          const valvesGroup = new GroupLayer({
-              title: "Valves",
-              layers: regionLayers,
-              visible: false
-          });
-
-          mainLayers.push(valvesGroup);
-      }
-
-      // Add all layers to the map
-      console.log("Adding layers to map:", mainLayers);
-      mainLayers.forEach(layer => displayMap.add(layer));
-
-      // Wait for all layers to load
-      const loadPromises = mainLayers.map(async (groupLayer) => {
-          try {
-              await groupLayer.when();
-              console.log("Group layer loaded:", groupLayer.title);
-
-              if (groupLayer.layers) {
-                  const subLayerPromises = groupLayer.layers.map(layer => layer.when());
-                  await Promise.all(subLayerPromises);
-                  console.log("All sublayers loaded for:", groupLayer.title);
-              }
-          } catch (error) {
-              console.error("Error loading group layer:", error);
+          const sivGroup = createGroupLayer("SIV Meters Points", sivLayers);
+          if (sivGroup) {
+              if (!firstLayer) firstLayer = sivGroup;
+              mainLayers.push(sivGroup);
           }
+      }
+    
+      // 11. Valves Transmission Main
+      const valvesRegion = layersValvesTransmissionMain.find(region => region.title === selectedRegion);
+      if (valvesRegion && valvesRegion.subGroups.length > 0) {
+          const valvesLayers = valvesRegion.subGroups.map((subGroup) => {
+              const layer = new SubtypeGroupLayer({
+                  url: subGroup.url,
+                  visible: false,
+                  title: subGroup.title,
+                  outFields: ["*"]
+              });
+
+              layer.when(() => {
+                  layer.sublayers.forEach((sublayer) => {
+                      sublayer.visible = false;
+                      sublayer.renderer = ValvesTransmissionMainRenderer;
+                      sublayer.labelingInfo = [labelClassValvesTransmissionMain];
+                      sublayer.labelsVisible = false;
+                      sublayer.popupTemplate = popupTemplateValvesTransmissionMain;
+                  });
+                  setupSublayerVisibility(layer);
+              });
+
+              layer.watch("visible", (visible) => {
+                  if (visible && layer.parent) {
+                      let parentLayer = layer.parent;
+                      while (parentLayer) {
+                          if (!parentLayer.visible) {
+                              parentLayer.visible = true;
+                          }
+                          parentLayer = parentLayer.parent;
+                      }
+
+                      if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                          layer.sublayers.forEach(sublayer => {
+                              sublayer.visible = true;
+                          });
+                      }
+                  } else {
+                      if (layer.sublayers) {
+                          layer.sublayers.forEach(sublayer => {
+                              sublayer.visible = false;
+                          });
+                      }
+                  }
+              });
+
+              return layer;
+          });
+
+          const valvesGroup = createGroupLayer("Valves", valvesLayers);
+          if (valvesGroup) {
+              if (!firstLayer) firstLayer = valvesGroup;
+              mainLayers.push(valvesGroup);
+          }
+      }
+
+      // // After creating and sorting the layers, reverse the array before adding to the map
+      // mainLayers.sort((a, b) => {
+      //   // Handle null or undefined cases
+      //   if (!a || !a.title) return 1;
+      //   if (!b || !b.title) return -1;
+        
+      //   return a.title.localeCompare(b.title);
+      // }).reverse(); // Add this reverse() call
+
+      // // Then add the layers with proper waiting between each addition
+      // for (const layer of mainLayers) {
+      //   if (layer) {
+      //       await displayMap.add(layer);
+      //       // Wait for the view to catch up
+      //       await reactiveUtils.whenOnce(() => !view.updating);
+      //   }
+      // }
+
+
+      // Sort layers alphabetically
+      mainLayers.sort((a, b) => {
+        if (!a || !a.title) return 1;
+        if (!b || !b.title) return -1;
+        return a.title.localeCompare(b.title);
       });
 
-      await Promise.all(loadPromises);
-      console.log("All layers loaded");
-
-      if (zoomTargetLayer) {
-        try {
-            console.log("Attempting to zoom to target layer:", zoomTargetLayer.title);
-            await zoomTargetLayer.when();
-            
-            if (zoomTargetLayer.fullExtent) {
-                console.log("Zooming to layer extent");
-                await view.goTo({
-                    target: zoomTargetLayer.fullExtent.expand(1.2),
-                    options: {
-                        duration: 1000,
-                        easing: "ease-out"
-                    }
-                });
-            }
-        } catch (zoomError) {
-            console.error("Error during zoom operation:", zoomError);
+      // Add layers in reverse order
+      for (let i = mainLayers.length - 1; i >= 0; i--) {
+        const layer = mainLayers[i];
+        if (layer) {
+            await displayMap.add(layer);
+            // Wait for the view to catch up
+            await reactiveUtils.whenOnce(() => !view.updating);
         }
       }
-
-      console.log("Layer display completed");
-
-    } catch (error) {
-        console.error("Error in displayRegionLayers:", error);
-    } finally {
-      // Hide preloader in all cases
-      if (preloader) {
-          preloader.style.display = "none";
-      }
-    }
-}
-
- // Add an event listener to the region select dropdown
-document.getElementById("regionSelect").addEventListener("change", async function(event) {
-  // Get the selected value
-  const selectedRegion = event.target.value;
-  
-  // Log the selected region
-  // console.log("Selected Region:", selectedRegion);
-
-  // Check if a region is actually selected (not the default "Select region" option)
-  if (selectedRegion) {
-    console.log("Selected Region:", selectedRegion);
-    try {
-        await displayRegionLayers(selectedRegion);
-        console.log("Layers successfully displayed");
-    } catch (error) {
-        console.error("Error in change event handler:", error);
-        // Ensure preloader is hidden in case of error
-        const preloader = document.getElementById("preloader");
-        if (preloader) {
-            preloader.style.display = "none";
-        }
-    }
-    // Validate the selected region exists in your layer arrays
-    const validationResults = {
-      DMZBoundaries: layersDMZBoundaries.some(layer => layer.title === selectedRegion),
-      DMZMeterPoints: layersDMZMeterPoints.some(layer => layer.title === selectedRegion),
-      Reservoirs: layersReservoirs.some(layer => layer.title === selectedRegion),
-      CustomerLocations: layersCustomerLocations.some(layer => layer.title === selectedRegion),
-      DMZCriticalPoints: layersDMZCriticalPoints.some(layer => layer.title === selectedRegion),
-      WTP: layersWTP.some(layer => layer.title === selectedRegion),
-      KTM: layersKTM.some(layer => layer.title === selectedRegion),
-      TransmissionMainMeterPoints: layersTransmissionMainMeterPoints.some(layer => layer.title === selectedRegion),
-      WaterMains: layersWaterMains.some(region => region.title === selectedRegion),
-      WorkOrders: layersWaorkOrders.some(region => region.title === selectedRegion),
-      DataLoggers: layersDataLoggers.some(region => region.title === selectedRegion),
-      SivMeters: layersSivMeters.some(layer => layer.title === selectedRegion),
-      ValvesTransmissionMain: layersValvesTransmissionMain.some(region => region.title === selectedRegion)
-    };
-
-    // Log validation results
-    console.log("Layer Validation Results:", validationResults);
-
-    // Detailed logging of layers for the selected region
-    console.group(`Layers for ${selectedRegion}`);
     
-    console.log("DMZ Boundaries:", 
-      layersDMZBoundaries.filter(layer => layer.title === selectedRegion)
-    );
-    console.log("DMZ Meter Points:", 
-      layersDMZMeterPoints.filter(layer => layer.title === selectedRegion)
-    );
-    console.log("Water Mains:", 
-      layersWaterMains.filter(region => region.title === selectedRegion)
-    );
-    // Add similar logs for other layer types
+      // Wait for all layers to load
+      await Promise.all(mainLayers.map(layer => layer.when()));
 
-    console.groupEnd();
-
-    // Optional: Additional checks
-    const layersFound = Object.values(validationResults).filter(Boolean).length;
-    console.log(`Layers found for ${selectedRegion}: ${layersFound}`);
-  }
+      // Zoom to first layer if available
+      if (firstLayer) {
+          try {
+              await firstLayer.when();
+              if (firstLayer.fullExtent) {
+                  await view.goTo({
+                      target: firstLayer.fullExtent.expand(1.2),
+                      options: {
+                          duration: 1000,
+                          easing: "ease-out"
+                      }
+                  });
+              }
+          } catch (zoomError) {
+              console.error("Error during zoom operation:", zoomError);
+          }
+      }
+    
+        } catch (error) {
+            console.error("Error displaying region layers:", error);
+        } finally {
+            if (preloader) {
+                preloader.style.display = "none";
+            }
+        }
 });
 
 
@@ -12560,71 +12880,71 @@ async function addWidgets() {
 
     // Sample data for the legend with image URLs
     const legendData = [
-      // {
-      //   feature: "Customer Locations",
-      //   count: "#",
-      //   icon: "./customerlocation.png",
-      // },
-      // {
-      //   feature: "Data Loggers",
-      //   count: "#",
-      //   icon: "./dataloggers.png",
-      // },
+      {
+        feature: "Customer Locations",
+        count: "#",
+        icon: "./customerlocation.png",
+      },
+      {
+        feature: "Data Loggers",
+        count: "#",
+        icon: "./dataloggers.png",
+      },
       {
         feature: "DMZ Boundaries",
         count: "#",
         icon: "./dmzboundaries.png",
       },
-      // {
-      //   feature: "DMZ Critical Points",
-      //   count: "#",
-      //   icon: "./criticalpoints.png",
-      // },
-      // {
-      //   feature: "DMZ Meter Points",
-      //   count: "#",
-      //   icon: "./dmz.png",
-      // },
-      // {
-      //   feature: "Reservoirs",
-      //   count: "#",
-      //   icon: "./reservoir.png",
-      // },
-      // {
-      //   feature: "SIV Meters Points",
-      //   count: "#",
-      //   icon: "./siv.png",
-      // },
-      // {
-      //   feature: "Transmission Main Meter Points",
-      //   count: "#",
-      //   icon: "./tmm.png",
-      // },
-      // {
-      //   feature: "Trunk Main Meter Points",
-      //   count: "#",
-      //   icon: "./tkm.png",
-      // },
-      // {
-      //   feature: "Valves",
-      //   count: "#",
-      //   icon: "./valves.png",
-      // },
+      {
+        feature: "DMZ Critical Points",
+        count: "#",
+        icon: "./criticalpoints.png",
+      },
+      {
+        feature: "DMZ Meter Points",
+        count: "#",
+        icon: "./dmz.png",
+      },
+      {
+        feature: "Reservoirs",
+        count: "#",
+        icon: "./reservoir.png",
+      },
+      {
+        feature: "SIV Meters Points",
+        count: "#",
+        icon: "./siv.png",
+      },
+      {
+        feature: "Transmission Main Meter Points",
+        count: "#",
+        icon: "./tmm.png",
+      },
+      {
+        feature: "Trunk Main Meter Points",
+        count: "#",
+        icon: "./tkm.png",
+      },
+      {
+        feature: "Valves",
+        count: "#",
+        icon: "./valves.png",
+      },
       {
         feature: "Water Mains",
         count: "#",
         icon: "./watermains.png",
       },
-      // {
-      //   feature: "Water Treatment Plant",
-      //   count: "#",
-      //   icon: "./wtp.png",
-      // },
-      // {
-      //   feature: "Maintenance Work Orders",
-      //   count: "#",
-      //   icon: "./workorders.png",
-      // },
+      {
+        feature: "Water Treatment Plant",
+        count: "#",
+        icon: "./wtp.png",
+      },
+      {
+        feature: "Maintenance Work Orders",
+        count: "#",
+        icon: "./workorders.png",
+      },
     ];
 
     // Function to create the legend
