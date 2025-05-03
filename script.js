@@ -5210,9 +5210,10 @@ document.getElementById("regionSelect").addEventListener("change", async functio
       }
     
       // 3. Water Mains
+      // 7. Water Mains (with subgroups)
       const waterMainsRegion = layersWaterMains.find(region => region.title === selectedRegion);
       if (waterMainsRegion && waterMainsRegion.subGroups.length > 0) {
-          const waterMainsLayers = waterMainsRegion.subGroups.map((subGroup) => {
+          const subLayers = waterMainsRegion.subGroups.map((subGroup) => {
               const layer = new SubtypeGroupLayer({
                   url: subGroup.url,
                   visible: false,
@@ -5260,12 +5261,78 @@ document.getElementById("regionSelect").addEventListener("change", async functio
               return layer;
           });
 
-          const waterMainsGroup = createGroupLayer("Water Mains", waterMainsLayers);
-          if (waterMainsGroup) {
-              if (!firstLayer) firstLayer = waterMainsGroup;
-              mainLayers.push(waterMainsGroup);
-          }
+          // Create the region-specific group
+          const waterMainsRegionGroup = new GroupLayer({
+              title: selectedRegion,
+              visible: false,
+              layers: subLayers
+          });
+
+          // Create the main Water Mains group
+          const WaterMains = new GroupLayer({
+              title: "Water Mains",
+              visible: false,
+              layers: [waterMainsRegionGroup]
+          });
+
+          mainLayers.push(WaterMains);
       }
+      // const waterMainsRegion = layersWaterMains.find(region => region.title === selectedRegion);
+      // if (waterMainsRegion && waterMainsRegion.subGroups.length > 0) {
+      //     const waterMainsLayers = waterMainsRegion.subGroups.map((subGroup) => {
+      //         const layer = new SubtypeGroupLayer({
+      //             url: subGroup.url,
+      //             visible: false,
+      //             title: subGroup.title,
+      //             outFields: ["*"]
+      //         });
+
+      //         layer.when(() => {
+      //             layer.sublayers.forEach((sublayer) => {
+      //                 sublayer.visible = false;
+      //                 if (renderers[subGroup.title]) {
+      //                     sublayer.renderer = renderers[subGroup.title];
+      //                     sublayer.labelingInfo = [labelClassWaterMains];
+      //                     sublayer.labelsVisible = false;
+      //                     sublayer.popupTemplate = popupTemplateWaterMains;
+      //                 }
+      //             });
+      //             setupSublayerVisibility(layer);
+      //         });
+
+      //         layer.watch("visible", (visible) => {
+      //             if (visible && layer.parent) {
+      //                 let parentLayer = layer.parent;
+      //                 while (parentLayer) {
+      //                     if (!parentLayer.visible) {
+      //                         parentLayer.visible = true;
+      //                     }
+      //                     parentLayer = parentLayer.parent;
+      //                 }
+
+      //                 if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+      //                     layer.sublayers.forEach(sublayer => {
+      //                         sublayer.visible = true;
+      //                     });
+      //                 }
+      //             } else {
+      //                 if (layer.sublayers) {
+      //                     layer.sublayers.forEach(sublayer => {
+      //                         sublayer.visible = false;
+      //                     });
+      //                 }
+      //             }
+      //         });
+
+      //         return layer;
+      //     });
+
+      //     const waterMainsGroup = createGroupLayer("Water Mains", waterMainsLayers);
+      //     if (waterMainsGroup) {
+      //         if (!firstLayer) firstLayer = waterMainsGroup;
+      //         mainLayers.push(waterMainsGroup);
+      //     }
+      // }
 
       // 4. DMZ Meter Points
       if (layersDMZMeterPoints.some(l => l.title === selectedRegion)) {
