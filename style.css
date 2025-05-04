@@ -783,27 +783,42 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 
 
-/* Update your CSS for the region select */
-.region-select {
+/* Add/Update these CSS styles */
+.region-label {
+  font-family: 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.select-container {
   flex: 1;
-  padding: 10px 32px 10px 12px;
+  min-width: 0; /* Prevents flex item from overflowing */
+}
+
+.region-select {
+  width: 100%;
+  padding: 8px 32px 8px 12px;
   border: 1.5px solid #0078d4;
   border-radius: 8px;
   background: #f8fbff url('data:image/svg+xml;utf8,<svg fill="0078d4" height="24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 8px center/18px 18px;
-  font-size: 16px;
+  font-family: 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
   color: #2b2b2b;
   appearance: none;
   transition: border-color 0.2s;
   box-sizing: border-box;
 }
 
-
 .region-select:focus {
   border-color: #005ea8;
   outline: none;
-  background-color: #e6f2fb;
 }
-#regionSelectorSection label {
-  margin-bottom: 2px;
-  font-size: 15px;
+
+/* Style for the dropdown options */
+.region-select option {
+  font-family: 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  padding: 8px;
 }
