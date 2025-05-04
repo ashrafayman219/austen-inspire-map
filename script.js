@@ -6014,6 +6014,7 @@ async function addWidgets() {
       CIMSymbol,
       Portal,
       PortalBasemapsSource,
+      Locate
     ] = await Promise.all([
       loadModule("esri/widgets/BasemapGallery"),
       loadModule("esri/widgets/Expand"),
@@ -6027,6 +6028,7 @@ async function addWidgets() {
       loadModule("esri/symbols/CIMSymbol"),
       loadModule("esri/portal/Portal"),
       loadModule("esri/widgets/BasemapGallery/support/PortalBasemapsSource"),
+      loadModule("esri/widgets/Locate"),
     ]);
 
     var search = new Search({
@@ -6068,6 +6070,13 @@ async function addWidgets() {
       view: view,
     });
     view.ui.add(homeWidget, "top-left");
+    
+    // typical usage
+    let locate = new Locate({
+      view: view
+    });
+    view.ui.add(locate, "top-left");
+
 
     const titlesData = [
       "Customer Locations",
