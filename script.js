@@ -3464,7 +3464,7 @@ async function displayLayers() {
         title: "Kota Belud",
       },
       {
-        url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_KotaKinabalu/FeatureServer/280",
+        url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_MeterPoints_KotaKinabalu_Updated/FeatureServer/282",
         title: "Kota Kinabalu",
       },
       {
@@ -3745,7 +3745,7 @@ async function displayLayers() {
         title: "Tawau",
       },
       {
-        url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu/FeatureServer/0",
+        url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/DMZ_Boundaries_KotaKinabalu_Updated/FeatureServer/296",
         title: "Kota Kinabalu",
       },
       // { url: "", title: "" },
@@ -4460,7 +4460,16 @@ async function displayLayers() {
       type: "simple",
       symbol: {
         type: "picture-marker",
-        url: "./valves.png",
+        url: "./valve_transmission.png",
+        width: "25px",
+        height: "25px",
+      },
+    };
+    const ValvesTrunkRenderer = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker",
+        url: "./valve_trunk.png",
         width: "25px",
         height: "25px",
       },
@@ -5732,6 +5741,10 @@ document.getElementById("regionSelect").addEventListener("change", async functio
           }
       }
     
+      const valveRenderers = {
+        "Primary Transmission Main": ValvesTransmissionMainRenderer,
+        "Secondary Trunk Main": ValvesTrunkRenderer
+      };
       // 11. Valves Transmission Main
       const valvesRegion = layersValvesTransmissionMain.find(region => region.title === selectedRegion);
       if (valvesRegion && valvesRegion.subGroups.length > 0) {
@@ -5746,7 +5759,13 @@ document.getElementById("regionSelect").addEventListener("change", async functio
               layer.when(() => {
                   layer.sublayers.forEach((sublayer) => {
                       sublayer.visible = false;
-                      sublayer.renderer = ValvesTransmissionMainRenderer;
+                      // // Assign renderer based on subGroup title
+                      // if (subGroup.title === "Primary Transmission Main") {
+                      //   sublayer.renderer = ValvesTransmissionMainRenderer;
+                      // } else if (subGroup.title === "Secondary Trunk Main") {
+                      //   sublayer.renderer = ValvesTrunkRenderer;
+                      // }
+                      sublayer.renderer = valveRenderers[subGroup.title] || ValvesTransmissionMainRenderer; // fallback to default if title doesn't match
                       sublayer.labelingInfo = [labelClassValvesTransmissionMain];
                       sublayer.labelsVisible = false;
                       sublayer.popupTemplate = popupTemplateValvesTransmissionMain;
