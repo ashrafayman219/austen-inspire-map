@@ -5117,6 +5117,14 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                   outFields: ["*"]
               });
 
+              // Load all resources but ignore if one or more of them failed to load
+              layer.loadAll().catch(function(error) {
+                // Ignore any failed sublayers
+              }).then(function() {
+                console.log("All loaded");
+                layer.sublayers.reverse();
+              });
+
               layer.when(() => {
                   layer.sublayers.forEach((sublayer) => {
                       sublayer.visible = false;
@@ -5170,6 +5178,14 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                     visible: false,
                     title: layerInfo.title,
                     outFields: ["*"]
+                });
+
+                // Load all resources but ignore if one or more of them failed to load
+                layer.loadAll().catch(function(error) {
+                  // Ignore any failed sublayers
+                }).then(function() {
+                  console.log("All loaded");
+                  layer.sublayers.reverse();
                 });
 
                 layer.when(() => {
@@ -5230,6 +5246,13 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                   outFields: ["*"]
               });
 
+              // Load all resources but ignore if one or more of them failed to load
+              layer.loadAll().catch(function(error) {
+                // Ignore any failed sublayers
+              }).then(function() {
+                console.log("All loaded");
+                layer.sublayers.reverse();
+              });
               layer.when(() => {
                   layer.sublayers.forEach((sublayer) => {
                       sublayer.visible = false;
@@ -5355,6 +5378,14 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                       outFields: ["*"]
                   });
 
+                  // Load all resources but ignore if one or more of them failed to load
+                  layer.loadAll().catch(function(error) {
+                    // Ignore any failed sublayers
+                  }).then(function() {
+                    console.log("All loaded");
+                    layer.sublayers.reverse();
+                  });
+
                   layer.when(() => {
                       layer.sublayers.forEach((sublayer) => {
                           sublayer.visible = false;
@@ -5410,6 +5441,14 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                     visible: false,
                     title: layerInfo.title,
                     outFields: ["*"]
+                });
+
+                // Load all resources but ignore if one or more of them failed to load
+                layer.loadAll().catch(function(error) {
+                  // Ignore any failed sublayers
+                }).then(function() {
+                  console.log("All loaded");
+                  layer.sublayers.reverse();
                 });
 
                 layer.when(() => {
@@ -5469,6 +5508,14 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                       outFields: ["*"]
                   });
 
+                                    // Load all resources but ignore if one or more of them failed to load
+                                    layer.loadAll().catch(function(error) {
+                                      // Ignore any failed sublayers
+                                  }).then(function() {
+                                    console.log("All loaded");
+                                    layer.sublayers.reverse();
+                                  });
+
                   layer.when(() => {
                       layer.sublayers.forEach((sublayer) => {
                           sublayer.visible = false;
@@ -5525,6 +5572,14 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                       title: layerInfo.title,
                       outFields: ["*"]
                   });
+
+                                    // Load all resources but ignore if one or more of them failed to load
+                                    layer.loadAll().catch(function(error) {
+                                      // Ignore any failed sublayers
+                                  }).then(function() {
+                                    console.log("All loaded");
+                                    layer.sublayers.reverse();
+                                  });
 
                   layer.when(() => {
                       layer.sublayers.forEach((sublayer) => {
@@ -5583,6 +5638,14 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                     outFields: ["*"]
                 });
 
+                                  // Load all resources but ignore if one or more of them failed to load
+                                  layer.loadAll().catch(function(error) {
+                                    // Ignore any failed sublayers
+                                }).then(function() {
+                                  console.log("All loaded");
+                                  layer.sublayers.reverse();
+                                });
+
                 layer.when(() => {
                     layer.sublayers.forEach((sublayer) => {
                         sublayer.visible = false;
@@ -5638,6 +5701,15 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                   title: subGroup.title,
                   outFields: ["*"]
               });
+
+                                // Load all resources but ignore if one or more of them failed to load
+                                layer.loadAll().catch(function(error) {
+                                  // Ignore any failed sublayers
+                              }).then(function() {
+                                console.log("All loaded");
+                                layer.sublayers.reverse();
+                              });
+
 
               layer.when(() => {
                   layer.sublayers.forEach((sublayer) => {
@@ -5695,6 +5767,14 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                       title: layerInfo.title,
                       outFields: ["*"]
                   });
+
+                                    // Load all resources but ignore if one or more of them failed to load
+                                    layer.loadAll().catch(function(error) {
+                                      // Ignore any failed sublayers
+                                  }).then(function() {
+                                    console.log("All loaded");
+                                    layer.sublayers.reverse();
+                                  });
 
                   layer.when(() => {
                       layer.sublayers.forEach((sublayer) => {
@@ -5756,6 +5836,14 @@ document.getElementById("regionSelect").addEventListener("change", async functio
                   outFields: ["*"]
               });
 
+                                // Load all resources but ignore if one or more of them failed to load
+                                layer.loadAll().catch(function(error) {
+                                  // Ignore any failed sublayers
+                              }).then(function() {
+                                console.log("All loaded");
+                                layer.sublayers.reverse();
+                              });
+                              
               layer.when(() => {
                   layer.sublayers.forEach((sublayer) => {
                       sublayer.visible = false;
