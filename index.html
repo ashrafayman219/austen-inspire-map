@@ -45,15 +45,32 @@
         </p>
         <!-- <hr /> -->
       </div>
-      <div id="regionSelectorSection" style="margin-bottom: 10px; display: flex; align-items: center;">
-        <label for="regionSelect" class="region-label">Region:</label>
-        <div class="select-container">
-          <select id="regionSelect" class="region-select">
-            <option value="">Select region</option>
-            <!-- JS will inject options -->
-          </select>
+<div id="regionSelectorSection">
+    <div class="region-selector">
+        <div class="label-column">
+            <label>Regions:</label>
         </div>
-      </div>
+        <div class="select-wrapper">
+            <div class="select-container">
+                <div class="selected-display" id="selectedDisplay">
+                    Select a region...
+                </div>
+                <div class="selection-count" id="selectionCount"></div>
+                <div class="dropdown-list" id="regionDropdown">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search regions..." id="regionSearch">
+                    </div>
+                    <div class="options-container" id="regionOptions"></div>
+                </div>
+            </div>
+            <div class="selected-tags" id="selectedRegions"></div>
+        </div>
+    </div>
+    <div class="select-instructions">
+        <span class="instruction-icon">💡</span>
+        You can select multiple regions
+    </div>
+</div>
       <div id="layerListSection">
         <h3>Map Layers</h3>
         <div id="layerListContainer"></div>
