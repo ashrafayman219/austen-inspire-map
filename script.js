@@ -3639,6 +3639,10 @@ async function displayLayers() {
         title: "Tuaran",
       },
       {
+        url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Tawau/FeatureServer/0",
+        title: "Tawau",
+      },
+      {
         url: "https://services9.arcgis.com/O3obYY4143cgu5Lt/arcgis/rest/services/WTP_Papar/FeatureServer/16",
         title: "Papar",
       },
