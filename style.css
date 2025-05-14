@@ -789,7 +789,8 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
 
 
 #regionSelectorSection {
-    margin-bottom: 10px;
+    margin-bottom: -3px;
+    margin-top: 10px;
 }
 .region-selector {
     display: flex;
@@ -810,9 +811,6 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
     font-size: 14px;
 }
 
-
-
-
 .select-wrapper {
     flex: 1;
     display: flex;
@@ -831,7 +829,7 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
     border-radius: 4px;
     background: white;
     cursor: pointer;
-    height: 32px;
+    height: 25px;
     display: flex;
     align-items: center;
     color: #666;
@@ -886,7 +884,25 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
     padding: 8px 12px;
     cursor: pointer;
     font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+.option-indicators {
+    display: flex;
+    gap: 4px;
+}
+
+.loaded-indicator {
+    color: #00b294;
+}
+
+.selected-indicator {
+    color: #0078d4;
+}
+
+
 .region-option:hover {
     background-color: #f5f5f5;
 }
@@ -913,12 +929,35 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
     gap: 8px;
     font-size: 13px;
 }
+.remove-btn {
+  cursor: pointer;
+}
 
+.load-regions-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+}
 
-.select-instructions {
-    /* margin-left: 70px; Align with the dropdown (same as label-column min-width) */
-    /* width: max-content; */
-    display: flex;
+.load-regions-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.load-regions-button:hover:not(:disabled) {
+    background-color: #005a9e;
+}
+
+/* .select-instructions { */
+    /* margin-left: 70px; Align with the dropdown (same as label-column min-width) /////*/
+    /* width: max-content; //////*/
+    /* display: flex;
     align-items: center;
     gap: 6px;
     font-size: 13px;
@@ -927,20 +966,17 @@ calcite-action-group[layout="horizontal"] > calcite-action:nth-child(3) {
     background-color: #f8f9fa;
     border-radius: 4px;
     border: 1px solid #e0e0e0;
-    white-space: nowrap;
+    white-space: nowrap; */
     /* margin-bottom: 15px; Add space between instructions and Map Layers */
-}
+/* }
 .instruction-icon {
     font-size: 16px;
     animation: pulse 2s infinite;
-}
+} */
 
-@keyframes pulse {
+/* @keyframes pulse {
     0% { opacity: 1; }
     50% { opacity: 0.6; }
     100% { opacity: 1; }
-}
+} */
 
-.remove-btn {
-  cursor: pointer;
-}

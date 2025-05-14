@@ -6,7 +6,7 @@ var basemapWithoutLabels;
 let isThematicInitialized = false;
 // Add this at the beginning of your script
 const originalRenderers = new Map();
-
+var layerList1;
 // Add these with your other global variables
 const lastSearchState = {
   field1: '',
@@ -4974,7 +4974,31 @@ async function displayLayers() {
       visible: false, // Hide initially
     });
 
+
+
+
+
+
 let selectedRegions = new Set();
+let loadedRegions = new Set();
+let pendingRegions = new Set();
+
+// Define this at the top level of your script
+const layerOrder = [
+    "Customer Locations",
+    "Data Loggers",
+    "DMZ Boundaries",
+    "DMZ Critical Points",
+    "DMZ Meter Points",
+    "Maintenance Work Orders",
+    "Reservoirs",
+    "SIV Meters Points",
+    "Transmission Main Meter Points",
+    "Trunk Main Meter Points",
+    "Valves",
+    "Water Mains",
+    "Water Treatment Plant"
+];
 
 // Create a function to get unique regions
 function getUniqueRegions() {
@@ -5008,53 +5032,6 @@ function getUniqueRegions() {
   // Convert to sorted array
   return Array.from(uniqueRegions).sort();
 }
-
-// // Populate region select dropdown
-// // Modify the populateRegionDropdown function
-// function populateRegionDropdown() {
-//     const regionSelect = document.getElementById("regionSelect");
-//     regionSelect.innerHTML = ''; // Remove the default "Select region" option
-    
-//     const validRegions = getUniqueRegions();
-    
-//     validRegions.forEach(region => {
-//         const option = document.createElement("option");
-//         option.value = region;
-//         option.textContent = region;
-//         regionSelect.appendChild(option);
-//     });
-// }
-
-// Add new function to handle region selection display
-function updateSelectedRegionsDisplay() {
-    const selectedRegionsContainer = document.getElementById("selectedRegions");
-    selectedRegionsContainer.innerHTML = '';
-
-    selectedRegions.forEach(region => {
-        const tag = document.createElement('div');
-        tag.className = 'region-tag';
-        tag.innerHTML = `
-            ${region}
-            <span class="remove-region" data-region="${region}">×</span>
-        `;
-        selectedRegionsContainer.appendChild(tag);
-    });
-
-    // Add click handlers for remove buttons
-    document.querySelectorAll('.remove-region').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const region = e.target.dataset.region;
-            selectedRegions.delete(region);
-            updateSelectedRegionsDisplay();
-            loadRegionLayers();
-        });
-    });
-}
-
-// // Call this function after your layers are defined
-// populateRegionDropdown();
-
-
 // Initialize the region selector
 function initializeRegionSelector() {
     try {
@@ -5097,23 +5074,23 @@ function initializeRegionSelector() {
             e.stopPropagation();
         });
 
-        optionsContainer.addEventListener('click', async (e) => {
-            const option = e.target.closest('.region-option');
-            if (!option) return;
+// Replace your current optionsContainer click handler with this:
+optionsContainer.addEventListener('click', async (e) => {
+    const option = e.target.closest('.region-option');
+    if (!option) return;
 
-            const value = option.getAttribute('data-value');
-            option.classList.toggle('selected');
+    const value = option.getAttribute('data-value');
+    option.classList.toggle('selected');
 
-            if (option.classList.contains('selected')) {
-                selectedRegions.add(value);
-            } else {
-                selectedRegions.delete(value);
-            }
+    if (option.classList.contains('selected')) {
+        selectedRegions.add(value);
+    } else {
+        selectedRegions.delete(value);
+    }
 
-            dropdown.classList.remove('active');
-            updateSelectedDisplay();
-            await loadRegionLayers();
-        });
+    updateSelectedDisplay();
+    updateDropdownOptions(); // Add this line
+});
 
         searchInput.addEventListener('input', (e) => {
             const searchText = e.target.value.toLowerCase();
@@ -5128,7 +5105,34 @@ function initializeRegionSelector() {
         console.error('Error initializing region selector:', error);
     }
 }
-
+// Add this function inside initializeRegionSelector or at the same scope level
+function updateDropdownOptions() {
+    const optionsContainer = document.getElementById('regionOptions');
+    const regions = getUniqueRegions();
+    
+    optionsContainer.innerHTML = '';
+    regions.forEach(region => {
+        const option = document.createElement('div');
+        option.className = 'region-option';
+        const isSelected = selectedRegions.has(region);
+        const isLoaded = loadedRegions.has(region);
+        
+        if (isSelected) {
+            option.classList.add('selected');
+        }
+        
+        option.setAttribute('data-value', region);
+        option.innerHTML = `
+            <span>${region}</span>
+            <div class="option-indicators">
+                ${isSelected ? '<span class="selected-indicator">✓</span>' : ''}
+                ${isLoaded ? '<span class="loaded-indicator">⚡</span>' : ''}
+            </div>
+        `;
+        
+        optionsContainer.appendChild(option);
+    });
+}
 // Add this to ensure initialization happens after map load
 function initialize() {
     try {
@@ -5148,15 +5152,16 @@ view.when(() => {
 function updateSelectedDisplay() {
     const display = document.getElementById('selectedDisplay');
     const selectedRegionsContainer = document.getElementById('selectedRegions');
+    const loadButton = document.getElementById('loadRegionsButton');
     const selectedCount = selectedRegions.size;
     
     // Update display text
     if (selectedCount === 0) {
-        display.textContent = 'Select a region...';
-    } else if (selectedCount === 1) {
-        display.textContent = Array.from(selectedRegions)[0];
+        display.textContent = 'Select regions...';
+        loadButton.disabled = true;
     } else {
-        display.textContent = `${selectedCount} regions selected`;
+        display.textContent = `${selectedCount} region${selectedCount > 1 ? 's' : ''} selected`;
+        loadButton.disabled = false;
     }
 
     // Clear existing tags
@@ -5166,13 +5171,16 @@ function updateSelectedDisplay() {
     selectedRegions.forEach(region => {
         const tag = document.createElement('div');
         tag.className = 'region-tag';
+        const isLoaded = loadedRegions.has(region);
+        
         tag.innerHTML = `
             ${region}
+            ${isLoaded ? '<span class="loaded-indicator">✓</span>' : ''}
             <span class="remove-btn" data-region="${region}">&times;</span>
         `;
         
-        // Add click handler to remove button
-        tag.querySelector('.remove-btn').addEventListener('click', async (e) => {
+        // Modified click handler to only update UI
+        tag.querySelector('.remove-btn').addEventListener('click', (e) => {
             e.stopPropagation();
             const regionToRemove = e.target.getAttribute('data-region');
             selectedRegions.delete(regionToRemove);
@@ -5182,45 +5190,102 @@ function updateSelectedDisplay() {
             if (option) option.classList.remove('selected');
             
             updateSelectedDisplay();
-            await loadRegionLayers();
+            updateDropdownOptions();
         });
 
         selectedRegionsContainer.appendChild(tag);
     });
 }
 
-// New function to load layers for multiple regions
-async function loadRegionLayers() {
-    const preloader = document.getElementById("preloader");
-    if (preloader) {
-        preloader.style.display = "flex";
+// Add these helper functions before loadRegionLayers
+
+// Helper function to get layers by region
+function getLayersByRegion(layer) {
+    if (!layer || !layer.layers) return null;
+    
+    const regionLayers = new Map();
+    layer.layers.forEach(sublayer => {
+        if (sublayer.title) {
+            regionLayers.set(sublayer.title, sublayer);
+        }
+    });
+    return regionLayers;
+}
+function debugLayers(message) {
+    console.log(`=== ${message} ===`);
+    displayMap.layers.forEach(layer => {
+        console.log(`Layer: ${layer.title}, Type: ${layer.type}, Visible: ${layer.visible}`);
+        if (layer.layers) {
+            layer.layers.forEach(sublayer => {
+                console.log(`  Sublayer: ${sublayer.title}, Type: ${sublayer.type}, Visible: ${sublayer.visible}`);
+                if (sublayer.sublayers) {
+                    sublayer.sublayers.forEach(subsublayer => {
+                        console.log(`    SubSublayer: ${subsublayer.title}, Visible: ${subsublayer.visible}`);
+                    });
+                }
+            });
+        }
+    });
+}
+
+async function refreshLayerList() {
+    // Add a small delay to ensure layers are properly loaded
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    if (layerList1) {
+        layerList1.renderNow();
+        
+        // Refresh each layer
+        displayMap.layers.forEach(layer => {
+            if (layer.refresh) {
+                layer.refresh();
+            }
+        });
     }
+}
 
+function removeLayersForRegions(regionsToRemove) {
+    // debugLayers('Before removing layers');
+    
+    const layersToRemove = new Set();
+    
+    displayMap.layers.forEach(mainGroupLayer => {
+        if (mainGroupLayer.type === "group") {
+            const layersToKeep = mainGroupLayer.layers.filter(layer => 
+                !regionsToRemove.has(layer.title));
+            
+            if (layersToKeep.length === 0) {
+                layersToRemove.add(mainGroupLayer);
+            } else {
+                mainGroupLayer.layers = layersToKeep;
+            }
+        }
+    });
+
+    layersToRemove.forEach(layer => {
+        displayMap.remove(layer);
+    });
+
+    // debugLayers('After removing layers');
+}
+
+
+async function loadRegionLayers(regionsToLoad = null) {
     try {
+        const regionsToProcess = regionsToLoad || selectedRegions;
+        
+        // Clear existing layers
+        const basemap = displayMap.layers.find(layer => layer.type === "vector-tile");
         displayMap.layers.removeAll();
-        displayMap.add(basemapWithoutLabels);
+        if (basemap) {
+            displayMap.add(basemap);
+        }
 
-        const layerOrder = [
-            "Customer Locations",
-            "Data Loggers",
-            "DMZ Boundaries",
-            "DMZ Critical Points",
-            "DMZ Meter Points",
-            "Maintenance Work Orders",
-            "Reservoirs",
-            "SIV Meters Points",
-            "Transmission Main Meter Points",
-            "Trunk Main Meter Points",
-            "Valves",
-            "Water Mains",
-            "Water Treatment Plant"
-        ];
-
-        // Create a map to store layers by type
+        // Create new map for layer storage
         const layersByType = new Map();
 
-        // Process each selected region
-        for (const region of selectedRegions) {
+        // Process each region
+        for (const region of regionsToProcess) {
             const regionLayers = await addLayersForRegion(region);
             if (!regionLayers) continue;
 
@@ -5231,115 +5296,118 @@ async function loadRegionLayers() {
                     layersByType.set(layer.title, []);
                 }
 
-                try {
-                    // Special handling for specific layer types
-                    if (layer.title === "Data Loggers" || 
-                        layer.title === "Maintenance Work Orders" || 
-                        layer.title === "Valves") {
-                        if (layer.layers && layer.layers.length > 0) {
-                            // Create region group
-                            const regionGroup = new GroupLayer({
-                                title: region,
-                                visible: false,
-                                layers: [...layer.layers] // Create a new array to avoid reference issues
-                            });
-                            layersByType.get(layer.title).push(regionGroup);
-                        }
+                if (layer.title === "Data Loggers" || 
+                    layer.title === "Maintenance Work Orders" || 
+                    layer.title === "Valves") {
+                    // Create region-specific group
+                    const regionGroup = new GroupLayer({
+                        title: region,
+                        visible: false,
+                        layers: layer.layers ? [...layer.layers] : []
+                    });
+                    layersByType.get(layer.title).push(regionGroup);
+                }
+                else if (layer.title === "Water Mains") {
+                    // Handle Water Mains differently
+                    if (layer.layers) {
+                        const regionGroup = new GroupLayer({
+                            title: region,
+                            visible: false,
+                            layers: [...layer.layers]
+                        });
+                        layersByType.get(layer.title).push(regionGroup);
                     }
-                    else if (layer.title === "Water Mains") {
-                        if (layer.layers && layer.layers.length > 0) {
-                            layersByType.get(layer.title).push(...layer.layers);
-                        }
+                }
+                else {
+                    // Handle other layers
+                    if (layer.layers) {
+                        layersByType.get(layer.title).push(...layer.layers);
+                    } else {
+                        layersByType.get(layer.title).push(layer);
                     }
-                    else {
-                        // Handle regular layers
-                        if (layer.layers && layer.layers.length > 0) {
-                            layersByType.get(layer.title).push(...layer.layers);
-                        } else {
-                            layersByType.get(layer.title).push(layer);
-                        }
-                    }
-                } catch (error) {
-                    console.warn(`Error processing layer ${layer.title}:`, error);
-                    continue;
                 }
             }
         }
 
-        // Create final combined layers
+        // Create final layer structure
         const finalLayers = [];
         for (const [layerType, layers] of layersByType) {
             if (!layers || layers.length === 0) continue;
 
-            try {
-                let combinedLayer;
-                
-                // Special handling for layer types
-                if (layerType === "Data Loggers" || 
-                    layerType === "Maintenance Work Orders" || 
-                    layerType === "Valves") {
-                    // Create main group layer with region groups
-                    combinedLayer = new GroupLayer({
-                        title: layerType,
-                        visible: false
-                    });
-                    // Add layers after creation to avoid parent issues
-                    combinedLayer.layers = layers;
-                }
-                else if (layerType === "Water Mains") {
-                    combinedLayer = new GroupLayer({
-                        title: layerType,
-                        visible: false
-                    });
-                    combinedLayer.layers = layers;
-                }
-                else {
-                    // Regular layer handling
-                    combinedLayer = new GroupLayer({
-                        title: layerType,
-                        visible: false
-                    });
-                    combinedLayer.layers = layers;
-                }
-                
-                if (combinedLayer) {
-                    finalLayers.push(combinedLayer);
-                }
-            } catch (error) {
-                console.warn(`Error creating combined layer for ${layerType}:`, error);
-                continue;
+            const combinedLayer = new GroupLayer({
+                title: layerType,
+                visible: false,
+                layers: layers
+            });
+
+            // Ensure all sublayers are properly configured
+            if (combinedLayer.layers) {
+                combinedLayer.layers.forEach(sublayer => {
+                    if (sublayer.type === "subtype-group" && sublayer.sublayers) {
+                        sublayer.sublayers.forEach(subsublayer => {
+                            subsublayer.visible = false;
+                        });
+                    }
+                });
             }
+
+            finalLayers.push(combinedLayer);
         }
 
-        // Sort layers according to defined order
-        finalLayers.sort((a, b) => {
-            const indexA = layerOrder.indexOf(a.title);
-            const indexB = layerOrder.indexOf(b.title);
-            return indexB - indexA;
-        });
+        // Sort and add layers
+        finalLayers
+            .sort((a, b) => layerOrder.indexOf(b.title) - layerOrder.indexOf(a.title))
+            .forEach(layer => displayMap.add(layer));
 
-        // Add layers to map with proper loading handling
-        for (const layer of finalLayers) {
-            try {
-                await displayMap.add(layer);
-                await reactiveUtils.whenOnce(() => !view.updating);
-            } catch (error) {
-                console.warn(`Error adding layer ${layer.title} to map:`, error);
-                continue;
-            }
+        // Update loaded regions
+        loadedRegions = new Set(selectedRegions);
+
+        // Force LayerList refresh
+        await new Promise(resolve => setTimeout(resolve, 200));
+        if (layerList1) {
+            layerList1.renderNow();
         }
 
-        // Zoom to combined extent
-        await zoomToVisibleLayers();
-
+        // debugLayers('After layer creation');
+        
     } catch (error) {
-        console.error("Error loading region layers:", error);
-    } finally {
-        if (preloader) {
-            preloader.style.display = "none";
-        }
+        console.error("Error in loadRegionLayers:", error);
     }
 }
+
+
+// Add the load button click handler
+document.getElementById('loadRegionsButton').addEventListener('click', async () => {
+    // debugLayers('Before any changes');
+
+    const regionsToUnload = new Set(
+        Array.from(loadedRegions).filter(region => !selectedRegions.has(region))
+    );
+
+    const regionsToLoad = new Set(
+        Array.from(selectedRegions).filter(region => !loadedRegions.has(region))
+    );
+
+    if (regionsToLoad.size > 0 || regionsToUnload.size > 0) {
+        try {
+            const preloader = document.getElementById("preloader");
+            if (preloader) preloader.style.display = "flex";
+
+            await loadRegionLayers(selectedRegions);
+            
+            updateSelectedDisplay();
+            updateDropdownOptions();
+            
+            await zoomToVisibleLayers();
+
+        } catch (error) {
+            console.error("Error managing regions:", error);
+        } finally {
+            if (preloader) preloader.style.display = "none";
+        }
+    }
+});
+
 
 // Helper function to add layers for a single region
 async function addLayersForRegion(regionName) {
@@ -6170,6 +6238,134 @@ async function addLayersForRegion(regionName) {
               mainLayers.push(valvesGroup);
           }
       }
+      // Add KTM Layers
+      if (layersKTM.some(l => l.title === regionName)) {
+          const ktmLayers = layersKTM
+              .filter(layer => layer.title === regionName)
+              .map((layerInfo) => {
+                  const layer = new SubtypeGroupLayer({
+                      url: layerInfo.url,
+                      visible: false,
+                      title: layerInfo.title,
+                      outFields: ["*"]
+                  });
+
+                  layer.loadAll().catch(function(error) {
+                      // Ignore any failed sublayers
+                  }).then(function() {
+                      console.log("All loaded");
+                      layer.sublayers.reverse();
+                  });
+
+                  layer.when(() => {
+                      layer.sublayers.forEach((sublayer) => {
+                          sublayer.visible = false;
+                          sublayer.renderer = TKMRenderer;
+                          sublayer.labelingInfo = [labelClassKTM];
+                          sublayer.labelsVisible = false;
+                          sublayer.popupTemplate = popupTemplateKTM;
+                      });
+                      setupSublayerVisibility(layer);
+                  });
+
+                  layer.watch("visible", (visible) => {
+                      if (visible && layer.parent) {
+                          let parentLayer = layer.parent;
+                          while (parentLayer) {
+                              if (!parentLayer.visible) {
+                                  parentLayer.visible = true;
+                              }
+                              parentLayer = parentLayer.parent;
+                          }
+
+                          if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = true;
+                              });
+                          }
+                      } else {
+                          if (layer.sublayers) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = false;
+                              });
+                          }
+                      }
+                  });
+
+                  return layer;
+              });
+
+          const ktmGroup = createGroupLayer("Trunk Main Meter Points", ktmLayers);
+          if (ktmGroup) {
+              if (!firstLayer) firstLayer = ktmGroup;
+              mainLayers.push(ktmGroup);
+          }
+      }
+      // Add Transmission Main Meter Points
+      if (layersTransmissionMainMeterPoints.some(l => l.title === regionName)) {
+          const tmmLayers = layersTransmissionMainMeterPoints
+              .filter(layer => layer.title === regionName)
+              .map((layerInfo) => {
+                  const layer = new SubtypeGroupLayer({
+                      url: layerInfo.url,
+                      visible: false,
+                      title: layerInfo.title,
+                      outFields: ["*"]
+                  });
+
+                  layer.loadAll().catch(function(error) {
+                      // Ignore any failed sublayers
+                  }).then(function() {
+                      console.log("All loaded");
+                      layer.sublayers.reverse();
+                  });
+
+                  layer.when(() => {
+                      layer.sublayers.forEach((sublayer) => {
+                          sublayer.visible = false;
+                          sublayer.renderer = TMMRenderer;
+                          sublayer.labelingInfo = [labelClassTransmissionMainMeterPoints];
+                          sublayer.labelsVisible = false;
+                          sublayer.popupTemplate = popupTemplateTransmissionMainMeterPoints;
+                      });
+                      setupSublayerVisibility(layer);
+                  });
+
+                  layer.watch("visible", (visible) => {
+                      if (visible && layer.parent) {
+                          let parentLayer = layer.parent;
+                          while (parentLayer) {
+                              if (!parentLayer.visible) {
+                                  parentLayer.visible = true;
+                              }
+                              parentLayer = parentLayer.parent;
+                          }
+
+                          if (!layer.sublayers.some(sublayer => sublayer.visible)) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = true;
+                              });
+                          }
+                      } else {
+                          if (layer.sublayers) {
+                              layer.sublayers.forEach(sublayer => {
+                                  sublayer.visible = false;
+                              });
+                          }
+                      }
+                  });
+
+                  return layer;
+              });
+
+          const tmmGroup = createGroupLayer("Transmission Main Meter Points", tmmLayers);
+          if (tmmGroup) {
+              if (!firstLayer) firstLayer = tmmGroup;
+              mainLayers.push(tmmGroup);
+          }
+      }
+
+
 
           // Return the created layers
     return mainLayers;
@@ -6178,8 +6374,8 @@ async function addLayersForRegion(regionName) {
 
 // Helper function to zoom to visible layers very very very important
 async function zoomToVisibleLayers() {
-    console.log("Starting zoom to layers...");
-    console.log("Selected regions:", selectedRegions);
+    // console.log("Starting zoom to layers...");
+    // console.log("Selected regions:", selectedRegions);
     
     try {
         const allExtents = [];
@@ -13028,7 +13224,7 @@ async function addWidgets() {
       container: document.getElementById("layerListContainer"), // Place LayerList in the new container,
       // showLegend: true
     });
-
+    layerList1 = layerList
     layerList.visibilityAppearance = "checkbox";
     layerList.listItemCreatedFunction = async function (event) {
       const item = event.item;
